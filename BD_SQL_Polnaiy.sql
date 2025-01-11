@@ -1,6 +1,7 @@
 ﻿use Magaz_DB_2_Test
 go
 
+begin tran
 
 create table  Currency                               --Валюта
 (
@@ -10,7 +11,7 @@ Full_name_eng     nvarchar(300)   not null,                                     
 Abbreviation_rus  nvarchar(15)    not null,                                            -- Короткое наименование на русском
 Abbreviation_eng  nvarchar(15)    not null,                                            -- Короткое наименование на английском
 constraint PK_ID_Currency         primary key (ID_Currency),
-) on Orders_Group
+) on Orders_Group_2
 
 go
 
@@ -21,7 +22,7 @@ Name                   nvarchar(300)   not null,                                
 SysTypeOrderStatusName nvarchar(300)   not null,                                        -- Системное имя статуса заказа
 [Description]          nvarchar(4000)  null,                                            -- Комментарии
 constraint  PK_Id_Status   primary key (Id_Status),
-) on Orders_Group
+) on Orders_Group_2
 
 go
 
@@ -36,9 +37,9 @@ Amount           float           null,                                          
 ID_Currency      bigint          not null,                                           -- Валюта заказа
 Num              nvarchar(50)    not null,                                           -- Номер заказа
 [Description]    nvarchar(4000)  null,                                               -- Комментарий
-constraint  PK_ID_Orders   primary key (ID_Orders),
-constraint  FK_ID_status   foreign key (ID_status) references [dbo].Orders
-)  on Orders_Group
+constraint  PK_ID_Orders          primary key (ID_Orders),
+constraint  FK_ID_Orders_status   foreign key (ID_status) references [dbo].Orders_status
+)  on Orders_Group_2
 go
 
 
@@ -50,8 +51,9 @@ Login                 nvarchar(100)      null,                                  
 Date_Сreated          datetime           not null default GetDate(),                               -- Дата создания аккаунта
 [Description]         nvarchar(1000)     null,                                                     -- Комментарий
 constraint PK_ID_Connection_Buyer  Primary key  (ID_Connection_Buyer),
-) on Costomers_Group
+) on Costomers_Group_2
 go
+
 
 
 create table Buyer_status                                              --Статуса покупателя
@@ -60,8 +62,8 @@ Id_Status              bigint          not null identity (1,1)  check(Id_Status 
 Name                   nvarchar(300)   not null,                                       -- Наименования статуса покупателя
 SysTypeBuyerStatusName nvarchar(300)   not null,                                       -- Системное имя статуса покупателя
 [Description]          nvarchar(4000)  null,                                           -- Комментарий
-constraint  PK_Id_Status   primary key (Id_Status),
-) on Costomers_Group
+constraint  PK_Id_Buyer_status   primary key (Id_Status),
+) on Costomers_Group_2
 
 go
 
@@ -79,9 +81,9 @@ Phone                       nvarchar(30)   null,                                
 Date_Of_Birth               datetime       null,                                            -- Дата роождения
 [Description]               nvarchar(4000) null,                                            -- Комментарий
 constraint PK_Id_buyer             primary key (Id_buyer),
-constraint FK_ID_Connection_Buyer  foreign key (ID_Connection_Buyer)   references dbo.Connection_Buyer  on delete set null on Update cascade,
+constraint FK_ID_Connection_Buyer  foreign key (ID_Connection_Buyer)   references dbo.Connection_Buyer  on delete NO ACTION,
 constraint FK_Id_Buyer_statuss     foreign key (Id_Status)             references dbo.Buyer_status      on delete NO ACTION
-) on Costomers_Group
+) on Costomers_Group_2
 go
 
 
@@ -91,13 +93,20 @@ Id_Data_Orders         bigint          not null identity (1,1) check(ID_Data_Ord
 ID_Employee            bigint          not null,                                           -- ID Сотрудника или бота
 ID_Orders              bigint          not null,                                           -- ID Заказа
 Id_buyer               bigint          not null,	                                       -- ID Покупателя
+ID_Exemplar            bigint          not null,                                           -- ID Экземпляра
+ID_Transaction         bigint          not null,                                           -- ID Тразанкции
+Date_Data_Orders       datetime        not null  default getdate(),                        -- Дата создания данныйх о заказе
 [Description]          nvarchar(4000)  null
-constraint PK_ID_Data_Orders  primary key (ID_Data_Orders),
-constraint FK_ID_Employee     foreign key (ID_Employee) references [dbo].Employees on delete NO ACTION, 
-constraint FK_ID_Orders       foreign key (ID_Orders)   references [dbo].Orders    on delete NO ACTION,
-constraint FK_Id_buyer        foreign key (Id_buyer)    references [dbo].buyer     on delete NO ACTION 
-)
+constraint PK_ID_Data_Orders                primary key (ID_Data_Orders),
+constraint FK_ID_Employee                   foreign key (ID_Employee)       references [dbo].Employees       on delete NO ACTION, 
+constraint FK_ID_Orders                     foreign key (ID_Orders)         references [dbo].Orders          on delete NO ACTION,
+constraint FK_Id_buyer                      foreign key (Id_buyer)          references [dbo].buyer           on delete NO ACTION, 
+constraint FK_ID_Transaction_Data_Orders    foreign key (ID_Transaction)    references [dbo].[Transaction]   on delete NO ACTION, 
+)  on Orders_Group_2
 go
+
+
+
 
 create table TypeItem                                                 --Тип товара
 (
@@ -106,9 +115,11 @@ TypeItemName     nvarchar(300)   not null,                                      
 SysTypeItemName  nvarchar(300)   not null,                                        -- Системное наименование типа товара
 [Description]    nvarchar(4000)  null                                             -- Комментарий
 constraint PK_Id_TypeItem  primary key (Id_TypeItem),
-)
+) on Products_Group_2
 
 go
+
+
 
 create table Type_of_product_measurement                                            --Тип измерения товара
 (
@@ -117,7 +128,9 @@ Product_measurement_Name        nvarchar(300)   not null,                       
 SysProductMeasurementName       nvarchar(300)   not null,                                                  --Системное Наименование Типа измерения товара 
 [Description]                   nvarchar(4000)  null                                                       --Комментарий
 Constraint PK_ID_product_measurement  primary key (ID_product_measurement)
-)
+) on Products_Group_2
+
+go
 
 create table Item                                                                       --Товар
 (
@@ -139,7 +152,7 @@ Date_Сreated               datetime        not null  default GetDate(),        
 constraint PK_Id_Item  primary key (Id_Item),
 constraint FK_ID_TypeItem                   foreign key (ID_TypeItem)              references [dbo].TypeItem                       on delete NO ACTION,
 constraint FK_ID_product_measurement        foreign key (ID_product_measurement)   references [dbo].Type_of_product_measurement    on delete NO ACTION
-)
+) on Products_Group_2
 go
 
 
@@ -151,9 +164,10 @@ Name_Type_Storage_location                  nvarchar(300)       not null,       
 SysNameTypeStoragelocation                  nvarchar(300)       not null,                                                     --Системное наименование типа места хранения
 [Description]                               nvarchar(4000)      null                                                          --Комментарий
 constraint PK_ID_Type_Storage_location      primary key (ID_Type_Storage_location),
-)
+) on Products_Group_2
 
 go
+
 
 create table Storage_location                                                    --Место хранение
 (
@@ -169,9 +183,11 @@ Date_Сreated               datetime            not null  default GetDate(),    
 [Description]              nvarchar(4000)      null                                                      --Комментарий
 constraint PK_ID_Storage_location          primary key (ID_Storage_location),
 constraint FK_ID_Type_Storage_location     foreign key (ID_Type_Storage_location)        references [dbo].Type_Storage_location    on delete NO ACTION
-)
+)  on Products_Group_2
 
 go
+
+
 
 create table Exemplar                                                                   --Экземпляр
 (
@@ -180,18 +196,68 @@ Id_Item                bigint          not null,                                
 ID_Currency            bigint          not null,											   --ID Валюта, цены на экземпляр
 ID_Storage_location    bigint          not null,                                               --ID Место хранение экземпляра
 Serial_number          nvarchar(800)   not null,                                               --Серийный номер экземпляра товара
-Old_Price              float           not null,                                               --Цена экземпляра
+Old_Price_no_NDS       float           not null,                                               --Цена без НДС экземпляра
+Old_Price_NDS          float           not null,                                               --Цена экземпляра с НДС
 JSON_Size_Volume       nvarchar(max)   null      check(isjson(JSON_Size_Volume)>0),            --Данный JSON параметры самого экземпляра
-New_Price              float           not null,                                               --Цена экземпляра после начисления 
+New_Price_NDS          float           not null,                                               --Цена экземпляра с НДС после начисления коммисии  за  сервис
+New_Price_no_NDS       float           not null,                                               --Цена экземпляра без НДС после начисления коммисии  за  сервис
 Date_Сreated           datetime        not null  default GetDate(),                            --Дата внесения экземпляра в систему
 [Description]          nvarchar(4000)  null                                                    --Комментарий
 constraint PK_ID_Exemplar              primary key (ID_Exemplar),
 constraint FK_ID_Item                  foreign key (Id_Item)                 references [dbo].Item                on delete NO ACTION,
 constraint FK_ID_Currency_Exemplar     foreign key (ID_Currency)             references [dbo].Currency            on delete NO ACTION,
 constraint FK_ID_Storage_location      foreign key (ID_Storage_location)     references [dbo].Storage_location    on delete NO ACTION
+)  on Products_Group_2
+
+go
+
+
+
+CREATE TABLE [dbo].Transaction_status                                      --Статус Транзакции
+(
+ID_Transaction_status          bigint          not null  identity(1,1)  check(ID_Transaction_status != 0),   -- ID_Статуса транзакции
+TypeTransactionName            nvarchar(300)   not null,                                                     -- Наименование типа транзакции
+SysTypeTransactionName         nvarchar(300)   not null,                                                     -- Системное наименование типа транзакции
+[Description]                  nvarchar(4000)  null                                                          -- Комментарий
+constraint PK_ID_Transaction_status       primary key (ID_Transaction_status),
 )
 
 go
+
+CREATE TABLE Currency_Rate                                        -- Ставка за период
+(
+ID_Currency_Rate        bigint          not null identity(1,1)  check(ID_Currency_Rate != 0),   -- ID Ставки  за период
+ID_Currency             bigint          not null,                                               -- ID Валюты                                                          
+Amount_Rate             float           not null,                                               -- Сумма ставки одной  ед в рублях, за текущий период
+Valid_from              datetime        not null,                                               -- Сумма ставки с момента.
+Valid_to                datetime        not null,                                               -- Сумма ставки до момента.
+JSON_Currency_Rate_Data nvarchar(max)   null      check(isjson(JSON_Currency_Rate_Data)>0),		-- JSON Данные приходящие из стороннего ресурса
+[Description]           nvarchar(4000)  null                                                    -- Комментарий
+constraint      PK_ID_Currency_Rate     primary key (ID_Currency_Rate),
+constraint      FK_ID_Currency_Rate     foreign key (ID_Currency)        references [dbo].Currency      on delete NO ACTION,
+)
+go
+
+CREATE TABLE [dbo].[TRANSACTION]                                       --Транзакция
+(
+ID_Transaction                  bigint          not null  identity(1,1)    check(ID_Transaction != 0),    -- ID_Тразанкции
+ID_Currency                     bigint          not null,                                                 -- ID Валюты транзакции
+ID_Transaction_status           bigint          not null,                                                 -- ID_Статуса транзакции
+ID_Currency_Rate                bigint          not null,                                                 -- ID Ставки  за период
+Transaction_Date                datetime        not null  default GetDate(),                              -- Дата создания транзакции  
+Transaction_name_sender         nvarchar(500)   not null,                                                 -- Наименование отправителя
+JSON_Transaction_sender         nvarchar(max)   null      check(isjson(JSON_Transaction_sender)>0),		  -- JSON Данные от сервиса отправителя
+Transaction_Amount              float           not null,												  -- Сумма транзакции
+[Description]                   nvarchar(4000)  null 													  -- Комментарий
+constraint PK_ID_Transaction                     primary key (ID_Transaction),   
+constraint FK_ID_Currency_Transaction            foreign key (ID_Currency)             references [dbo].Currency                on delete NO ACTION,
+constraint FK_ID_Transaction_status              foreign key (ID_Transaction_status)   references [dbo].Transaction_status      on delete NO ACTION,
+constraint FK_ID_Currency_Rate_ID_Transaction    foreign key (ID_Currency_Rate)        references [dbo].Currency_Rate           on delete NO ACTION
+)
+go
+
+commit
+--rollback
 
 /*
 create table ItemExemplar                                                    --Экземпляр к товару
@@ -204,3 +270,6 @@ constraint PK_ID_Exemplar    primary key (ID_ItemExemplar)
 
 go
 */
+
+
+--rollback
