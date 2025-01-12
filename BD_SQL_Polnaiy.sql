@@ -87,6 +87,49 @@ constraint FK_Id_Buyer_statuss     foreign key (Id_Status)             reference
 go
 
 
+CREATE TABLE [dbo].Transaction_status                                      --Статус Транзакции
+(
+ID_Transaction_status          bigint          not null  identity(1,1)  check(ID_Transaction_status != 0),   -- ID_Статуса транзакции
+TypeTransactionName            nvarchar(300)   not null,                                                     -- Наименование типа транзакции
+SysTypeTransactionName         nvarchar(300)   not null,                                                     -- Системное наименование типа транзакции
+[Description]                  nvarchar(4000)  null                                                          -- Комментарий
+constraint PK_ID_Transaction_status       primary key (ID_Transaction_status),
+)  on Products_Group_2
+
+go
+
+CREATE TABLE Currency_Rate                                        -- Ставка за период
+(
+ID_Currency_Rate        bigint          not null identity(1,1)  check(ID_Currency_Rate != 0),   -- ID Ставки  за период
+ID_Currency             bigint          not null,                                               -- ID Валюты                                                          
+Amount_Rate             float           not null,                                               -- Сумма ставки одной  ед в рублях, за текущий период
+Valid_from              datetime        not null,                                               -- Сумма ставки с момента.
+Valid_to                datetime        not null,                                               -- Сумма ставки до момента.
+JSON_Currency_Rate_Data nvarchar(max)   null      check(isjson(JSON_Currency_Rate_Data)>0),		-- JSON Данные приходящие из стороннего ресурса
+[Description]           nvarchar(4000)  null                                                    -- Комментарий
+constraint      PK_ID_Currency_Rate     primary key (ID_Currency_Rate),
+constraint      FK_ID_Currency_Rate     foreign key (ID_Currency)        references [dbo].Currency      on delete NO ACTION,
+)  on Products_Group_2
+go
+
+CREATE TABLE [dbo].[TRANSACTION]                                       --Транзакция
+(
+ID_Transaction                  bigint          not null  identity(1,1)    check(ID_Transaction != 0),    -- ID_Тразанкции
+ID_Currency                     bigint          not null,                                                 -- ID Валюты транзакции
+ID_Transaction_status           bigint          not null,                                                 -- ID_Статуса транзакции
+ID_Currency_Rate                bigint          not null,                                                 -- ID Ставки  за период
+Transaction_Date                datetime        not null  default GetDate(),                              -- Дата создания транзакции  
+Transaction_name_sender         nvarchar(500)   not null,                                                 -- Наименование отправителя
+JSON_Transaction_sender         nvarchar(max)   null      check(isjson(JSON_Transaction_sender)>0),		  -- JSON Данные от сервиса отправителя
+Transaction_Amount              float           not null,												  -- Сумма транзакции
+[Description]                   nvarchar(4000)  null 													  -- Комментарий
+constraint PK_ID_Transaction                     primary key (ID_Transaction),   
+constraint FK_ID_Currency_Transaction            foreign key (ID_Currency)             references [dbo].Currency                on delete NO ACTION,
+constraint FK_ID_Transaction_status              foreign key (ID_Transaction_status)   references [dbo].Transaction_status      on delete NO ACTION,
+constraint FK_ID_Currency_Rate_ID_Transaction    foreign key (ID_Currency_Rate)        references [dbo].Currency_Rate           on delete NO ACTION
+)  on Products_Group_2
+go
+
 create table  Data_Orders                                                    --Вспомогательная таблицца, данные о заказе
 (
 Id_Data_Orders         bigint          not null identity (1,1) check(ID_Data_Orders !=0),  -- ID данных о заказе
@@ -166,7 +209,7 @@ SysNameTypeStoragelocation                  nvarchar(300)       not null,       
 constraint PK_ID_Type_Storage_location      primary key (ID_Type_Storage_location),
 ) on Products_Group_2
 
-go
+go  
 
 
 create table Storage_location                                                    --Место хранение
@@ -209,52 +252,10 @@ constraint FK_ID_Currency_Exemplar     foreign key (ID_Currency)             ref
 constraint FK_ID_Storage_location      foreign key (ID_Storage_location)     references [dbo].Storage_location    on delete NO ACTION
 )  on Products_Group_2
 
-go
+go 
 
 
 
-CREATE TABLE [dbo].Transaction_status                                      --Статус Транзакции
-(
-ID_Transaction_status          bigint          not null  identity(1,1)  check(ID_Transaction_status != 0),   -- ID_Статуса транзакции
-TypeTransactionName            nvarchar(300)   not null,                                                     -- Наименование типа транзакции
-SysTypeTransactionName         nvarchar(300)   not null,                                                     -- Системное наименование типа транзакции
-[Description]                  nvarchar(4000)  null                                                          -- Комментарий
-constraint PK_ID_Transaction_status       primary key (ID_Transaction_status),
-)
-
-go
-
-CREATE TABLE Currency_Rate                                        -- Ставка за период
-(
-ID_Currency_Rate        bigint          not null identity(1,1)  check(ID_Currency_Rate != 0),   -- ID Ставки  за период
-ID_Currency             bigint          not null,                                               -- ID Валюты                                                          
-Amount_Rate             float           not null,                                               -- Сумма ставки одной  ед в рублях, за текущий период
-Valid_from              datetime        not null,                                               -- Сумма ставки с момента.
-Valid_to                datetime        not null,                                               -- Сумма ставки до момента.
-JSON_Currency_Rate_Data nvarchar(max)   null      check(isjson(JSON_Currency_Rate_Data)>0),		-- JSON Данные приходящие из стороннего ресурса
-[Description]           nvarchar(4000)  null                                                    -- Комментарий
-constraint      PK_ID_Currency_Rate     primary key (ID_Currency_Rate),
-constraint      FK_ID_Currency_Rate     foreign key (ID_Currency)        references [dbo].Currency      on delete NO ACTION,
-)
-go
-
-CREATE TABLE [dbo].[TRANSACTION]                                       --Транзакция
-(
-ID_Transaction                  bigint          not null  identity(1,1)    check(ID_Transaction != 0),    -- ID_Тразанкции
-ID_Currency                     bigint          not null,                                                 -- ID Валюты транзакции
-ID_Transaction_status           bigint          not null,                                                 -- ID_Статуса транзакции
-ID_Currency_Rate                bigint          not null,                                                 -- ID Ставки  за период
-Transaction_Date                datetime        not null  default GetDate(),                              -- Дата создания транзакции  
-Transaction_name_sender         nvarchar(500)   not null,                                                 -- Наименование отправителя
-JSON_Transaction_sender         nvarchar(max)   null      check(isjson(JSON_Transaction_sender)>0),		  -- JSON Данные от сервиса отправителя
-Transaction_Amount              float           not null,												  -- Сумма транзакции
-[Description]                   nvarchar(4000)  null 													  -- Комментарий
-constraint PK_ID_Transaction                     primary key (ID_Transaction),   
-constraint FK_ID_Currency_Transaction            foreign key (ID_Currency)             references [dbo].Currency                on delete NO ACTION,
-constraint FK_ID_Transaction_status              foreign key (ID_Transaction_status)   references [dbo].Transaction_status      on delete NO ACTION,
-constraint FK_ID_Currency_Rate_ID_Transaction    foreign key (ID_Currency_Rate)        references [dbo].Currency_Rate           on delete NO ACTION
-)
-go
 
 commit
 --rollback
