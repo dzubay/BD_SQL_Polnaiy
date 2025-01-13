@@ -73,16 +73,17 @@ AS
                          
                             IF @NewTypeItemName <> @OldTypeItemName 
 							   begin
-                                SET @ChangeDescription = ''+ 'TypeItem = (' +  isnull(@OldId_TypeItem,'')+ ')' + isnull(@ChangeDescription,'') + '  TypeItemName = Old ->"' +  ISNULL(@OldTypeItemName,'') + ' " NEW -> " ' + isnull(@NewTypeItemName,'') + '", ';
+                                SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  TypeItemName = Old ->"' +  ISNULL(@OldTypeItemName,'') + ' " NEW -> " ' + isnull(@NewTypeItemName,'') + '", ';
 							   end
                             IF @NewSysTypeItemName <> @OldSysTypeItemName
 							   begin
-                                SET @ChangeDescription = ''+ 'TypeItem = (' +  isnull(@OldId_TypeItem,'')+ ')' + isnull(@ChangeDescription,'') + '  SysTypeItemName = Old ->"' + ISNULL(@OldSysTypeItemName,'') + ' " NEW -> "' + ISNULL(@NewSysTypeItemName,'') + '", ';
+                                SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  SysTypeItemName = Old ->"' + ISNULL(@OldSysTypeItemName,'') + ' " NEW -> "' + ISNULL(@NewSysTypeItemName,'') + '", ';
 							   end
                             IF @NewDescription <> @OldDescription
 							   begin
-                                SET @ChangeDescription = 'Updated: ' + ' TypeItem = (' +  isnull(@OldId_TypeItem,'')+ ')'+ isnull(@ChangeDescription,'') + '  Description = Old ->"' + ISNULL(@OldDescription,'') + ' " NEW -> " ' + ISNULL(@NewDescription,'') + '", ';
+                                SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Description = Old ->"' + ISNULL(@OldDescription,'') + ' " NEW -> " ' + ISNULL(@NewDescription,'') + '", ';
                                end
+                            SET @ChangeDescription = 'Updated: ' + ' TypeItem = (' +  isnull(cast(@OldId_TypeItem as nvarchar(20)),'')+ ') ' + @ChangeDescription
                              --Удаляем запятую на конце
                             IF LEN(@ChangeDescription) > 0
                                 SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 2);
@@ -171,3 +172,4 @@ GO
 
 commit
 --rollback
+
