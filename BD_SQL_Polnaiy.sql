@@ -262,7 +262,7 @@ ID_Condition_of_the_item  bigint          not null,                             
 Old_Price_no_NDS          float           not null,                                               --Цена без НДС экземпляра
 Refund                    bit             not null,                                               --Был ли возврат данного экземпляра или нет. 0/1
 Date_Refund               datetime        null,                                                   --Дата возврата
-Return_Note               nvarchar(4000)  not null,                                               --Записка(Примечание) о возврате
+Return_Note               nvarchar(4000)  null,                                                   --Записка(Примечание) о возврате
 Old_Price_NDS             float           not null,                                               --Цена экземпляра с НДС
 JSON_Size_Volume          nvarchar(max)   null      check(isjson(JSON_Size_Volume)>0),            --Данный JSON параметры самого экземпляра
 New_Price_NDS             float           not null,                                               --Цена экземпляра с НДС после начисления коммисии  за  сервис
