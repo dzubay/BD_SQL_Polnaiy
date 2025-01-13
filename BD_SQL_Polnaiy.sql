@@ -10,6 +10,7 @@ Full_name_rus     nvarchar(300)   not null,                                     
 Full_name_eng     nvarchar(300)   not null,                                            -- Полное наименование валюты на английском
 Abbreviation_rus  nvarchar(15)    not null,                                            -- Короткое наименование на русском
 Abbreviation_eng  nvarchar(15)    not null,                                            -- Короткое наименование на английском
+[Description]     nvarchar(4000)  null,                                                -- Комментарии
 constraint PK_ID_Currency         primary key (ID_Currency),
 ) on Orders_Group_2
 
@@ -45,6 +46,7 @@ ID_status        bigint          not null,                                      
 ID_TypeOrders    bigint          not null,                                           -- ID Типа заказа
 ID_Currency      bigint          not null,                                           -- Валюта заказа
 Date             datetime        not null default  getDate(),                        -- Дата создания заказа
+Payment_Date     datetime        null,                                               -- Дата Оплаты заказа
 Amount           float           null,                                               -- Сумма заказа
 AmountCurr       float           null,                                               -- Сумма заказа c начислением коммисии 
 AmountNDS        float           null,                                               -- Сумма заказа c начисленным НДС
