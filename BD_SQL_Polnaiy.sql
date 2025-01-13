@@ -17,28 +17,43 @@ go
 
 create table Orders_status                                                  --Статус заказа
 (
-Id_Status              bigint          not null identity (1,1)  check(Id_Status !=0),   -- ID статуса заказа
-Name                   nvarchar(300)   not null,                                        -- Наименование статуса заказа
-SysTypeOrderStatusName nvarchar(300)   not null,                                        -- Системное имя статуса заказа
-[Description]          nvarchar(4000)  null,                                            -- Комментарии
+Id_Status                  bigint          not null identity (1,1)  check(Id_Status !=0),   -- ID статуса заказа
+Name                       nvarchar(300)   not null,                                        -- Наименование статуса заказа
+SysTypeOrderStatusName     nvarchar(300)   not null,                                        -- Системное имя статуса заказа
+[Description]              nvarchar(4000)  null,                                            -- Комментарии
 constraint  PK_Id_Status   primary key (Id_Status),
 ) on Orders_Group_2
 
 go
 
 
+create table TypeOrders                                                      --Тип заказа
+(
+ID_TypeOrders       bigint          not null  identity(1,1)  check(ID_TypeOrders != 0),   -- ID Типа заказа
+TypeOrdersName      nvarchar(300)   not null,                                             -- Наименование типа заказа
+TypeOrdersSysName   nvarchar(300)   not null,                                             -- Наименование системного типа заказа
+[Description]       nvarchar(4000)  null                                                  -- Комментарии
+constraint PK_ID_TypeOrders Primary key(ID_TypeOrders)
+)  on Orders_Group_2
+
+go
 
 create table Orders                                                                 --Заказ
 (
 ID_Orders        bigint          not null identity (1,1)  check(Id_Orders !=0),      -- ID заказа
-ID_status        bigint          null,                                               -- ID статуса заказа
+ID_status        bigint          not null,                                           -- ID статуса заказа
+ID_TypeOrders    bigint          not null,                                           -- ID Типа заказа
+ID_Currency      bigint          not null,                                           -- Валюта заказа
 Date             datetime        not null default  getDate(),                        -- Дата создания заказа
 Amount           float           null,                                               -- Сумма заказа
-ID_Currency      bigint          not null,                                           -- Валюта заказа
+AmountCurr       float           null,                                               -- Сумма заказа c начислением коммисии 
+AmountNDS        float           null,                                               -- Сумма заказа c начисленным НДС
+AmountCurrNDS    float           null,                                               -- Сумма заказа c начислением коммисии и НДС
 Num              nvarchar(50)    not null,                                           -- Номер заказа
 [Description]    nvarchar(4000)  null,                                               -- Комментарий
 constraint  PK_ID_Orders          primary key (ID_Orders),
-constraint  FK_ID_Orders_status   foreign key (ID_status) references [dbo].Orders_status
+constraint  FK_ID_Orders_status   foreign key (ID_status)       references [dbo].Orders_status   on delete NO ACTION,
+constraint  FK_ID_TypeOrders      foreign key (ID_TypeOrders)   references [dbo].TypeOrders      on delete NO ACTION
 )  on Orders_Group_2
 go
 
@@ -118,7 +133,8 @@ ID_Transaction                  bigint          not null  identity(1,1)    check
 ID_Currency                     bigint          not null,                                                 -- ID Валюты транзакции
 ID_Transaction_status           bigint          not null,                                                 -- ID_Статуса транзакции
 ID_Currency_Rate                bigint          not null,                                                 -- ID Ставки  за период
-Transaction_Date                datetime        not null  default GetDate(),                              -- Дата создания транзакции  
+Transaction_Date                datetime        not null  default GetDate(),                              -- Дата создания транзакции 
+KeySource                       bigint          null,                                                     -- Источник ключа с другими БД или сервисами
 Transaction_name_sender         nvarchar(500)   not null,                                                 -- Наименование отправителя
 JSON_Transaction_sender         nvarchar(max)   null      check(isjson(JSON_Transaction_sender)>0),		  -- JSON Данные от сервиса отправителя
 Transaction_Amount              float           not null,												  -- Сумма транзакции
@@ -191,6 +207,7 @@ Mail                       nvarchar(250)   null,                                
 Phone                      nvarchar(30)    null,                                                    --Контактный телефон производителя товара
 Logo                       varbinary(max)  null,                                                    --Логотип производителя товара
 Date_Сreated               datetime        not null  default GetDate(),                             --Дата заведения карточки товара
+Quantity                   int             null,                                                    --Количество данного товара
 [Description]              nvarchar(4000)  null                                                     --Комментарий 
 constraint PK_Id_Item  primary key (Id_Item),
 constraint FK_ID_TypeItem                   foreign key (ID_TypeItem)              references [dbo].TypeItem                       on delete NO ACTION,
@@ -216,6 +233,7 @@ create table Storage_location                                                   
 (
 ID_Storage_location        bigint              not null identity(1,1) check(ID_Storage_location != 0),   --ID Место хранение экземпляра
 ID_Type_Storage_location   bigint              not null,                                                 --ID Типа места хранение
+KeySource                  bigint              null,                                                     --Источник ключа с другими БД или сервисами
 Name                       nvarchar(400)       not null,                                                 --Наименование места хранения
 Country                    nvarchar(200)       null,                                                     --Страна  места хранения
 City                       nvarchar(200)       null,                                                     --Город  места хранения
@@ -234,18 +252,23 @@ go
 
 create table Exemplar                                                                   --Экземпляр
 (
-ID_Exemplar            bigint          not null   identity (1,1)  check(ID_Exemplar != 0),     --ID Экземпляра
-Id_Item                bigint          not null,                                               --ID Карточки товара
-ID_Currency            bigint          not null,											   --ID Валюта, цены на экземпляр
-ID_Storage_location    bigint          not null,                                               --ID Место хранение экземпляра
-Serial_number          nvarchar(800)   not null,                                               --Серийный номер экземпляра товара
-Old_Price_no_NDS       float           not null,                                               --Цена без НДС экземпляра
-Old_Price_NDS          float           not null,                                               --Цена экземпляра с НДС
-JSON_Size_Volume       nvarchar(max)   null      check(isjson(JSON_Size_Volume)>0),            --Данный JSON параметры самого экземпляра
-New_Price_NDS          float           not null,                                               --Цена экземпляра с НДС после начисления коммисии  за  сервис
-New_Price_no_NDS       float           not null,                                               --Цена экземпляра без НДС после начисления коммисии  за  сервис
-Date_Сreated           datetime        not null  default GetDate(),                            --Дата внесения экземпляра в систему
-[Description]          nvarchar(4000)  null                                                    --Комментарий
+ID_Exemplar               bigint          not null   identity (1,1)  check(ID_Exemplar != 0),     --ID Экземпляра
+Id_Item                   bigint          not null,                                               --ID Карточки товара
+ID_Currency               bigint          not null,											      --ID Валюта, цены на экземпляр
+ID_Storage_location       bigint          not null,                                               --ID Место хранение экземпляра
+KeySource                 bigint          null,                                                   --Источник ключа с другими БД или сервисами
+Serial_number             nvarchar(500)   not null,                                               --Серийный номер экземпляра товара
+ID_Condition_of_the_item  bigint          not null,                                               --Текущее состояние экземпляра
+Old_Price_no_NDS          float           not null,                                               --Цена без НДС экземпляра
+Refund                    bit             not null,                                               --Был ли возврат данного экземпляра или нет. 0/1
+Date_Refund               datetime        null,                                                   --Дата возврата
+Return_Note               nvarchar(4000)  not null,                                               --Записка(Примечание) о возврате
+Old_Price_NDS             float           not null,                                               --Цена экземпляра с НДС
+JSON_Size_Volume          nvarchar(max)   null      check(isjson(JSON_Size_Volume)>0),            --Данный JSON параметры самого экземпляра
+New_Price_NDS             float           not null,                                               --Цена экземпляра с НДС после начисления коммисии  за  сервис
+New_Price_no_NDS          float           not null,                                               --Цена экземпляра без НДС после начисления коммисии  за  сервис
+Date_Сreated              datetime        not null  default GetDate(),                            --Дата внесения экземпляра в систему
+[Description]             nvarchar(4000)  null                                                    --Комментарий
 constraint PK_ID_Exemplar              primary key (ID_Exemplar),
 constraint FK_ID_Item                  foreign key (Id_Item)                 references [dbo].Item                on delete NO ACTION,
 constraint FK_ID_Currency_Exemplar     foreign key (ID_Currency)             references [dbo].Currency            on delete NO ACTION,
