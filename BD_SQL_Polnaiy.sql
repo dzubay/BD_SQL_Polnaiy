@@ -53,9 +53,11 @@ AmountNDS        float           null,                                          
 AmountCurrNDS    float           null,                                               -- Сумма заказа c начислением коммисии и НДС
 Num              nvarchar(50)    not null,                                           -- Номер заказа
 [Description]    nvarchar(4000)  null,                                               -- Комментарий
-constraint  PK_ID_Orders          primary key (ID_Orders),
-constraint  FK_ID_Orders_status   foreign key (ID_status)       references [dbo].Orders_status   on delete NO ACTION,
-constraint  FK_ID_TypeOrders      foreign key (ID_TypeOrders)   references [dbo].TypeOrders      on delete NO ACTION
+constraint  PK_ID_Orders               primary key (ID_Orders),
+constraint  FK_ID_Orders_status        foreign key (ID_status)       references [dbo].Orders_status   on delete NO ACTION,
+constraint  FK_ID_TypeOrders           foreign key (ID_TypeOrders)   references [dbo].TypeOrders      on delete NO ACTION,
+constraint  FK_ID_Currency_Orders      foreign key (ID_Currency  )   references [dbo].Currency        on delete NO ACTION
+
 )  on Orders_Group_2
 go
 
