@@ -85,7 +85,7 @@ AS
 							   begin
                                 SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Description = Old ->"' + ISNULL(@OldDescription,'') + ' " NEW -> " ' + ISNULL(@NewDescription,'') + '", ';
                                end
-                            SET @ChangeDescription = 'Updated: ' + ' TypeItem = (' +  isnull(cast(@OldID_TypeOrders as nvarchar(20)),'')+ ') ' + @ChangeDescription
+                            SET @ChangeDescription = 'Updated: ' + ' ID_TypeOrders = (' +  isnull(cast(@OldID_TypeOrders as nvarchar(20)),'')+ ') ' + @ChangeDescription
                              --Удаляем запятую на конце
                             IF LEN(@ChangeDescription) > 0
                                 SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 2);
@@ -130,10 +130,10 @@ AS
 							FROM deleted;									 
 
                             SET @ChangeDescription = 'Deleted: '
-                                                 + 'ID_TypeOrders="' + CAST(@OldID_TypeOrders_2 AS NVARCHAR(20)) + '", '
-                                                 + 'TypeOrdersName="' + ISNULL(@OldTypeOrdersName_2, '') + '", '
-                                                 + 'TypeOrdersSysName="' + ISNULL(@OldTypeOrdersSysName_2, '') + '", '
-                                                 + 'Description="' + ISNULL(@OldDescription_2, '') + '" ';
+                                                 + 'ID_TypeOrders'     +'="'+ CAST(@OldID_TypeOrders_2 AS NVARCHAR(20)) + '", '
+                                                 + 'TypeOrdersName'    +'="'+ ISNULL(@OldTypeOrdersName_2, '') + '", '
+                                                 + 'TypeOrdersSysName' +'="'+ ISNULL(@OldTypeOrdersSysName_2, '') + '", '
+                                                 + 'Description'       +'="'+ ISNULL(@OldDescription_2, '') + '" ';
                             
                           update u
 						  set ChangeDescription = @ChangeDescription
@@ -164,7 +164,7 @@ AS
                     SELECT @ID_TypeOrders_3 = ID_TypeOrders FROM inserted;
 		            
                     SET @ChangeDescription = 'Inserted: '
-                                         + 'Id_TypeItem="' + CAST(@ID_TypeOrders_3 AS NVARCHAR(20)) + '" ';
+                                         + 'ID_TypeOrders="' + CAST(@ID_TypeOrders_3 AS NVARCHAR(20)) + '" ';
                     
                     update i
 					set ChangeDescription = @ChangeDescription
@@ -174,9 +174,9 @@ AS
                     END
 
 GO
-rollback
+--rollback
 
---commit
+commit
 
 
 

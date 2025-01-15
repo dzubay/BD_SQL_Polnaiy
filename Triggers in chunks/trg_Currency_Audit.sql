@@ -105,7 +105,7 @@ AS
 							   begin
                                 SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Description = Old ->"' + ISNULL(@OldDescription,'') + ' " NEW -> " ' + ISNULL(@NewDescription,'') + '", ';
                                end
-                            SET @ChangeDescription = 'Updated: ' + ' TypeItem = (' +  isnull(cast(@OldID_Currency as nvarchar(20)),'')+ ') ' + @ChangeDescription
+                            SET @ChangeDescription = 'Updated: ' + ' ID_Currency = (' +  isnull(cast(@OldID_Currency as nvarchar(20)),'')+ ') ' + @ChangeDescription
                              --Удаляем запятую на конце
                             IF LEN(@ChangeDescription) > 0
                                 SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 2);
@@ -155,11 +155,12 @@ AS
 							FROM deleted;
 
                             SET @ChangeDescription = 'Deleted: '
-                                                 + 'Id_TypeItem="' + CAST(@OldID_Currency_2 AS NVARCHAR(20)) + '", '
-                                                 + 'TypeItemName="' + ISNULL(@OldFull_name_rus_2, '') + '", '
-                                                 + 'SysTypeItemName="' + ISNULL(@OldAbbreviation_rus_2, '') + '", '
-												 + 'SysTypeItemName="' + ISNULL(@OldAbbreviation_eng_2, '') + '", '
-                                                 + 'Description="' + ISNULL(@OldDescription_2, '') + '" ';
+                                                 + 'ID_Currency'      +'="'+ CAST(@OldID_Currency_2 AS NVARCHAR(20)) + '", '
+                                                 + 'Full_name_rus'    +'="'+ ISNULL(@OldFull_name_rus_2, '') + '", '
+												 + 'Full_name_eng'    +'="'+ ISNULL(@OldFull_name_eng_2, '') + '", '
+                                                 + 'Abbreviation_rus' +'="'+ ISNULL(@OldAbbreviation_rus_2, '') + '", '
+												 + 'Abbreviation_eng' +'="'+ ISNULL(@OldAbbreviation_eng_2, '') + '", '
+                                                 + 'Description'      +'="'+ ISNULL(@OldDescription_2, '') + '" ';
                             
                           update u
 						  set ChangeDescription = @ChangeDescription
@@ -190,7 +191,7 @@ AS
                     SELECT @ID_Currency_3 = ID_Currency FROM inserted;
 		            
                     SET @ChangeDescription = 'Inserted: '
-                                         + 'Id_TypeItem="' + CAST(@ID_Currency_3 AS NVARCHAR(20)) + '" ';
+                                         + 'ID_Currency ="' + CAST(@ID_Currency_3 AS NVARCHAR(20)) + '" ';
                     
                     update i
 					set ChangeDescription = @ChangeDescription
