@@ -150,26 +150,6 @@ constraint FK_ID_Currency_Rate_ID_Transaction    foreign key (ID_Currency_Rate) 
 )  on Products_Group_2
 go
 
-create table  Data_Orders                                                    --Вспомогательная таблицца, данные о заказе
-(
-Id_Data_Orders         bigint          not null identity (1,1) check(ID_Data_Orders !=0),  -- ID данных о заказе
-ID_Employee            bigint          not null,                                           -- ID Сотрудника или бота
-ID_Orders              bigint          not null,                                           -- ID Заказа
-Id_buyer               bigint          not null,	                                       -- ID Покупателя
-ID_Exemplar            bigint          not null,                                           -- ID Экземпляра
-ID_Transaction         bigint          not null,                                           -- ID Тразанкции
-Date_Data_Orders       datetime        not null  default getdate(),                        -- Дата создания данныйх о заказе
-[Description]          nvarchar(4000)  null
-constraint PK_ID_Data_Orders                primary key (ID_Data_Orders),
-constraint FK_ID_Employee                   foreign key (ID_Employee)       references [dbo].Employees       on delete NO ACTION, 
-constraint FK_ID_Orders                     foreign key (ID_Orders)         references [dbo].Orders          on delete NO ACTION,
-constraint FK_Id_buyer                      foreign key (Id_buyer)          references [dbo].buyer           on delete NO ACTION, 
-constraint FK_ID_Transaction_Data_Orders    foreign key (ID_Transaction)    references [dbo].[Transaction]   on delete NO ACTION, 
-)  on Orders_Group_2
-go
-
-
-
 
 create table TypeItem                                                 --Тип товара
 (
@@ -282,6 +262,23 @@ constraint FK_ID_Storage_location      foreign key (ID_Storage_location)     ref
 go 
 
 
+create table  Data_Orders                                                    --Вспомогательная таблицца, данные о заказе
+(
+Id_Data_Orders         bigint          not null identity (1,1) check(ID_Data_Orders !=0),  -- ID данных о заказе
+ID_Employee            bigint          not null,                                           -- ID Сотрудника или бота
+ID_Orders              bigint          not null,                                           -- ID Заказа
+Id_buyer               bigint          not null,	                                       -- ID Покупателя
+ID_Exemplar            bigint          not null,                                           -- ID Экземпляра
+ID_Transaction         bigint          not null,                                           -- ID Тразанкции
+Date_Data_Orders       datetime        not null  default getdate(),                        -- Дата создания данныйх о заказе
+[Description]          nvarchar(4000)  null
+constraint PK_ID_Data_Orders                primary key (ID_Data_Orders),
+constraint FK_ID_Employee                   foreign key (ID_Employee)       references [dbo].Employees       on delete NO ACTION, 
+constraint FK_ID_Orders                     foreign key (ID_Orders)         references [dbo].Orders          on delete NO ACTION,
+constraint FK_Id_buyer                      foreign key (Id_buyer)          references [dbo].buyer           on delete NO ACTION, 
+constraint FK_ID_Transaction_Data_Orders    foreign key (ID_Transaction)    references [dbo].[Transaction]   on delete NO ACTION, 
+)  on Orders_Group_2
+go
 
 
 commit
