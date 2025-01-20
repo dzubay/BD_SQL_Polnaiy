@@ -202,7 +202,7 @@ AS
                             SET @ChangeDescription = 'Updated: ' + ' Id_Item = "' +  isnull(cast(@OldId_Item as nvarchar(20)),'')+ '" ' + @ChangeDescription + '"'
                              --Удаляем запятую на конце
                             IF LEN(@ChangeDescription) > 0
-                                SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 2);
+                                SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
                             
                             
                             update y
@@ -266,24 +266,25 @@ AS
 							FROM deleted;									 
 
                             SET @ChangeDescription = 'Deleted: '
-							+ 'Id_Item'                +'="'+  ISNULL(CAST(@OldId_Item_2 AS NVARCHAR(20)),'')+ '", '
-							+ 'ID_product_measurement' +'="'+  ISNULL(CAST(@OldID_product_measurement_2 AS NVARCHAR(20)),'')+ '", '
-							+ 'ID_TypeItem'            +'="'+  ISNULL(CAST(@OldID_TypeItem_2 AS NVARCHAR(20)),'')+ '", '
-							+ 'Article_number'         +'="'+  ISNULL(@OldArticle_number_2,'')+ '", '
-							+ 'Name_Item'              +'="'+  ISNULL(@OldName_Item_2,'')+ '", '
-							+ 'Image_Item'             +'="'+  ISNULL(cast(@OldImage_Item_2 as varchar(max)),'')+ '", '
-							+ 'Manufacturer'           +'="'+  ISNULL(@OldManufacturer_2,'')+ '", '
-							+ 'Country'                +'="'+  ISNULL(@OldCountry_2,'')+ '", '
-							+ 'City'                   +'="'+  ISNULL(@OldCity_2,'')+ '", '
-							+ 'Adress'                 +'="'+  ISNULL(@OldAdress_2,'')+ '", '
-							+ 'Mail'                   +'="'+  ISNULL(@OldMail_2,'')+ '", '
-							+ 'Phone'                  +'="'+  ISNULL(@OldPhone_2,'')+ '", '
-							+ 'Logo'                   +'="'+  ISNULL(cast(@OldLogo_2 as varchar(max)),'')+ '", '
-							+ 'Date_Сreated'           +'="'+  ISNULL(CAST(Format(@OldDate_Сreated_2,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'')+ '", '
-							+ 'Quantity'               +'="'+  ISNULL(CAST(@OldQuantity_2 AS NVARCHAR(20)),'')+ '", '
-							+ 'Description'            +'="'+  ISNULL(@OldDescription_2  ,'')+ '"'
+							+ 'Id_Item'                +' = "'+  ISNULL(CAST(@OldId_Item_2 AS NVARCHAR(20)),'')+ '", '
+							+ 'ID_product_measurement' +' = "'+  ISNULL(CAST(@OldID_product_measurement_2 AS NVARCHAR(20)),'')+ '", '
+							+ 'ID_TypeItem'            +' = "'+  ISNULL(CAST(@OldID_TypeItem_2 AS NVARCHAR(20)),'')+ '", '
+							+ 'Article_number'         +' = "'+  ISNULL(@OldArticle_number_2,'')+ '", '
+							+ 'Name_Item'              +' = "'+  ISNULL(@OldName_Item_2,'')+ '", '
+							+ 'Image_Item'             +' = "'+  ISNULL(cast(@OldImage_Item_2 as varchar(max)),'')+ '", '
+							+ 'Manufacturer'           +' = "'+  ISNULL(@OldManufacturer_2,'')+ '", '
+							+ 'Country'                +' = "'+  ISNULL(@OldCountry_2,'')+ '", '
+							+ 'City'                   +' = "'+  ISNULL(@OldCity_2,'')+ '", '
+							+ 'Adress'                 +' = "'+  ISNULL(@OldAdress_2,'')+ '", '
+							+ 'Mail'                   +' = "'+  ISNULL(@OldMail_2,'')+ '", '
+							+ 'Phone'                  +' = "'+  ISNULL(@OldPhone_2,'')+ '", '
+							+ 'Logo'                   +' = "'+  ISNULL(cast(@OldLogo_2 as varchar(max)),'')+ '", '
+							+ 'Date_Сreated'           +' = "'+  ISNULL(CAST(Format(@OldDate_Сreated_2,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'')+ '", '
+							+ 'Quantity'               +' = "'+  ISNULL(CAST(@OldQuantity_2 AS NVARCHAR(20)),'')+ '", '
+							+ 'Description'            +' = "'+  ISNULL(@OldDescription_2  ,'')+ '"'
 
-
+                          IF LEN(@ChangeDescription) > 0
+                                SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
 
                           update u
 						  set ChangeDescription = @ChangeDescription

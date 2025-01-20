@@ -21,7 +21,7 @@ AFTER INSERT, UPDATE, DELETE
 
 AS
     DECLARE @login_name nVARCHAR(128) 
-	DECLARE @ChangeDescription nvarchar(4000);
+	DECLARE @ChangeDescription nvarchar(max);
 
 
     SELECT  @login_name = login_name
@@ -160,10 +160,10 @@ AS
 							   begin
                                 SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Description = Old ->"' + ISNULL(@OldDescription,'') + ' " NEW -> " ' + ISNULL(@NewDescription,'') + '", ';
                                end
-                            SET @ChangeDescription = 'Updated: ' + ' ID_Orders = (' +  isnull(cast(@OldID_Orders as nvarchar(20)),'')+ ') ' + @ChangeDescription
+                            SET @ChangeDescription = 'Updated: ' + ' ID_Orders = "' +  isnull(cast(@OldID_Orders as nvarchar(20)),'')+ '" ' + @ChangeDescription
                              --Удаляем запятую на конце
                             IF LEN(@ChangeDescription) > 0
-                                SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 2);
+                                SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
                             
                             
                             update y
@@ -220,20 +220,21 @@ AS
 							FROM deleted;									 
 
                             SET @ChangeDescription = 'Deleted: '
-							+ 'ID_Orders'      +'="'+  ISNULL(CAST(@OldID_Orders_2     AS NVARCHAR(50)),'')     + '", '
-							+ 'ID_status'      +'="'+  ISNULL(CAST(@OldID_status_2     AS NVARCHAR(50)),'') 	   + '", '
-							+ 'ID_TypeOrders'  +'="'+  ISNULL(CAST(@OldID_TypeOrders_2 AS NVARCHAR(50)),'') 	   + '", '
-							+ 'ID_Currency'    +'="'+  ISNULL(CAST(@OldID_Currency_2   AS NVARCHAR(50)),'') 	   + '", '
-							+ 'Date'           +'="'+  ISNULL(CAST(Format(@OldDate_2,'yyyy-MM-dd HH:mm:ss.fff')          AS NVARCHAR(50)),'') 	   + '", '
-							+ 'Payment_Date'   +'="'+  ISNULL(CAST(Format(@OldPayment_Date_2,'yyyy-MM-dd HH:mm:ss.fff')  AS NVARCHAR(50)),'') 	   + '", '
-							+ 'Amount'         +'="'+  ISNULL(CAST(@OldAmount_2        AS NVARCHAR(50)),'') 	   + '", '
-							+ 'AmountCurr'     +'="'+  ISNULL(CAST(@OldAmountCurr_2    AS NVARCHAR(50)),'') 	   + '", '
-							+ 'AmountNDS'      +'="'+  ISNULL(CAST(@OldAmountNDS_2     AS NVARCHAR(50)),'') 	   + '", '
-							+ 'AmountCurrNDS'  +'="'+  ISNULL(CAST(@OldAmountCurrNDS_2 AS NVARCHAR(50)),'') 	   + '", '
-							+ 'Num'            +'="'+  ISNULL(@OldNum_2          ,'') 	   + '", '
-							+ '[Description]'  +'="'+  ISNULL(@OldDescription_2  ,'') 	   + '", '
+							+ 'ID_Orders'      +' = "'+  ISNULL(CAST(@OldID_Orders_2     AS NVARCHAR(50)),'')     + '", '
+							+ 'ID_status'      +' = "'+  ISNULL(CAST(@OldID_status_2     AS NVARCHAR(50)),'') 	   + '", '
+							+ 'ID_TypeOrders'  +' = "'+  ISNULL(CAST(@OldID_TypeOrders_2 AS NVARCHAR(50)),'') 	   + '", '
+							+ 'ID_Currency'    +' = "'+  ISNULL(CAST(@OldID_Currency_2   AS NVARCHAR(50)),'') 	   + '", '
+							+ 'Date'           +' = "'+  ISNULL(CAST(Format(@OldDate_2,'yyyy-MM-dd HH:mm:ss.fff')          AS NVARCHAR(50)),'') 	   + '", '
+							+ 'Payment_Date'   +' = "'+  ISNULL(CAST(Format(@OldPayment_Date_2,'yyyy-MM-dd HH:mm:ss.fff')  AS NVARCHAR(50)),'') 	   + '", '
+							+ 'Amount'         +' = "'+  ISNULL(CAST(@OldAmount_2        AS NVARCHAR(50)),'') 	   + '", '
+							+ 'AmountCurr'     +' = "'+  ISNULL(CAST(@OldAmountCurr_2    AS NVARCHAR(50)),'') 	   + '", '
+							+ 'AmountNDS'      +' = "'+  ISNULL(CAST(@OldAmountNDS_2     AS NVARCHAR(50)),'') 	   + '", '
+							+ 'AmountCurrNDS'  +' = "'+  ISNULL(CAST(@OldAmountCurrNDS_2 AS NVARCHAR(50)),'') 	   + '", '
+							+ 'Num'            +' = "'+  ISNULL(@OldNum_2          ,'') 	   + '", '
+							+ '[Description]'  +' = "'+  ISNULL(@OldDescription_2  ,'') 	   + '", '
 
-
+                          IF LEN(@ChangeDescription) > 0
+                                SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
 
                           update u
 						  set ChangeDescription = @ChangeDescription
@@ -264,7 +265,7 @@ AS
                     SELECT @ID_Orders_3 = ID_Orders FROM inserted;
 		            
                     SET @ChangeDescription = 'Inserted: '
-                                         + 'ID_Orders="' + CAST(@ID_Orders_3 AS NVARCHAR(20)) + '" ';
+                                         + 'ID_Orders = "' + CAST(@ID_Orders_3 AS NVARCHAR(20)) + '" ';
                     
                     update i
 					set ChangeDescription = @ChangeDescription

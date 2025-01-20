@@ -11,7 +11,7 @@ CREATE TABLE Buyer_Audit
 	Operation              CHAR(1)               null,
     ChangeDescription      nvarchar(4000)        null
     PRIMARY KEY CLUSTERED ( AuditID ) 
-)  on Costomers_Group_2;
+) on Costomers_Group_2;
 
 
 go
@@ -21,7 +21,7 @@ AFTER INSERT, UPDATE, DELETE
 
 AS
     DECLARE @login_name nVARCHAR(128) 
-	DECLARE @ChangeDescription nvarchar(4000);
+	DECLARE @ChangeDescription nvarchar(max);
 
 
     SELECT  @login_name = login_name
@@ -147,10 +147,10 @@ AS
 							   begin
                                 SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Description = Old ->"' + ISNULL(@OldDescription,'') + ' " NEW -> " ' + ISNULL(@NewDescription,'') + '", ';
                                end
-                            SET @ChangeDescription = 'Updated: ' + ' Id_buyer = (' +  isnull(cast(@OldId_buyer as nvarchar(20)),'')+ ') ' + @ChangeDescription
+                            SET @ChangeDescription = 'Updated: ' + ' Id_buyer = "' +  isnull(cast(@OldId_buyer as nvarchar(20)),'')+ '" ' + @ChangeDescription
                              --Удаляем запятую на конце
                             IF LEN(@ChangeDescription) > 0
-                                SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 2);
+                                SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
                             
                             
                             update y
@@ -177,17 +177,17 @@ AS
 							declare @AuditID_2 bigint
 							set @AuditID_2 = (SELECT  SCOPE_IDENTITY())
 
-                            DECLARE @OldId_buyer_2                    bigint           ;
-							DECLARE @OldID_Connection_Buyer_2         bigint       	;
-							DECLARE @OldId_Status_2                   bigint       	;
-							DECLARE @OldName_2                        nvarchar(100)	;
-							DECLARE @OldSurName_2                     nvarchar(100)	;
-							DECLARE @OldLastName_2                    nvarchar(100)	;
-							DECLARE @OldMail_2                        nvarchar(250)	;
-							DECLARE @OldPol_2                         char(1)      	;
-							DECLARE @OldPhone_2                       nvarchar(30) 	;
-							DECLARE @OldDate_Of_Birth_2               datetime     	;
-							DECLARE @OldDescription_2                 nvarchar(4000)	;
+                            DECLARE @OldId_buyer_2                    bigint         ;
+							DECLARE @OldID_Connection_Buyer_2         bigint       	 ;
+							DECLARE @OldId_Status_2                   bigint       	 ;
+							DECLARE @OldName_2                        nvarchar(100)	 ;
+							DECLARE @OldSurName_2                     nvarchar(100)	 ;
+							DECLARE @OldLastName_2                    nvarchar(100)	 ;
+							DECLARE @OldMail_2                        nvarchar(250)	 ;
+							DECLARE @OldPol_2                         char(1)      	 ;
+							DECLARE @OldPhone_2                       nvarchar(30) 	 ;
+							DECLARE @OldDate_Of_Birth_2               datetime     	 ;
+							DECLARE @OldDescription_2                 nvarchar(4000) ;
 
                             SELECT 
 							    @OldId_buyer_2             = Id_buyer           , 
@@ -204,19 +204,20 @@ AS
 							FROM deleted;									 
 
                             SET @ChangeDescription = 'Deleted: '
-							+ 'Id_buyer'            +'="'+  ISNULL(CAST(@OldId_buyer_2     AS NVARCHAR(50)),'')     + '", '
-							+ 'ID_Connection_Buyer' +'="'+  ISNULL(CAST(@OldID_Connection_Buyer_2  AS NVARCHAR(50)),'') + '", '
-							+ 'Id_Status'           +'="'+  ISNULL(CAST(@OldId_Status_2 AS NVARCHAR(50)),'') + '", '
-							+ 'Name'                +'="'+  ISNULL(@OldName_2,'')+ '", '				
-							+ 'SurName'             +'="'+  ISNULL(@OldSurName_2,'')+ '", '
-							+ 'LastName'            +'="'+  ISNULL(@OldLastName_2,'') + '", '
-							+ 'Mail'                +'="'+  ISNULL(@OldMail_2,'')+ '", '
-							+ 'Pol'                 +'="'+  ISNULL(CAST(@OldPol_2 AS NVARCHAR(1)),'') 	   + '", '
-							+ 'Phone'               +'="'+  ISNULL(@OldPhone_2,'')+ '", '
-							+ 'Date_Of_Birth'       +'="'+  ISNULL(CAST(Format(@OldDate_Of_Birth_2,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", '
-							+ 'Description'         +'="'+  ISNULL(@OldDescription_2  ,'') + '", '
+							+ 'Id_buyer'            +' = "'+  ISNULL(CAST(@OldId_buyer_2     AS NVARCHAR(50)),'')     + '", '
+							+ 'ID_Connection_Buyer' +' = "'+  ISNULL(CAST(@OldID_Connection_Buyer_2  AS NVARCHAR(50)),'') + '", '
+							+ 'Id_Status'           +' = "'+  ISNULL(CAST(@OldId_Status_2 AS NVARCHAR(50)),'') + '", '
+							+ 'Name'                +' = "'+  ISNULL(@OldName_2,'')+ '", '				
+							+ 'SurName'             +' = "'+  ISNULL(@OldSurName_2,'')+ '", '
+							+ 'LastName'            +' = "'+  ISNULL(@OldLastName_2,'') + '", '
+							+ 'Mail'                +' = "'+  ISNULL(@OldMail_2,'')+ '", '
+							+ 'Pol'                 +' = "'+  ISNULL(CAST(@OldPol_2 AS NVARCHAR(1)),'') 	   + '", '
+							+ 'Phone'               +' = "'+  ISNULL(@OldPhone_2,'')+ '", '
+							+ 'Date_Of_Birth'       +' = "'+  ISNULL(CAST(Format(@OldDate_Of_Birth_2,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", '
+							+ 'Description'         +' = "'+  ISNULL(@OldDescription_2  ,'') + '", '
 
-
+                          IF LEN(@ChangeDescription) > 0
+						      SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
 
                           update u
 						  set ChangeDescription = @ChangeDescription
@@ -247,7 +248,7 @@ AS
                     SELECT @Id_buyer_3 = Id_buyer FROM inserted;
 		            
                     SET @ChangeDescription = 'Inserted: '
-                                         + 'Id_buyer="' + CAST(@Id_buyer_3 AS NVARCHAR(20)) + '" ';
+                                         + 'Id_buyer = "' + CAST(@Id_buyer_3 AS NVARCHAR(20)) + '" ';
                     
                     update i
 					set ChangeDescription = @ChangeDescription

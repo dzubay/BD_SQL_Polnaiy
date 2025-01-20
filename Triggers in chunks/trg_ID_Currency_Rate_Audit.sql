@@ -107,17 +107,17 @@ AS
 
 							IF @NewJSON_Currency_Rate_Data <> @OldJSON_Currency_Rate_Data
 							   begin
-							    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  JSON_Currency_Rate_Data = Old ->"' +  ISNULL(@OldAmount_Rate,'') + ' " NEW -> " ' + isnull(@NewAmount_Rate,'') + '", ';
+							    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  JSON_Currency_Rate_Data = Old ->"' +  ISNULL(CAST(@OldAmount_Rate AS NVARCHAR(max)),'') + ' " NEW -> " ' + isnull(CAST(@NewAmount_Rate AS NVARCHAR(max)),'') + '", ';
 							   end
 
                             IF @NewDescription <> @OldDescription
 							   begin
                                 SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Description = Old ->"' + ISNULL(@OldDescription,'') + ' " NEW -> " ' + ISNULL(@NewDescription,'') + '", ';
                                end
-                            SET @ChangeDescription = 'Updated: ' + ' ID_Currency_Rate = (' +  isnull(cast(@OldID_Currency_Rate as nvarchar(20)),'')+ ') ' + @ChangeDescription
+                            SET @ChangeDescription = 'Updated: ' + ' ID_Currency_Rate = "' +  isnull(cast(@OldID_Currency_Rate as nvarchar(20)),'')+ '" ' + @ChangeDescription
                              --Удаляем запятую на конце
                             IF LEN(@ChangeDescription) > 0
-                                SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 2);
+                                SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
                             
                             
                             update y
@@ -168,10 +168,11 @@ AS
 							+ 'Amount_Rate'              +'="'+  ISNULL(cast(@OldAmount_Rate_2 as nvarchar(20)),'')+ '", '	
 							+ 'Valid_from'               +'="'+  ISNULL(CAST(Format(@OldValid_from_2,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", '
 							+ 'Valid_to'                 +'="'+  ISNULL(CAST(Format(@OldValid_to_2,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", '
-							+ 'JSON_Currency_Rate_Data'  +'="'+  ISNULL(@OldJSON_Currency_Rate_Data_2,'')+ '", '
+							+ 'JSON_Currency_Rate_Data'  +'="'+  ISNULL(cast(@OldJSON_Currency_Rate_Data_2 as nvarchar(max)),'')+ '", '
 							+ 'Description'              +'="'+  ISNULL(@OldDescription_2  ,'') + '", '
 
-
+                          IF LEN(@ChangeDescription) > 0
+                                SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
 
                           update u
 						  set ChangeDescription = @ChangeDescription
@@ -202,7 +203,7 @@ AS
                     SELECT @ID_Currency_Rate_3 = ID_Currency_Rate FROM inserted;
 		            
                     SET @ChangeDescription = 'Inserted: '
-                                         + 'ID_Currency_Rate="' + CAST(@ID_Currency_Rate_3 AS NVARCHAR(20)) + '" ';
+                                         + 'ID_Currency_Rate = "' + CAST(@ID_Currency_Rate_3 AS NVARCHAR(20)) + '" ';
                     
                     update i
 					set ChangeDescription = @ChangeDescription

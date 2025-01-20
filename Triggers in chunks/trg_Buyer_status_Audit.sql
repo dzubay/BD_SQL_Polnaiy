@@ -10,7 +10,7 @@ CREATE TABLE Buyer_status_Audit
 	Operation              CHAR(1)               null,
     ChangeDescription      nvarchar(4000)        null
     PRIMARY KEY CLUSTERED ( AuditID ) 
-) on Orders_Group_2;
+) on Costomers_Group_2;
 
 
 go
@@ -20,7 +20,7 @@ AFTER INSERT, UPDATE, DELETE
 
 AS
     DECLARE @login_name nVARCHAR(128) 
-	DECLARE @ChangeDescription nvarchar(4000);
+	DECLARE @ChangeDescription nvarchar(max);
 
 
     SELECT  @login_name = login_name
@@ -89,10 +89,11 @@ AS
 							   begin
                                 SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Description = Old ->"' + ISNULL(@OldDescription,'') + ' " NEW -> " ' + ISNULL(@NewDescription,'') + '", ';
                                end
-                            SET @ChangeDescription = 'Updated: ' + ' Id_Status = (' +  isnull(cast(@OldId_Status as nvarchar(20)),'')+ ') ' + @ChangeDescription
+                            
+                            SET @ChangeDescription = 'Updated: ' + ' Id_Status = "' +  isnull(cast(@OldId_Status as nvarchar(20)),'')+ '" ' + @ChangeDescription
                              --Удаляем запятую на конце
                             IF LEN(@ChangeDescription) > 0
-                                SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 2);
+                                SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
                             
                             
                             update y
@@ -132,11 +133,13 @@ AS
 							FROM deleted;									 
 
                             SET @ChangeDescription = 'Deleted: '
-							+ 'Id_Status'               +'="'+  ISNULL(CAST(@OldId_Status_2  AS NVARCHAR(50)),'')+ '", '
-							+ 'Name'                    +'="'+  ISNULL(@OldName_2,'')+ '", '
-							+ 'SysTypeBuyerStatusName'  +'="'+  ISNULL(@OldSysTypeBuyerStatusName_2,'')+ '", '
-							+ '[Description]'           +'="'+  ISNULL(@OldDescription_2  ,'')+ '", '
+							+ 'Id_Status'               +' = "'+  ISNULL(CAST(@OldId_Status_2  AS NVARCHAR(50)),'')+ '", '
+							+ 'Name'                    +' = "'+  ISNULL(@OldName_2,'')+ '", '
+							+ 'SysTypeBuyerStatusName'  +' = "'+  ISNULL(@OldSysTypeBuyerStatusName_2,'')+ '", '
+							+ '[Description]'           +' = "'+  ISNULL(@OldDescription_2,'')+ '", '
 
+                          IF LEN(@ChangeDescription) > 0
+                                SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
 
                           update u
 						  set ChangeDescription = @ChangeDescription
@@ -167,7 +170,7 @@ AS
                     SELECT @Id_Status_3 = Id_Status FROM inserted;
 		            
                     SET @ChangeDescription = 'Inserted: '
-                                         + 'Id_Status="' + CAST(@Id_Status_3 AS NVARCHAR(20)) + '" ';
+                                         + 'Id_Status = "' + CAST(@Id_Status_3 AS NVARCHAR(20)) + '" ';
                     
                     update i
 					set ChangeDescription = @ChangeDescription
@@ -178,7 +181,6 @@ AS
 
 GO
 --rollback
-
 commit
 
 
