@@ -213,7 +213,7 @@ constraint PK_ID_Type_Storage_location      primary key (ID_Type_Storage_locatio
 go  
 
 
-create table Storage_location                                                    --Место хранение
+create table Storage_location                                                    -- Место хранение
 (
 ID_Storage_location        bigint              not null identity(1,1) check(ID_Storage_location != 0),   --ID Место хранение экземпляра
 ID_Type_Storage_location   bigint              not null,                                                 --ID Типа места хранение
@@ -232,31 +232,42 @@ constraint FK_ID_Type_Storage_location     foreign key (ID_Type_Storage_location
 
 go
 
+create table Condition_of_the_item                                                    -- Cостояние экземпляра
+(  
+ID_Condition_of_the_item       bigint not null identity(1,1) check(ID_Condition_of_the_item != 0), -- ID Текущего состояния экземпляра
+Name_Condition_of_the_item     nvarchar(300)       not null,                                       -- Наименование текущего состояния экземпляра
+SysNameConditionTypeOfTheItem  nvarchar(300)       not null,                                       -- Системное наименование текущего состояния экземпляра
+[Description]                  nvarchar(4000)      null                                            -- Комментарий
+constraint PK_ID_Condition_of_the_item  primary key (ID_Condition_of_the_item),
+)  on Products_Group_2
+
+go
 
 
 create table Exemplar                                                                   --Экземпляр
 (
-ID_Exemplar               bigint          not null   identity (1,1)  check(ID_Exemplar != 0),     --ID Экземпляра
-Id_Item                   bigint          not null,                                               --ID Карточки товара
-ID_Currency               bigint          not null,											      --ID Валюта, цены на экземпляр
-ID_Storage_location       bigint          not null,                                               --ID Место хранение экземпляра
-KeySource                 bigint          null,                                                   --Источник ключа с другими БД или сервисами
-Serial_number             nvarchar(500)   not null,                                               --Серийный номер экземпляра товара
-ID_Condition_of_the_item  bigint          not null,                                               --Текущее состояние экземпляра
-Old_Price_no_NDS          float           not null,                                               --Цена без НДС экземпляра
-Refund                    bit             not null,                                               --Был ли возврат данного экземпляра или нет. 0/1
-Date_Refund               datetime        null,                                                   --Дата возврата
-Return_Note               nvarchar(4000)  null,                                                   --Записка(Примечание) о возврате
-Old_Price_NDS             float           not null,                                               --Цена экземпляра с НДС
-JSON_Size_Volume          nvarchar(max)   null      check(isjson(JSON_Size_Volume)>0),            --Данный JSON параметры самого экземпляра
-New_Price_NDS             float           not null,                                               --Цена экземпляра с НДС после начисления коммисии  за  сервис
-New_Price_no_NDS          float           not null,                                               --Цена экземпляра без НДС после начисления коммисии  за  сервис
-Date_Сreated              datetime        not null  default GetDate(),                            --Дата внесения экземпляра в систему
-[Description]             nvarchar(4000)  null                                                    --Комментарий
+ID_Exemplar               bigint          not null   identity (1,1)  check(ID_Exemplar != 0),     -- ID Экземпляра
+Id_Item                   bigint          not null,                                               -- ID Карточки товара
+ID_Currency               bigint          not null,											      -- ID Валюта, цены на экземпляр
+ID_Storage_location       bigint          not null,                                               -- ID Место хранение экземпляра
+KeySource                 bigint          null,                                                   -- Источник ключа с другими БД или сервисами
+Serial_number             nvarchar(500)   not null,                                               -- Серийный номер экземпляра товара
+ID_Condition_of_the_item  bigint          not null,                                               -- ID Текущего состояния экземпляра
+Old_Price_no_NDS          float           not null,                                               -- Цена без НДС экземпляра
+Refund                    bit             not null,                                               -- Был ли возврат данного экземпляра или нет. 0/1
+Date_Refund               datetime        null,                                                   -- Дата возврата
+Return_Note               nvarchar(4000)  null,                                                   -- Записка(Примечание) о возврате
+Old_Price_NDS             float           not null,                                               -- Цена экземпляра с НДС
+JSON_Size_Volume          nvarchar(max)   null      check(isjson(JSON_Size_Volume)>0),            -- Данный JSON параметры самого экземпляра
+New_Price_NDS             float           not null,                                               -- Цена экземпляра с НДС после начисления коммисии  за  сервис
+New_Price_no_NDS          float           not null,                                               -- Цена экземпляра без НДС после начисления коммисии  за  сервис
+Date_Сreated              datetime        not null  default GetDate(),                            -- Дата внесения экземпляра в систему
+[Description]             nvarchar(4000)  null                                                    -- Комментарий
 constraint PK_ID_Exemplar              primary key (ID_Exemplar),
-constraint FK_ID_Item                  foreign key (Id_Item)                 references [dbo].Item                on delete NO ACTION,
-constraint FK_ID_Currency_Exemplar     foreign key (ID_Currency)             references [dbo].Currency            on delete NO ACTION,
-constraint FK_ID_Storage_location      foreign key (ID_Storage_location)     references [dbo].Storage_location    on delete NO ACTION
+constraint FK_ID_Item                  foreign key (Id_Item)                  references [dbo].Item                    on delete NO ACTION,
+constraint FK_ID_Currency_Exemplar     foreign key (ID_Currency)              references [dbo].Currency                on delete NO ACTION,
+constraint FK_ID_Storage_location      foreign key (ID_Storage_location)      references [dbo].Storage_location        on delete NO ACTION,
+constraint FK_ID_Condition_of_the_item foreign key (ID_Condition_of_the_item) references [dbo].Condition_of_the_item   on delete NO ACTION
 )  on Products_Group_2
 
 go 
@@ -276,7 +287,8 @@ constraint PK_ID_Data_Orders                primary key (ID_Data_Orders),
 constraint FK_ID_Employee                   foreign key (ID_Employee)       references [dbo].Employees       on delete NO ACTION, 
 constraint FK_ID_Orders                     foreign key (ID_Orders)         references [dbo].Orders          on delete NO ACTION,
 constraint FK_Id_buyer                      foreign key (Id_buyer)          references [dbo].buyer           on delete NO ACTION, 
-constraint FK_ID_Transaction_Data_Orders    foreign key (ID_Transaction)    references [dbo].[Transaction]   on delete NO ACTION, 
+constraint FK_ID_Transaction_Data_Orders    foreign key (ID_Transaction)    references [dbo].[Transaction]   on delete NO ACTION,
+constraint FK_ID_Exemplar_Data_Orders       foreign key (ID_Exemplar)       references [dbo].Exemplar        on delete NO ACTION, 
 )  on Orders_Group_2
 go
 

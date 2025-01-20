@@ -128,17 +128,17 @@ AS
 
 							IF @NewJSON_Transaction_sender <> @OldJSON_Transaction_sender
 							   begin
-							    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  JSON_Transaction_sender = Old ->"' +  ISNULL(@OldJSON_Transaction_sender,'') + ' " NEW -> " ' + isnull(@NewJSON_Transaction_sender,'') + '", ';
+							    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  JSON_Transaction_sender = Old ->"' +  ISNULL(cast(@OldJSON_Transaction_sender as nvarchar(max)),'') + ' " NEW -> " ' + isnull(cast(@NewJSON_Transaction_sender as nvarchar(max)),'') + '", ';
 							   end
 
                             IF @NewDescription <> @OldDescription
 							   begin
                                 SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Description = Old ->"' + ISNULL(@OldDescription,'') + ' " NEW -> " ' + ISNULL(@NewDescription,'') + '", ';
                                end
-                            SET @ChangeDescription = 'Updated: ' + ' ID_Transaction = (' +  isnull(cast(@OldID_Transaction as nvarchar(20)),'')+ ') ' + @ChangeDescription
+                            SET @ChangeDescription = 'Updated: ' + ' ID_Transaction = "' +  isnull(cast(@OldID_Transaction as nvarchar(20)),'')+ '" ' + @ChangeDescription
                              --Удаляем запятую на конце
                             IF LEN(@ChangeDescription) > 0
-                                SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 2);
+                                SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
                             
                             
                             update y
@@ -190,18 +190,19 @@ AS
 							FROM deleted;									 
 
                             SET @ChangeDescription = 'Deleted: '
-							+ 'ID_Transaction'           +'="'+  ISNULL(CAST(@OldID_Transaction_2 AS NVARCHAR(50)),'')     + '", '
-							+ 'ID_Currency'              +'="'+  ISNULL(CAST(@OldID_Currency_2 AS NVARCHAR(50)),'')     + '", '
-							+ 'ID_Transaction_status'    +'="'+  ISNULL(CAST(@OldID_Transaction_status_2 AS NVARCHAR(50)),'')     + '", '
-							+ 'ID_Currency_Rate'         +'="'+  ISNULL(CAST(@OldID_Currency_Rate_2 AS NVARCHAR(50)),'')     + '", '
-							+ 'Transaction_Date'         +'="'+  ISNULL(CAST(Format(@OldTransaction_Date_2,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", '
-							+ 'KeySource'                +'="'+  ISNULL(cast(@OldKeySource_2 as nvarchar(100)),'') + '", ' 
-							+ 'Transaction_name_sender'  +'="'+  ISNULL(@OldTransaction_name_sender_2,'')+ '", ' 
-							+ 'JSON_Currency_Rate_Data'  +'="'+  ISNULL(@OldJSON_Transaction_sender_2,'')+ '", '
-							+ 'Transaction_Amount      ' +'="'+  ISNULL(cast(@OldTransaction_Amount_2 as nvarchar(20)),'')+ '", '		
-							+ 'Description'              +'="'+  ISNULL(@OldDescription_2  ,'') + '", '
+							+ 'ID_Transaction'           +' = "'+  ISNULL(CAST(@OldID_Transaction_2 AS NVARCHAR(50)),'')     + '", '
+							+ 'ID_Currency'              +' = "'+  ISNULL(CAST(@OldID_Currency_2 AS NVARCHAR(50)),'')     + '", '
+							+ 'ID_Transaction_status'    +' = "'+  ISNULL(CAST(@OldID_Transaction_status_2 AS NVARCHAR(50)),'')     + '", '
+							+ 'ID_Currency_Rate'         +' = "'+  ISNULL(CAST(@OldID_Currency_Rate_2 AS NVARCHAR(50)),'')     + '", '
+							+ 'Transaction_Date'         +' = "'+  ISNULL(CAST(Format(@OldTransaction_Date_2,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", '
+							+ 'KeySource'                +' = "'+  ISNULL(cast(@OldKeySource_2 as nvarchar(100)),'') + '", ' 
+							+ 'Transaction_name_sender'  +' = "'+  ISNULL(@OldTransaction_name_sender_2,'')+ '", ' 
+							+ 'JSON_Currency_Rate_Data'  +' = "'+  ISNULL(@OldJSON_Transaction_sender_2,'')+ '", '
+							+ 'Transaction_Amount      ' +' = "'+  ISNULL(cast(@OldTransaction_Amount_2 as nvarchar(20)),'')+ '", '		
+							+ 'Description'              +' = "'+  ISNULL(@OldDescription_2  ,'') + '", '
 
-
+                          IF LEN(@ChangeDescription) > 0
+                                SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
 
                           update u
 						  set ChangeDescription = @ChangeDescription
@@ -232,7 +233,7 @@ AS
                     SELECT @ID_Transaction_3 = ID_Transaction FROM inserted;
 		            
                     SET @ChangeDescription = 'Inserted: '
-                                         + 'ID_Transaction="' + CAST(@ID_Transaction_3 AS NVARCHAR(20)) + '" ';
+                                         + 'ID_Transaction = "' + CAST(@ID_Transaction_3 AS NVARCHAR(20)) + '" ';
                     
                     update i
 					set ChangeDescription = @ChangeDescription

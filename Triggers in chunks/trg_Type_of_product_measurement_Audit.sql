@@ -87,10 +87,10 @@ AS
 							   begin
                                 SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Description = Old ->"' + ISNULL(@OldDescription,'') + ' " NEW -> " ' + ISNULL(@NewDescription,'') + '", ';
                                end
-                            SET @ChangeDescription = 'Updated: ' + ' ID_product_measurement ="' +  isnull(cast(@OldID_product_measurement as nvarchar(20)),'')+ '" ' + @ChangeDescription + '"'
+                            SET @ChangeDescription = 'Updated: ' + ' ID_product_measurement = "' +  isnull(cast(@OldID_product_measurement as nvarchar(20)),'')+ '" ' + @ChangeDescription + '"'
                              --Удаляем запятую на конце
                             IF LEN(@ChangeDescription) > 0
-                                SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 2);
+                                SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
                             
                             
                             update y
@@ -130,12 +130,13 @@ AS
 							FROM deleted;									 
 
                             SET @ChangeDescription = 'Deleted: '
-							+ 'ID_product_measurement'     +'="'+  ISNULL(CAST(@OldID_product_measurement_2 AS NVARCHAR(20)),'')     + '", '
-							+ 'Product_measurement_Name'   +'="'+  ISNULL(@OldProduct_measurement_Name_2,'')     + '", '
-							+ 'SysProductMeasurementName'  +'="'+  ISNULL(@OldSysProductMeasurementName_2,'')     + '", '
-							+ 'Description'                +'="'+  ISNULL(@OldDescription_2  ,'') + '"'
+							+ 'ID_product_measurement'     +' = "'+  ISNULL(CAST(@OldID_product_measurement_2 AS NVARCHAR(20)),'')+ '", '
+							+ 'Product_measurement_Name'   +' = "'+  ISNULL(@OldProduct_measurement_Name_2,'')+ '", '
+							+ 'SysProductMeasurementName'  +' = "'+  ISNULL(@OldSysProductMeasurementName_2,'')+ '", '
+							+ 'Description'                +' = "'+  ISNULL(@OldDescription_2  ,'')+ '"'
 
-
+                          IF LEN(@ChangeDescription) > 0
+                                SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
 
                           update u
 						  set ChangeDescription = @ChangeDescription
@@ -166,7 +167,7 @@ AS
                     SELECT @ID_product_measurement_3 = ID_product_measurement FROM inserted;
 		            
                     SET @ChangeDescription = 'Inserted: '
-                                         + 'ID_product_measurement="' + CAST(@ID_product_measurement_3 AS NVARCHAR(20)) + '" ';
+                                         + 'ID_product_measurement = "' + CAST(@ID_product_measurement_3 AS NVARCHAR(20)) + '" ';
                     
                     update i
 					set ChangeDescription = @ChangeDescription

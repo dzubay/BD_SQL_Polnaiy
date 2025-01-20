@@ -20,7 +20,7 @@ AFTER INSERT, UPDATE, DELETE
 
 AS
     DECLARE @login_name nVARCHAR(128) 
-	DECLARE @ChangeDescription nvarchar(4000);
+	DECLARE @ChangeDescription nvarchar(max);
 
 
     SELECT  @login_name = login_name
@@ -85,10 +85,10 @@ AS
 							   begin
                                 SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Description = Old ->"' + ISNULL(@OldDescription,'') + ' " NEW -> " ' + ISNULL(@NewDescription,'') + '", ';
                                end
-                            SET @ChangeDescription = 'Updated: ' + ' Id_Status = (' +  isnull(cast(@OldId_Status as nvarchar(20)),'')+ ') ' + @ChangeDescription
+                            SET @ChangeDescription = 'Updated: ' + ' Id_Status = "' +  isnull(cast(@OldId_Status as nvarchar(20)),'')+ '" ' + @ChangeDescription
                              --Удаляем запятую на конце
                             IF LEN(@ChangeDescription) > 0
-                                SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 2);
+                                SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
                             
                             
                             update y
@@ -128,10 +128,13 @@ AS
                             FROM deleted;
 
                             SET @ChangeDescription = 'Deleted: '
-                                                 + 'Id_Status'              +'="'+ CAST(@OldId_Status_2 AS NVARCHAR(20)) + '", '
-                                                 + 'Name'                   +'="'+ ISNULL(@OldName_2, '') + '", '
-                                                 + 'SysTypeOrderStatusName' +'="'+ ISNULL(@OldSysTypeOrderStatusName_2, '') + '", '
-                                                 + 'Description'            +'="'+ ISNULL(@OldDescription_2, '') + '" ';
+                                  + 'Id_Status'              +' = "'+ isnull(CAST(@OldId_Status_2 AS NVARCHAR(20)),'') + '", '
+                                  + 'Name'                   +' = "'+ ISNULL(@OldName_2, '') + '", '
+                                  + 'SysTypeOrderStatusName' +' = "'+ ISNULL(@OldSysTypeOrderStatusName_2, '') + '", '
+                                  + 'Description'            +' = "'+ ISNULL(@OldDescription_2, '') + '" ';
+
+                          IF LEN(@ChangeDescription) > 0
+                                SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
                             
                           update u
 						  set ChangeDescription = @ChangeDescription
@@ -162,7 +165,7 @@ AS
                     SELECT @Id_Status_3 = Id_Status FROM inserted;
 		            
                     SET @ChangeDescription = 'Inserted: '
-                                         + 'Id_Status="' + CAST(@Id_Status_3 AS NVARCHAR(20)) + '" ';
+                                         + 'Id_Status = "' + CAST(@Id_Status_3 AS NVARCHAR(20)) + '" ';
                     
                     update i
 					set ChangeDescription = @ChangeDescription

@@ -20,7 +20,7 @@ AFTER INSERT, UPDATE, DELETE
 
 AS
     DECLARE @login_name nVARCHAR(128) 
-	DECLARE @ChangeDescription nvarchar(4000);
+	DECLARE @ChangeDescription nvarchar(max);
 
 
     SELECT  @login_name = login_name
@@ -105,10 +105,10 @@ AS
 							   begin
                                 SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Description = Old ->"' + ISNULL(@OldDescription,'') + ' " NEW -> " ' + ISNULL(@NewDescription,'') + '", ';
                                end
-                            SET @ChangeDescription = 'Updated: ' + ' ID_Currency = (' +  isnull(cast(@OldID_Currency as nvarchar(20)),'')+ ') ' + @ChangeDescription
+                            SET @ChangeDescription = 'Updated: ' + ' ID_Currency = "' +  isnull(cast(@OldID_Currency as nvarchar(20)),'')+ '" ' + @ChangeDescription
                              --Удаляем запятую на конце
                             IF LEN(@ChangeDescription) > 0
-                                SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 2);
+                                SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
                             
                             
                             update y
@@ -155,13 +155,16 @@ AS
 							FROM deleted;
 
                             SET @ChangeDescription = 'Deleted: '
-                                                 + 'ID_Currency'      +'="'+ CAST(@OldID_Currency_2 AS NVARCHAR(20)) + '", '
-                                                 + 'Full_name_rus'    +'="'+ ISNULL(@OldFull_name_rus_2, '') + '", '
-												 + 'Full_name_eng'    +'="'+ ISNULL(@OldFull_name_eng_2, '') + '", '
-                                                 + 'Abbreviation_rus' +'="'+ ISNULL(@OldAbbreviation_rus_2, '') + '", '
-												 + 'Abbreviation_eng' +'="'+ ISNULL(@OldAbbreviation_eng_2, '') + '", '
-                                                 + 'Description'      +'="'+ ISNULL(@OldDescription_2, '') + '" ';
-                            
+                                    + 'ID_Currency'      +' = "'+ ISNULL(CAST(@OldID_Currency_2 AS NVARCHAR(20)), '') + '", '
+                                    + 'Full_name_rus'    +' = "'+ ISNULL(@OldFull_name_rus_2, '') + '", '
+									+ 'Full_name_eng'    +' = "'+ ISNULL(@OldFull_name_eng_2, '') + '", '
+                                    + 'Abbreviation_rus' +' = "'+ ISNULL(@OldAbbreviation_rus_2, '') + '", '
+									+ 'Abbreviation_eng' +' = "'+ ISNULL(@OldAbbreviation_eng_2, '') + '", '
+                                    + 'Description'      +' = "'+ ISNULL(@OldDescription_2, '') + '" ';
+                          
+						  IF LEN(@ChangeDescription) > 0
+						      SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
+
                           update u
 						  set ChangeDescription = @ChangeDescription
 						  from Currency_Audit u
@@ -191,7 +194,7 @@ AS
                     SELECT @ID_Currency_3 = ID_Currency FROM inserted;
 		            
                     SET @ChangeDescription = 'Inserted: '
-                                         + 'ID_Currency ="' + CAST(@ID_Currency_3 AS NVARCHAR(20)) + '" ';
+                                         + 'ID_Currency = "' + CAST(@ID_Currency_3 AS NVARCHAR(20)) + '" ';
                     
                     update i
 					set ChangeDescription = @ChangeDescription
