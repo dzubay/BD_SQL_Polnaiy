@@ -17,8 +17,7 @@ BEGIN
     /*Проверяем, чтобы начальная дата была меньше конечной даты*/
     IF @StartDate >= @EndDate
     BEGIN
-        PRINT N'@StartDate должна быть меньше @EndDate. Конечная дата не должна равняться @StartDate, 
-                она также не должна быть меньше @StartDate на 1 день. Минимум на два дня.';                                           
+        PRINT N'@StartDate должна быть меньше @EndDate.';                                           
         RETURN;
     END
     
