@@ -295,18 +295,3 @@ go
 
 commit
 --rollback
-
-/*
-create table ItemExemplar                                                    --Экземпляр к товару
-(
-ID_ItemExemplar  bigint          not null   identity (1,1)  check(ID_ItemExemplar != 0),     --ID Данных карточки товара к Экземпляру  
-ID_Exemplar      bigint          not null,                                                   --ID Экземпляра
-Id_Item          bigint          not null                                                    --ID Карточки товра
-constraint PK_ID_Exemplar    primary key (ID_ItemExemplar)
-)
-
-go
-*/
-
-
---rollback
