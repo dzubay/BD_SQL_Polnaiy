@@ -1,8 +1,8 @@
-use  Magaz_DB_2
+п»їuse  Magaz_DB_2
 go
 
 /*
-begin tran  --Если с самого начала создаётся на с ID равным = 1, то можно обновить таблицу с помощью процы, и заполнить таблицу.
+begin tran  --Р•СЃР»Рё СЃ СЃР°РјРѕРіРѕ РЅР°С‡Р°Р»Р° СЃРѕР·РґР°С‘С‚СЃСЏ РЅР° СЃ ID СЂР°РІРЅС‹Рј = 1, С‚Рѕ РјРѕР¶РЅРѕ РѕР±РЅРѕРІРёС‚СЊ С‚Р°Р±Р»РёС†Сѓ СЃ РїРѕРјРѕС‰СЊСЋ РїСЂРѕС†С‹, Рё Р·Р°РїРѕР»РЅРёС‚СЊ С‚Р°Р±Р»РёС†Сѓ.
 if exists 
 	  (	  
 	  	SELECT name,last_value 
@@ -26,11 +26,11 @@ go
 
 
 
---В конце запроса будет ошибка, которая ссылается на ограничения. Ничего страшного, всё заполнится в предедах 100 пользователей
+--Р’ РєРѕРЅС†Рµ Р·Р°РїСЂРѕСЃР° Р±СѓРґРµС‚ РѕС€РёР±РєР°, РєРѕС‚РѕСЂР°СЏ СЃСЃС‹Р»Р°РµС‚СЃСЏ РЅР° РѕРіСЂР°РЅРёС‡РµРЅРёСЏ. РќРёС‡РµРіРѕ СЃС‚СЂР°С€РЅРѕРіРѕ, РІСЃС‘ Р·Р°РїРѕР»РЅРёС‚СЃСЏ РІ РїСЂРµРґРµРґР°С… 100 РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№
 
 begin tran
- --Для вставки изображения
- --declare @3_Image_Employees varbinary(max) = (SELECT * FROM OPENROWSET(BULK N'D:\Программы\БД\Моя база данных\Картинки для БД\q13.jpg', SINGLE_BLOB) AS image)
+ --Р”Р»СЏ РІСЃС‚Р°РІРєРё РёР·РѕР±СЂР°Р¶РµРЅРёСЏ
+ --declare @3_Image_Employees varbinary(max) = (SELECT * FROM OPENROWSET(BULK N'D:\РџСЂРѕРіСЂР°РјРјС‹\Р‘Р”\РњРѕСЏ Р±Р°Р·Р° РґР°РЅРЅС‹С…\РљР°СЂС‚РёРЅРєРё РґР»СЏ Р‘Р”\q13.jpg', SINGLE_BLOB) AS image)
 
 declare @i int = 0
 while @i <= 100
@@ -74,7 +74,7 @@ while @i <= 100
 		 set @ID_Branch            = (select top 1 ID_Branch from The_Subgroup where ID_The_Subgroup = @ID_The_Subgroup order by newid())
 		 set @Id_Post              = (select top 1 Id_Post from Post where ID_The_Subgroup = @ID_The_Subgroup order by newid())		 
 		 set @ID_Connection_String = (select top 1 f.ID_Connection_String from Connection_String as f where not exists  (select top 1 ID_Connection_String from Employees where f.ID_Connection_String = ID_Connection_String ) order by newid())
-		 set @Pol                  = (select case when @gender = 1 then 'М' when @gender = 2 then 'Ж' end)
+		 set @Pol                  = (select case when @gender = 1 then 'Рњ' when @gender = 2 then 'Р–' end)
 		 set @Cell_Phone           = (case when cast(round(rand()*4,0) as nvarchar(3)) = 4  then '(912)'  + REPLACE(STR(cast(round(rand()*999,0) as nvarchar(6)),3,0),' ','0') + '-' + REPLACE(STR(cast(round(rand()*99,0) as nvarchar(2)),2,0),' ','0') + '-' + REPLACE(STR(cast(round(rand()*99,0) as nvarchar(2)),2,0),' ','0')
 				                           when cast(round(rand()*4,0) as nvarchar(3)) = 4  then '(962)'  + REPLACE(STR(cast(round(rand()*999,0) as nvarchar(6)),3,0),' ','0') + '-' + REPLACE(STR(cast(round(rand()*99,0) as nvarchar(2)),2,0),' ','0') + '-' + REPLACE(STR(cast(round(rand()*99,0) as nvarchar(2)),2,0),' ','0')
 				                           when cast(round(rand()*4,0) as nvarchar(3)) = 4  then '(495)'  + REPLACE(STR(cast(round(rand()*999,0) as nvarchar(6)),3,0),' ','0') + '-' + REPLACE(STR(cast(round(rand()*99,0) as nvarchar(2)),2,0),' ','0') + '-' + REPLACE(STR(cast(round(rand()*99,0) as nvarchar(2)),2,0),' ','0')
@@ -111,19 +111,19 @@ while @i <= 100
        set @ID_Status_Employee  = (case  when  @Date_Of_Dismissal is null       then  (select top 1 ID_Status_Employee from Status_Employee where ID_Status_Employee in (1,3,4,6)  order by newid())   
 	                                     when  @Date_Of_Dismissal is not null   then  (select top 1 ID_Status_Employee from Status_Employee where ID_Status_Employee in (2,5) and @Date_Of_Dismissal > @Date_Of_Hiring order by newid()) 
 										  end)
-	   set @Residential_Address = (select CASE    WHEN ROUND(RAND() * 12, 0) = 0  THEN N'ул. Пушкина, д. 1, г. Москва'
-		                                          WHEN ROUND(RAND() * 12, 0) = 1  THEN N'ул. Ленина, д. 2, г. Санкт-Петербург'
-		                                          WHEN ROUND(RAND() * 12, 0) = 2  THEN N'ул. Свердлова, д. 3, г. Новосибирск'
-			                                      WHEN ROUND(RAND() * 12, 0) = 3  THEN N'ул. Кутузова, д. 3,к 2, г. Лысвегас'
-			                                      WHEN ROUND(RAND() * 12, 0) = 4  THEN N'ул. Подольских курсантов, д. 43,стр 2, г. Пятигорск'
-			                                      WHEN ROUND(RAND() * 12, 0) = 5  THEN N'ул. Проспект Богратиона, д. 10,к 3, г. Салекамск'
-			                                      WHEN ROUND(RAND() * 12, 0) = 6  THEN N'ул. Ленина, д. 145, г. Сывтывкар'
-			                                      WHEN ROUND(RAND() * 12, 0) = 7  THEN N'ул. Павла Морозова, д. 43,к 6, г. Москва'
-			                                      WHEN ROUND(RAND() * 12, 0) = 8  THEN N'ул. Лесная, д. 46,к 5, г. Новосибирск'
-			                                      WHEN ROUND(RAND() * 12, 0) = 9  THEN N'ул. Проспект Ермолова, д. 78,стр 2, к 6, г. Москва'
-			                                      WHEN ROUND(RAND() * 12, 0) = 10 THEN N'ул. Бульвар северный, д. 79, г. Владикавказ'
-			                                      WHEN ROUND(RAND() * 12, 0) = 11 THEN N'ул. Чкалова, д.56,к 34, г. Ставрополь'
-		                                      ELSE N'ул. Куйбышева, д. 4, г. Екатеринбург' END)
+	   set @Residential_Address = (select CASE    WHEN ROUND(RAND() * 12, 0) = 0  THEN N'СѓР». РџСѓС€РєРёРЅР°, Рґ. 1, Рі. РњРѕСЃРєРІР°'
+		                                          WHEN ROUND(RAND() * 12, 0) = 1  THEN N'СѓР». Р›РµРЅРёРЅР°, Рґ. 2, Рі. РЎР°РЅРєС‚-РџРµС‚РµСЂР±СѓСЂРі'
+		                                          WHEN ROUND(RAND() * 12, 0) = 2  THEN N'СѓР». РЎРІРµСЂРґР»РѕРІР°, Рґ. 3, Рі. РќРѕРІРѕСЃРёР±РёСЂСЃРє'
+			                                      WHEN ROUND(RAND() * 12, 0) = 3  THEN N'СѓР». РљСѓС‚СѓР·РѕРІР°, Рґ. 3,Рє 2, Рі. Р›С‹СЃРІРµРіР°СЃ'
+			                                      WHEN ROUND(RAND() * 12, 0) = 4  THEN N'СѓР». РџРѕРґРѕР»СЊСЃРєРёС… РєСѓСЂСЃР°РЅС‚РѕРІ, Рґ. 43,СЃС‚СЂ 2, Рі. РџСЏС‚РёРіРѕСЂСЃРє'
+			                                      WHEN ROUND(RAND() * 12, 0) = 5  THEN N'СѓР». РџСЂРѕСЃРїРµРєС‚ Р‘РѕРіСЂР°С‚РёРѕРЅР°, Рґ. 10,Рє 3, Рі. РЎР°Р»РµРєР°РјСЃРє'
+			                                      WHEN ROUND(RAND() * 12, 0) = 6  THEN N'СѓР». Р›РµРЅРёРЅР°, Рґ. 145, Рі. РЎС‹РІС‚С‹РІРєР°СЂ'
+			                                      WHEN ROUND(RAND() * 12, 0) = 7  THEN N'СѓР». РџР°РІР»Р° РњРѕСЂРѕР·РѕРІР°, Рґ. 43,Рє 6, Рі. РњРѕСЃРєРІР°'
+			                                      WHEN ROUND(RAND() * 12, 0) = 8  THEN N'СѓР». Р›РµСЃРЅР°СЏ, Рґ. 46,Рє 5, Рі. РќРѕРІРѕСЃРёР±РёСЂСЃРє'
+			                                      WHEN ROUND(RAND() * 12, 0) = 9  THEN N'СѓР». РџСЂРѕСЃРїРµРєС‚ Р•СЂРјРѕР»РѕРІР°, Рґ. 78,СЃС‚СЂ 2, Рє 6, Рі. РњРѕСЃРєРІР°'
+			                                      WHEN ROUND(RAND() * 12, 0) = 10 THEN N'СѓР». Р‘СѓР»СЊРІР°СЂ СЃРµРІРµСЂРЅС‹Р№, Рґ. 79, Рі. Р’Р»Р°РґРёРєР°РІРєР°Р·'
+			                                      WHEN ROUND(RAND() * 12, 0) = 11 THEN N'СѓР». Р§РєР°Р»РѕРІР°, Рґ.56,Рє 34, Рі. РЎС‚Р°РІСЂРѕРїРѕР»СЊ'
+		                                      ELSE N'СѓР». РљСѓР№Р±С‹С€РµРІР°, Рґ. 4, Рі. Р•РєР°С‚РµСЂРёРЅР±СѓСЂРі' END)
 	   exec InsertEmployee
 		 @ID_Department					     = @ID_Department		
 		,@ID_Group						   	 = @ID_Group
@@ -133,11 +133,11 @@ while @i <= 100
 		,@ID_Post						   	 = @ID_Post
 		,@ID_Status_Employee			   	 = @ID_Status_Employee
 		,@ID_Connection_String			   	 = @ID_Connection_String
-		,@ID_Chief						   	 = null              --нельзя указывать на несуществующего пользователя, и на самого себя
+		,@ID_Chief						   	 = null              --РЅРµР»СЊР·СЏ СѓРєР°Р·С‹РІР°С‚СЊ РЅР° РЅРµСЃСѓС‰РµСЃС‚РІСѓСЋС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ, Рё РЅР° СЃР°РјРѕРіРѕ СЃРµР±СЏ
 		,@Name							   	 = @i_1
 		,@SurName						   	 = @i_2
 		,@LastName						   	 = @i_3
-		,@Date_Of_Hiring				   	 = @Date_Of_Hiring   --Дата приёма на работу
+		,@Date_Of_Hiring				   	 = @Date_Of_Hiring   --Р”Р°С‚Р° РїСЂРёС‘РјР° РЅР° СЂР°Р±РѕС‚Сѓ
 		,@Residential_Address			   	 = @Residential_Address
 		,@Home_Phone					   	 = @Home_Phone
 		,@Cell_Phone					   	 = @Cell_Phone
@@ -145,8 +145,8 @@ while @i <= 100
 		,@Work_Phone					   	 = @Work_Phone
 		,@Mail							   	 = 'Na_mylo_uge_zabil))_podnadoelo.@yandex.ru'
 		,@Pol							   	 = @Pol
-		,@Date_Of_Dismissal				   	 = @Date_Of_Dismissal   --Дата увольнения
-		,@Date_Of_Birth					   	 = @Date_Of_Birth   --Дата рождения
+		,@Date_Of_Dismissal				   	 = @Date_Of_Dismissal   --Р”Р°С‚Р° СѓРІРѕР»СЊРЅРµРЅРёСЏ
+		,@Date_Of_Birth					   	 = @Date_Of_Birth   --Р”Р°С‚Р° СЂРѕР¶РґРµРЅРёСЏ
 		,@Description					   	 = null
 	    set @i = @i + 1
 	end
