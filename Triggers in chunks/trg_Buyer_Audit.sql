@@ -1,4 +1,15 @@
-﻿
+﻿create table Country 
+(
+Id_Country         bigint           not null identity (1,1) check(ID_Country  != 0),
+Name_Country       nvarchar(150)    not null,
+Name_English       nvarchar(150)    not null,
+Cod_Country_Phone  nvarchar(10)     null,
+constraint PK_ID_Country  Primary key  (ID_Country),
+) on Employee_Group_2
+go
+
+
+
 
 begin tran 
 
