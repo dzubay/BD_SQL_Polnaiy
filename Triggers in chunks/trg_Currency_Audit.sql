@@ -9,8 +9,8 @@ CREATE TABLE Currency_Audit
  	ModifiedBy           nVARCHAR(128)         null,
     ModifiedDate         DATETIME              NOT NULL DEFAULT GETDATE(),
 	Operation            CHAR(1)               null,
-    ChangeDescription    nvarchar(4000)        null
-    PRIMARY KEY CLUSTERED ( AuditID ) 
+    ChangeDescription    nvarchar(max)         null
+--    PRIMARY KEY CLUSTERED ( AuditID ) 
 )on Orders_Group_2 ;
 
 go
@@ -19,6 +19,8 @@ CREATE TRIGGER trg_Currency_Audit ON Currency
 AFTER INSERT, UPDATE, DELETE
 
 AS
+    set nocount,xact_abort on;
+
     DECLARE @login_name nVARCHAR(128) 
 	DECLARE @ChangeDescription nvarchar(max);
 
@@ -31,23 +33,41 @@ AS
         BEGIN
             IF EXISTS ( SELECT 0 FROM Inserted )
                 BEGIN
-                    INSERT  INTO dbo.Currency_Audit
-                            ( 
-                               ID_Currency            
-							   ,ModifiedBy             
-                               ,ModifiedDate     
-                               ,Operation                
-                            )
-                            SELECT  
-							        d.ID_Currency
-                                    ,@login_name            
-									,GETDATE()             
-									,'U'               
-                            FROM    Deleted D
+                          declare @t_U_D table 
+						  (
+						  Id_Num         bigint        identity(1,1) not null,
+						  ID_entity      bigint        null,
+						  login_name     nvarchar(128) null,
+						  ModifiedDate   DATETIME      null,
+						  Name_action    char(1)       null
+						  );
+						  
+						  declare @t_U_I table 
+						  (
+						  Id_Num         bigint        identity(1,1) not null,
+						  ID_entity      bigint        null,
+						  login_name     nvarchar(128) null,
+						  ModifiedDate   DATETIME      null,
+						  Name_action    char(1)       null
+						  );
+                          
+						  insert into @t_U_D (ID_entity,login_name,ModifiedDate,Name_action)
+						  SELECT d.ID_Currency,@login_name,GETDATE(),'U'  
+						  FROM  Deleted D
+						  
+						  insert into @t_U_I (ID_entity,login_name,ModifiedDate,Name_action)
+						  SELECT d.ID_Currency,@login_name,GETDATE(),'U'  
+						  FROM  inserted D
 
-				            declare @AuditID bigint
-				            set @AuditID = (SELECT  SCOPE_IDENTITY())
-                                              
+						  DECLARE @ID_entity_D    bigint       ;
+						  DECLARE @login_name_2_D nvarchar(128);
+						  DECLARE @ModifiedDate_D DATETIME     ;
+						  DECLARE @Name_action_D  char(1)      ;
+						  
+						  DECLARE @ID_entity_I    bigint       ;
+						  DECLARE @login_name_2_I nvarchar(128);
+						  DECLARE @ModifiedDate_I DATETIME     ;
+						  DECLARE @Name_action_I  char(1)      ;
 	                       
 						   DECLARE @OldID_Currency         BIGINT
 						   DECLARE @OldFull_name_rus       NVARCHAR(300);
@@ -64,23 +84,42 @@ AS
 						   DECLARE @NewDescription         NVARCHAR(4000);
 
 
-							SELECT 
-							@NewID_Currency        = ID_Currency,     
-							@NewFull_name_rus      = Full_name_rus,   
-							@NewFull_name_eng      = Full_name_eng,   
-							@NewAbbreviation_rus   = Abbreviation_rus,
-							@NewAbbreviation_eng   = Abbreviation_eng,
-							@NewDescription        = [Description]     
-							FROM inserted;
+						   declare cr cursor local fast_forward for
+						   
+						   select 
+						   ID_entity    
+						   ,login_name   
+						   ,ModifiedDate 
+						   ,Name_action  
+						   from @t_U_D 
+						   open cr       
+						   
+						   fetch next from cr into 
+						   @ID_entity_D,@login_name_2_D,@ModifiedDate_D,@Name_action_D 
+						   while @@FETCH_STATUS  = 0
+						       begin
+						         begin try
 
-							SELECT 
-							@OldID_Currency        = ID_Currency,     
-							@OldFull_name_rus      = Full_name_rus,   
-							@OldFull_name_eng      = Full_name_eng,   
-							@OldAbbreviation_rus   = Abbreviation_rus,
-							@OldAbbreviation_eng   = Abbreviation_eng,
-							@OldDescription        = [Description]    
-                            FROM deleted;
+								 SELECT 
+								     @OldID_Currency       =   ID_Currency     ,
+									 @OldFull_name_rus     =   Full_name_rus   ,
+									 @OldFull_name_eng     =   Full_name_eng   ,
+									 @OldAbbreviation_rus  =   Abbreviation_rus,
+									 @OldAbbreviation_eng  =   Abbreviation_eng,
+									 @OldDescription       =   [Description]     
+								 FROM   Deleted D 
+								 where @ID_entity_D = D.ID_Currency 
+
+								 SELECT 
+								     @NewID_Currency       =   ID_Currency     ,
+								 	 @NewFull_name_rus     =   Full_name_rus   ,
+								 	 @NewFull_name_eng     =   Full_name_eng   ,
+								 	 @NewAbbreviation_rus  =   Abbreviation_rus,
+								 	 @NewAbbreviation_eng  =   Abbreviation_eng,
+								 	 @NewDescription       =   [Description]    
+								 FROM   Deleted D 
+								 where @ID_entity_D = D.ID_Currency 
+
 
                          
                             IF @NewFull_name_rus <> @OldFull_name_rus 
@@ -110,96 +149,199 @@ AS
                             IF LEN(@ChangeDescription) > 0
                                 SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
                             
+                            INSERT  INTO dbo.Currency_Audit
+                                     ( 
+                                      ID_Currency,ModifiedBy,ModifiedDate,Operation,ChangeDescription                
+                                     )
+                                      SELECT  @ID_entity_D,@login_name_2_D,@ModifiedDate_D,@Name_action_D,@ChangeDescription;              
+                                     
+							set @ChangeDescription = null 
                             
-                            update y
-							set ChangeDescription = @ChangeDescription
-							from Currency_Audit y
-							where @AuditID  = AuditID    					
+							end try
+								  begin catch
+								     if xact_state() in (1, -1)
+									    begin
+									       ROLLBACK TRAN
+									    end
+								     SELECT 
+									   ERROR_NUMBER() AS ErrorNumber_U_D,
+									   ERROR_SEVERITY() AS ErrorSeverity_U_D,
+									   ERROR_STATE() as ErrorState_U_D,
+									   ERROR_PROCEDURE() as ErrorProcedure_U_D,
+									   ERROR_LINE() as ErrorLine_U_D,
+									   ERROR_MESSAGE() as ErrorMessage_U_D;
+								  end catch;
+							     fetch next from cr into 
+								 @ID_entity_D,@login_name_2_D,@ModifiedDate_D,@Name_action_D
+						         end
+						   close cr
+                           deallocate cr
+   					
                 END
             ELSE
                 BEGIN
-                    INSERT  INTO dbo.Currency_Audit
-                            ( 
-                               ID_Currency       
-							   ,ModifiedBy       
-							   ,ModifiedDate     
-                               ,Operation                                                   
-                            )
-                            SELECT  
-                                    d.ID_Currency
-									,@login_name 
-									,GETDATE()   
-                                    ,'D'                                                                     
-                            FROM    Deleted D
+                            declare @t_D_D table 
+							(
+							Id_Num         bigint        identity(1,1) not null,
+							ID_entity      bigint        null,
+							login_name     nvarchar(128) null,
+							ModifiedDate   DATETIME      null,
+							Name_action    char(1)       null
+							);
 
-							declare @AuditID_2 bigint
-							set @AuditID_2 = (SELECT  SCOPE_IDENTITY())
+							insert into @t_D_D (ID_entity,login_name,ModifiedDate,Name_action)
+							SELECT d.ID_Currency,@login_name,GETDATE(),'D'  
+							FROM  Deleted D
 
-							DECLARE @OldID_Currency_2         BIGINT
-							DECLARE @OldFull_name_rus_2       NVARCHAR(300);
-							DECLARE @OldFull_name_eng_2       NVARCHAR(300);
-							DECLARE @OldAbbreviation_rus_2    NVARCHAR(15);
-							DECLARE @OldAbbreviation_eng_2    NVARCHAR(15);
+
+
+							DECLARE @ID_entity_D_2    bigint       ;
+							DECLARE @login_name_2_D_2 nvarchar(128);
+							DECLARE @ModifiedDate_D_2 DATETIME     ;
+							DECLARE @Name_action_D_2  char(1)      ;
+
+							DECLARE @OldID_Currency_2         BIGINT        ;
+							DECLARE @OldFull_name_rus_2       NVARCHAR(300) ;
+							DECLARE @OldFull_name_eng_2       NVARCHAR(300) ;
+							DECLARE @OldAbbreviation_rus_2    NVARCHAR(15)  ;
+							DECLARE @OldAbbreviation_eng_2    NVARCHAR(15)  ;
 							DECLARE @OldDescription_2         NVARCHAR(4000);
                             
-                            
+                            declare cr_2 cursor local fast_forward for
+						   
+						   select 
+						   ID_entity   
+						   ,login_name  
+						   ,ModifiedDate
+						   ,Name_action 
+						   from @t_D_D 
+                           open cr_2   
                 
-                            
-                            SELECT 
-							@OldID_Currency_2        = ID_Currency,     
-							@OldFull_name_rus_2      = Full_name_rus,   
-                            @OldFull_name_eng_2      = Full_name_eng,   
-                            @OldAbbreviation_rus_2   = Abbreviation_rus,
-                            @OldAbbreviation_eng_2   = Abbreviation_eng,
-                            @OldDescription_2        = [Description]   
-							FROM deleted;
+                           fetch next from cr_2 into 
+						   @ID_entity_D_2,@login_name_2_D_2,@ModifiedDate_D_2,@Name_action_D_2 
+						   while @@FETCH_STATUS  = 0
+						       begin
+							      begin try
 
-                            SET @ChangeDescription = 'Deleted: '
-                                    + 'ID_Currency'      +' = "'+ ISNULL(CAST(@OldID_Currency_2 AS NVARCHAR(20)), '') + '", '
-                                    + 'Full_name_rus'    +' = "'+ ISNULL(@OldFull_name_rus_2, '') + '", '
-									+ 'Full_name_eng'    +' = "'+ ISNULL(@OldFull_name_eng_2, '') + '", '
-                                    + 'Abbreviation_rus' +' = "'+ ISNULL(@OldAbbreviation_rus_2, '') + '", '
-									+ 'Abbreviation_eng' +' = "'+ ISNULL(@OldAbbreviation_eng_2, '') + '", '
-                                    + 'Description'      +' = "'+ ISNULL(@OldDescription_2, '') + '" ';
-                          
-						  IF LEN(@ChangeDescription) > 0
-						      SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
+                                         SELECT 
+							                 @OldID_Currency_2        = D.ID_Currency,     
+							                 @OldFull_name_rus_2      = D.Full_name_rus,   
+                                             @OldFull_name_eng_2      = D.Full_name_eng,   
+                                             @OldAbbreviation_rus_2   = D.Abbreviation_rus,
+                                             @OldAbbreviation_eng_2   = D.Abbreviation_eng,
+                                             @OldDescription_2        = D.[Description]   
+							             FROM deleted D
+										 where @ID_entity_D_2 = D.ID_Currency
 
-                          update u
-						  set ChangeDescription = @ChangeDescription
-						  from Currency_Audit u
-						  where @AuditID_2  = AuditID                          
+
+                                        SET @ChangeDescription = 'Deleted: '
+                                                + 'ID_Currency'      +' = "'+ ISNULL(CAST(@OldID_Currency_2 AS NVARCHAR(20)), '') + '", '
+                                                + 'Full_name_rus'    +' = "'+ ISNULL(@OldFull_name_rus_2, '') + '", '
+							            		+ 'Full_name_eng'    +' = "'+ ISNULL(@OldFull_name_eng_2, '') + '", '
+                                                + 'Abbreviation_rus' +' = "'+ ISNULL(@OldAbbreviation_rus_2, '') + '", '
+							            		+ 'Abbreviation_eng' +' = "'+ ISNULL(@OldAbbreviation_eng_2, '') + '", '
+                                                + 'Description'      +' = "'+ ISNULL(@OldDescription_2, '') + '" ';
+
+                                        IF LEN(@ChangeDescription) > 0
+						                       SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
+
+                                       INSERT  INTO dbo.Currency_Audit
+									    ( 
+									     ID_Currency,ModifiedBy,ModifiedDate,Operation,ChangeDescription                
+									    )
+									     SELECT  @ID_entity_D_2,@login_name_2_D_2,@ModifiedDate_D_2,@Name_action_D_2,@ChangeDescription;      
+									    
+									   set @ChangeDescription = null
+									end try
+								  begin catch
+								     if xact_state() in (1, -1)
+									    begin
+									       ROLLBACK TRAN
+									    end
+								     SELECT 
+									   ERROR_NUMBER() AS ErrorNumber_D_D,
+									   ERROR_SEVERITY() AS ErrorSeverity_D_D,
+									   ERROR_STATE() as ErrorState_D_D,
+									   ERROR_PROCEDURE() as ErrorProcedure_D_D,
+									   ERROR_LINE() as ErrorLine_D_D,
+									   ERROR_MESSAGE() as ErrorMessage_D_D;
+								  end catch;
+							     fetch next from cr_2 into 
+								 @ID_entity_D_2,@login_name_2_D_2,@ModifiedDate_D_2,@Name_action_D_2
+						         end
+						   close cr_2
+                           deallocate cr_2
+									   
                 END  
         END
     ELSE
         BEGIN
-            INSERT  INTO dbo.Currency_Audit
-                    ( 
-                          ID_Currency  
-						  ,ModifiedBy  
-						  ,ModifiedDate
-						  ,Operation				  
-                            )
-                            SELECT   
-									I.ID_Currency
-									,@login_name 
-									,GETDATE()   
-                                    ,'I'                                                                                         
-                    FROM    Inserted I
+		            DECLARE @ID_entity_I_2    bigint       ;
+					DECLARE @login_name_2_I_2 nvarchar(128);
+					DECLARE @ModifiedDate_I_2 DATETIME     ;
+					DECLARE @Name_action_I_2  char(1)      ;
 
-					declare @AuditID_3 bigint
-					set @AuditID_3 = (SELECT  SCOPE_IDENTITY())
 
-					DECLARE @ID_Currency_3 BIGINT;
-                    SELECT @ID_Currency_3 = ID_Currency FROM inserted;
+					declare @t_I_I table 
+					(
+					Id_Num         bigint        identity(1,1) not null,
+					ID_entity      bigint        null,
+					login_name     nvarchar(128) null,
+					ModifiedDate   DATETIME      null,
+					Name_action    char(1)       null
+					);
+
+					insert into @t_I_I (ID_entity,login_name,ModifiedDate,Name_action)
+					SELECT I.ID_Currency,@login_name,GETDATE(),'I'  
+					FROM  inserted I
+
+					declare cr_3 cursor local fast_forward for
+						   
+						   select 
+						   ID_entity   
+						   ,login_name  
+						   ,ModifiedDate
+						   ,Name_action 
+						   from @t_I_I 
+                           open cr_3       
+						   
+						   fetch next from cr_3 into 
+						   @ID_entity_I_2,@login_name_2_I_2,@ModifiedDate_I_2,@Name_action_I_2 
+						   while @@FETCH_STATUS  = 0
+						       begin
+							      begin try
+
 		            
-                    SET @ChangeDescription = 'Inserted: '
-                                         + 'ID_Currency = "' + CAST(@ID_Currency_3 AS NVARCHAR(20)) + '" ';
-                    
-                    update i
-					set ChangeDescription = @ChangeDescription
-					from Currency_Audit i
-					where @AuditID_3  = AuditID                
+                                   SET @ChangeDescription = 'Inserted: '
+                                              + 'ID_Currency = "' + CAST(@ID_entity_I_2 AS NVARCHAR(20)) + '" ';
+                                   
+								   INSERT  INTO dbo.Currency_Audit
+                                     ( 
+                                      ID_Currency,ModifiedBy,ModifiedDate,Operation,ChangeDescription                
+                                     )
+                                      SELECT  @ID_entity_I_2,@login_name_2_I_2,@ModifiedDate_I_2,@Name_action_I_2,@ChangeDescription;              
+                                     
+									set @ChangeDescription = null
+
+								 end try
+								  begin catch
+								     if xact_state() in (1, -1)
+									    begin
+									       ROLLBACK TRAN
+									    end
+								     SELECT 
+									   ERROR_NUMBER() AS ErrorNumber_I_I,
+									   ERROR_SEVERITY() AS ErrorSeverity_I_I,
+									   ERROR_STATE() as ErrorState_I_I,
+									   ERROR_PROCEDURE() as ErrorProcedure_I_I,
+									   ERROR_LINE() as ErrorLine_I_I,
+									   ERROR_MESSAGE() as ErrorMessage_I_I;
+								  end catch;
+							     fetch next from cr_3 into 
+								 @ID_entity_I_2,@login_name_2_I_2,@ModifiedDate_I_2,@Name_action_I_2
+						         end
+						   close cr_3
+                           deallocate cr_3             
 
                     END
 

@@ -8,8 +8,8 @@ CREATE TABLE Exemplar_Audit
  	ModifiedBy                nVARCHAR(128)         null,
     ModifiedDate              DATETIME              NOT NULL DEFAULT GETDATE(),
 	Operation                 CHAR(1)               null,
-    ChangeDescription         nvarchar(4000)        null
-    PRIMARY KEY CLUSTERED ( AuditID ) 
+    ChangeDescription         nvarchar(max)         null
+--    PRIMARY KEY CLUSTERED ( AuditID ) 
 ) on Products_Group_2;
 
 
@@ -18,7 +18,9 @@ go
 CREATE TRIGGER trg_Exemplar_Audit ON Exemplar
 AFTER INSERT, UPDATE, DELETE
 
-AS
+AS  
+    set nocount,xact_abort on;
+
     DECLARE @login_name nVARCHAR(128) 
 	DECLARE @ChangeDescription nvarchar(max);
 
@@ -31,22 +33,41 @@ AS
         BEGIN
             IF EXISTS ( SELECT 0 FROM Inserted )
                 BEGIN
-                    INSERT  INTO dbo.Exemplar_Audit
-                            ( 
-                               ID_Exemplar            
-							   ,ModifiedBy             
-                               ,ModifiedDate     
-                               ,Operation                
-                            )
-                            SELECT  
-							        d.ID_Exemplar
-                                    ,@login_name            
-									,GETDATE()             
-									,'U'               
-                            FROM    Deleted D
+                         	declare @t_U_D table 
+							(
+							Id_Num         bigint        identity(1,1) not null,
+							ID_entity      bigint        null,
+							login_name     nvarchar(128) null,
+							ModifiedDate   DATETIME      null,
+							Name_action    char(1)       null
+							);
 
-				            declare @AuditID bigint
-				            set @AuditID = (SELECT  SCOPE_IDENTITY())
+							declare @t_U_I table 
+							(
+							Id_Num         bigint        identity(1,1) not null,
+							ID_entity      bigint        null,
+							login_name     nvarchar(128) null,
+							ModifiedDate   DATETIME      null,
+							Name_action    char(1)       null
+							);
+
+							insert into @t_U_D (ID_entity,login_name,ModifiedDate,Name_action)
+							SELECT d.ID_Exemplar,@login_name,GETDATE(),'U'  
+							FROM  Deleted D
+
+							insert into @t_U_I (ID_entity,login_name,ModifiedDate,Name_action)
+							SELECT d.ID_Exemplar,@login_name,GETDATE(),'U'  
+							FROM  inserted D
+ 
+							DECLARE @ID_entity_D    bigint       ;
+							DECLARE @login_name_2_D nvarchar(128);
+							DECLARE @ModifiedDate_D DATETIME     ;
+							DECLARE @Name_action_D  char(1)      ;
+ 
+							DECLARE @ID_entity_I    bigint       ;
+							DECLARE @login_name_2_I nvarchar(128);
+							DECLARE @ModifiedDate_I DATETIME     ;
+							DECLARE @Name_action_I  char(1)      ;
                            
                            DECLARE @OldID_Exemplar                bigint         ;
 						   DECLARE @OldId_Item                    bigint         ;
@@ -84,154 +105,197 @@ AS
 						   DECLARE @NewDate_Сreated               datetime       ;
 						   DECLARE @NewDescription                nvarchar(4000) ;
 
-							SELECT 
-							    @NewID_Exemplar             	= ID_Exemplar             , 
-								@NewId_Item                 	= Id_Item                 ,
-								@NewID_Currency             	= ID_Currency             ,
-								@NewID_Storage_location     	= ID_Storage_location     ,
-								@NewKeySource               	= KeySource               ,
-								@NewSerial_number           	= Serial_number           ,
-								@NewID_Condition_of_the_item	= ID_Condition_of_the_item,
-								@NewOld_Price_no_NDS        	= Old_Price_no_NDS        ,
-								@NewRefund                  	= Refund                  ,
-								@NewDate_Refund             	= Date_Refund             ,
-								@NewReturn_Note             	= Return_Note             ,
-								@NewOld_Price_NDS           	= Old_Price_NDS           ,
-								@NewJSON_Size_Volume        	= JSON_Size_Volume        ,
-								@NewNew_Price_NDS           	= New_Price_NDS           ,
-								@NewNew_Price_no_NDS        	= New_Price_no_NDS        ,
-								@NewDate_Сreated                = Date_Сreated            ,
-								@NewDescription                 = [Description]        	  
-							FROM inserted;									 
+						   declare cr cursor local fast_forward for
+						   
+						   select 
+						   ID_entity    
+						   ,login_name   
+						   ,ModifiedDate 
+						   ,Name_action  
+						   from @t_U_D 
+                           open cr       
+						   
+						   fetch next from cr into 
+						   @ID_entity_D,@login_name_2_D,@ModifiedDate_D,@Name_action_D 
+						   while @@FETCH_STATUS  = 0
+						       begin
+							      begin try
+								        SELECT 
+							                @OldID_Exemplar             	= D.ID_Exemplar             ,
+							            	@OldId_Item                 	= D.Id_Item                 ,
+							            	@OldID_Currency             	= D.ID_Currency             ,
+							            	@OldID_Storage_location     	= D.ID_Storage_location     ,
+							            	@OldKeySource               	= D.KeySource               ,
+							            	@OldSerial_number           	= D.Serial_number           ,
+							            	@OldID_Condition_of_the_item	= D.ID_Condition_of_the_item,
+							            	@OldOld_Price_no_NDS        	= D.Old_Price_no_NDS        ,
+							            	@OldRefund                  	= D.Refund                  ,
+							            	@OldDate_Refund             	= D.Date_Refund             ,
+							            	@OldReturn_Note             	= D.Return_Note             ,
+							            	@OldOld_Price_NDS           	= D.Old_Price_NDS           ,
+							            	@OldJSON_Size_Volume        	= D.JSON_Size_Volume        ,
+							            	@OldNew_Price_NDS           	= D.New_Price_NDS           ,
+							            	@OldNew_Price_no_NDS        	= D.New_Price_no_NDS        ,
+							            	@OldDate_Сreated                = D.Date_Сreated            , 
+							            	@OldDescription                 = D.[Description]        	  					
+							            FROM Deleted D																		 
+										where @ID_entity_D = D.ID_Exemplar;
+								       
+							            SELECT 
+							                @NewID_Exemplar             	= I.ID_Exemplar             , 
+							            	@NewId_Item                 	= I.Id_Item                 ,
+							            	@NewID_Currency             	= I.ID_Currency             ,
+							            	@NewID_Storage_location     	= I.ID_Storage_location     ,
+							            	@NewKeySource               	= I.KeySource               ,
+							            	@NewSerial_number           	= I.Serial_number           ,
+							            	@NewID_Condition_of_the_item	= I.ID_Condition_of_the_item,
+							            	@NewOld_Price_no_NDS        	= I.Old_Price_no_NDS        ,
+							            	@NewRefund                  	= I.Refund                  ,
+							            	@NewDate_Refund             	= I.Date_Refund             ,
+							            	@NewReturn_Note             	= I.Return_Note             ,
+							            	@NewOld_Price_NDS           	= I.Old_Price_NDS           ,
+							            	@NewJSON_Size_Volume        	= I.JSON_Size_Volume        ,
+							            	@NewNew_Price_NDS           	= I.New_Price_NDS           ,
+							            	@NewNew_Price_no_NDS        	= I.New_Price_no_NDS        ,
+							            	@NewDate_Сreated                = I.Date_Сreated            ,
+							            	@NewDescription                 = I.[Description]        	  
+							            FROM inserted I
+										where @ID_entity_D = I.ID_Exemplar;	
 
-							SELECT 
-							    @OldID_Exemplar             	= ID_Exemplar             ,
-								@OldId_Item                 	= Id_Item                 ,
-								@OldID_Currency             	= ID_Currency             ,
-								@OldID_Storage_location     	= ID_Storage_location     ,
-								@OldKeySource               	= KeySource               ,
-								@OldSerial_number           	= Serial_number           ,
-								@OldID_Condition_of_the_item	= ID_Condition_of_the_item,
-								@OldOld_Price_no_NDS        	= Old_Price_no_NDS        ,
-								@OldRefund                  	= Refund                  ,
-								@OldDate_Refund             	= Date_Refund             ,
-								@OldReturn_Note             	= Return_Note             ,
-								@OldOld_Price_NDS           	= Old_Price_NDS           ,
-								@OldJSON_Size_Volume        	= JSON_Size_Volume        ,
-								@OldNew_Price_NDS           	= New_Price_NDS           ,
-								@OldNew_Price_no_NDS        	= New_Price_no_NDS        ,
-								@OldDate_Сreated                = Date_Сreated            , 
-								@OldDescription                 = [Description]        	  					
-							FROM Deleted;																		 
 
-                            IF @NewId_Item  <> @OldId_Item  
-							   begin
-                                SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Id_Item  = Old ->"' +  ISNULL(CAST(@OldId_Item  AS NVARCHAR(20)),'') + ' " NEW -> "' + isnull(CAST(@NewId_Item  AS NVARCHAR(20)),'') + '", ';
-							   end
+                                          IF @NewId_Item  <> @OldId_Item  
+							                 begin
+                                              SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Id_Item  = Old ->"' +  ISNULL(CAST(@OldId_Item  AS NVARCHAR(20)),'') + ' " NEW -> "' + isnull(CAST(@NewId_Item  AS NVARCHAR(20)),'') + '", ';
+							                 end
+                                          
+							              IF @NewID_Currency <> @OldID_Currency
+							                 begin
+							                  SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_Currency = Old ->"' +  ISNULL(CAST(@OldID_Currency AS NVARCHAR(20)),'') + ' " NEW -> "' + isnull(CAST(@NewID_Currency AS NVARCHAR(20)),'') + '", ';
+							                 end
+							              
+							              IF @NewID_Storage_location <> @OldID_Storage_location
+							                 begin
+							                  SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_Storage_location = Old ->"' +  ISNULL(CAST(@OldID_Storage_location AS NVARCHAR(20)),'') + ' " NEW -> "' + isnull(CAST(@NewID_Storage_location AS NVARCHAR(20)),'') + '", ';
+							                 end                  
+							              
+							              IF @NewKeySource <> @OldKeySource
+							                 begin
+							                  SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  KeySource = Old ->"' +  ISNULL(CAST(@OldKeySource AS NVARCHAR(20)),'') + ' " NEW -> "' + isnull(CAST(@NewKeySource AS NVARCHAR(20)),'') + '", ';
+							                 end
+							              
+							              IF @NewSerial_number <> @OldSerial_number
+							                 begin
+							                  SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Serial_number = Old ->"' +  ISNULL(@OldSerial_number,'') + ' " NEW -> "' + isnull(@NewSerial_number,'') + '", ';
+							                 end
+							              
+							              IF @NewID_Condition_of_the_item <> @OldID_Condition_of_the_item
+							                 begin
+							                  SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_Condition_of_the_item = Old ->"' +  ISNULL(CAST(@OldID_Condition_of_the_item AS NVARCHAR(20)),'') + ' " NEW -> "' + isnull(CAST(@NewID_Condition_of_the_item AS NVARCHAR(20)),'') + '", ';
+							                 end
+							              
+							              IF @NewOld_Price_no_NDS <> @OldOld_Price_no_NDS
+							                 begin
+							                  SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Old_Price_no_NDS = Old ->"' +  ISNULL(CAST(@OldOld_Price_no_NDS AS NVARCHAR(50)),'') + ' " NEW -> "' + isnull(CAST(@NewOld_Price_no_NDS AS NVARCHAR(50)),'') + '", ';
+							                 end
+							              
+                                          IF @NewRefund <> @OldRefund
+							                 begin
+							                  SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Refund = Old ->"' +  ISNULL(CAST(@OldRefund AS NVARCHAR(1)),'') + ' " NEW -> "' + isnull(CAST(@NewRefund AS NVARCHAR(1)),'') + '", ';
+							                 end
+							              
+                                          IF @NewDate_Refund <> @OldDate_Refund
+							                 begin
+							                  SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Date_Refund = Old ->"' +  ISNULL(CAST(Format(@OldDate_Refund,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(Format(@NewDate_Refund,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", ';
+							                 end
+                                          -----
+							              IF @NewReturn_Note <> @OldReturn_Note
+							                 begin
+							                  SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Return_Note = Old ->"' +  ISNULL(@OldReturn_Note,'') + ' " NEW -> "' + isnull(@NewReturn_Note,'') + '", ';
+							                 end
+                                          
+							              IF @NewOld_Price_NDS <> @OldOld_Price_NDS
+							                 begin
+							                  SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Old_Price_NDS = Old ->"' +  ISNULL(CAST(@OldOld_Price_NDS AS NVARCHAR(50)),'') + ' " NEW -> "' + isnull(CAST(@NewOld_Price_NDS AS NVARCHAR(50)),'') + '", ';
+							                 end
+							              
+							              IF @NewJSON_Size_Volume <> @OldJSON_Size_Volume
+							                 begin
+							                  SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  JSON_Size_Volume = Old ->"' +  ISNULL(CAST(@OldJSON_Size_Volume AS NVARCHAR(max)),'') + ' " NEW -> "' + isnull(CAST(@NewJSON_Size_Volume AS NVARCHAR(max)),'') + '", ';
+							                 end
+                                          
+							              IF @NewNew_Price_NDS <> @OldNew_Price_NDS
+							                 begin
+							                  SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  New_Price_NDS = Old ->"' +  ISNULL(CAST(@OldNew_Price_NDS AS NVARCHAR(50)),'') + ' " NEW -> "' + isnull(CAST(@NewNew_Price_NDS AS NVARCHAR(50)),'') + '", ';
+							                 end
+							              
+							              IF @NewNew_Price_no_NDS <> @OldNew_Price_no_NDS
+							                 begin
+							                  SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  New_Price_no_NDS = Old ->"' +  ISNULL(CAST(@OldNew_Price_no_NDS AS NVARCHAR(50)),'') + ' " NEW -> "' + isnull(CAST(@NewNew_Price_no_NDS AS NVARCHAR(50)),'') + '", ';
+							                 end
+                                          
+							              IF @NewDate_Сreated <> @OldDate_Сreated
+							                 begin
+							                  SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Date_Сreated = Old ->"' +  ISNULL(CAST(Format(@OldDate_Сreated,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(Format(@NewDate_Сreated,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", ';
+							                 end
+							              
+                                          IF @NewDescription <> @OldDescription
+							                 begin
+                                              SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Description = Old ->"' + ISNULL(@OldDescription,'') + ' " NEW -> "' + ISNULL(@NewDescription,'') + '",';
+                                             end
+                                          SET @ChangeDescription = 'Updated: ' + ' ID_Exemplar = "' +  isnull(cast(@OldID_Exemplar as nvarchar(20)),'')+ '" ' + @ChangeDescription
+                                           --Удаляем запятую на конце
+                                          IF LEN(@ChangeDescription) > 0
+                                              SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
                             
-							IF @NewID_Currency <> @OldID_Currency
-							   begin
-							    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_Currency = Old ->"' +  ISNULL(CAST(@OldID_Currency AS NVARCHAR(20)),'') + ' " NEW -> "' + isnull(CAST(@NewID_Currency AS NVARCHAR(20)),'') + '", ';
-							   end
-
-							IF @NewID_Storage_location <> @OldID_Storage_location
-							   begin
-							    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_Storage_location = Old ->"' +  ISNULL(CAST(@OldID_Storage_location AS NVARCHAR(20)),'') + ' " NEW -> "' + isnull(CAST(@NewID_Storage_location AS NVARCHAR(20)),'') + '", ';
-							   end                  
-							
-							IF @NewKeySource <> @OldKeySource
-							   begin
-							    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  KeySource = Old ->"' +  ISNULL(CAST(@OldKeySource AS NVARCHAR(20)),'') + ' " NEW -> "' + isnull(CAST(@NewKeySource AS NVARCHAR(20)),'') + '", ';
-							   end
-
-							IF @NewSerial_number <> @OldSerial_number
-							   begin
-							    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Serial_number = Old ->"' +  ISNULL(@OldSerial_number,'') + ' " NEW -> "' + isnull(@NewSerial_number,'') + '", ';
-							   end
-
-							IF @NewID_Condition_of_the_item <> @OldID_Condition_of_the_item
-							   begin
-							    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_Condition_of_the_item = Old ->"' +  ISNULL(CAST(@OldID_Condition_of_the_item AS NVARCHAR(20)),'') + ' " NEW -> "' + isnull(CAST(@NewID_Condition_of_the_item AS NVARCHAR(20)),'') + '", ';
-							   end
-
-							IF @NewOld_Price_no_NDS <> @OldOld_Price_no_NDS
-							   begin
-							    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Old_Price_no_NDS = Old ->"' +  ISNULL(CAST(@OldOld_Price_no_NDS AS NVARCHAR(50)),'') + ' " NEW -> "' + isnull(CAST(@NewOld_Price_no_NDS AS NVARCHAR(50)),'') + '", ';
-							   end
-
-                            IF @NewRefund <> @OldRefund
-							   begin
-							    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Refund = Old ->"' +  ISNULL(CAST(@OldRefund AS NVARCHAR(1)),'') + ' " NEW -> "' + isnull(CAST(@NewRefund AS NVARCHAR(1)),'') + '", ';
-							   end
-
-                            IF @NewDate_Refund <> @OldDate_Refund
-							   begin
-							    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Date_Refund = Old ->"' +  ISNULL(CAST(Format(@OldDate_Refund,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(Format(@NewDate_Refund,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", ';
-							   end
-                            -----
-							IF @NewReturn_Note <> @OldReturn_Note
-							   begin
-							    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Return_Note = Old ->"' +  ISNULL(@OldReturn_Note,'') + ' " NEW -> "' + isnull(@NewReturn_Note,'') + '", ';
-							   end
-                            
-							IF @NewOld_Price_NDS <> @OldOld_Price_NDS
-							   begin
-							    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Old_Price_NDS = Old ->"' +  ISNULL(CAST(@OldOld_Price_NDS AS NVARCHAR(50)),'') + ' " NEW -> "' + isnull(CAST(@NewOld_Price_NDS AS NVARCHAR(50)),'') + '", ';
-							   end
-
-							IF @NewJSON_Size_Volume <> @OldJSON_Size_Volume
-							   begin
-							    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  JSON_Size_Volume = Old ->"' +  ISNULL(CAST(@OldJSON_Size_Volume AS NVARCHAR(max)),'') + ' " NEW -> "' + isnull(CAST(@NewJSON_Size_Volume AS NVARCHAR(max)),'') + '", ';
-							   end
-                            
-							IF @NewNew_Price_NDS <> @OldNew_Price_NDS
-							   begin
-							    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  New_Price_NDS = Old ->"' +  ISNULL(CAST(@OldNew_Price_NDS AS NVARCHAR(50)),'') + ' " NEW -> "' + isnull(CAST(@NewNew_Price_NDS AS NVARCHAR(50)),'') + '", ';
-							   end
-
-							IF @NewNew_Price_no_NDS <> @OldNew_Price_no_NDS
-							   begin
-							    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  New_Price_no_NDS = Old ->"' +  ISNULL(CAST(@OldNew_Price_no_NDS AS NVARCHAR(50)),'') + ' " NEW -> "' + isnull(CAST(@NewNew_Price_no_NDS AS NVARCHAR(50)),'') + '", ';
-							   end
-                            
-							IF @NewDate_Сreated <> @OldDate_Сreated
-							   begin
-							    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Date_Сreated = Old ->"' +  ISNULL(CAST(Format(@OldDate_Сreated,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(Format(@NewDate_Сreated,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", ';
-							   end
-
-                            IF @NewDescription <> @OldDescription
-							   begin
-                                SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Description = Old ->"' + ISNULL(@OldDescription,'') + ' " NEW -> "' + ISNULL(@NewDescription,'') + '",';
-                               end
-                            SET @ChangeDescription = 'Updated: ' + ' ID_Exemplar = "' +  isnull(cast(@OldID_Exemplar as nvarchar(20)),'')+ '" ' + @ChangeDescription
-                             --Удаляем запятую на конце
-                            IF LEN(@ChangeDescription) > 0
-                                SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
-                            
-                            
-                            update y
-							set ChangeDescription = @ChangeDescription
-							from Exemplar_Audit y
-							where @AuditID  = AuditID    					
+                                          INSERT  INTO dbo.Exemplar_Audit
+                                          ( 
+                                           ID_Exemplar,ModifiedBy,ModifiedDate,Operation,ChangeDescription                
+                                          )
+                                            SELECT  @ID_entity_D,@login_name_2_D,@ModifiedDate_D,@Name_action_D,@ChangeDescription;              
+                                     
+									      set @ChangeDescription = null 
+								  end try
+								  begin catch
+								     if xact_state() in (1, -1)
+									    begin
+									       ROLLBACK TRAN
+									    end
+								     SELECT 
+									   ERROR_NUMBER() AS ErrorNumber_U_D,
+									   ERROR_SEVERITY() AS ErrorSeverity_U_D,
+									   ERROR_STATE() as ErrorState_U_D,
+									   ERROR_PROCEDURE() as ErrorProcedure_U_D,
+									   ERROR_LINE() as ErrorLine_U_D,
+									   ERROR_MESSAGE() as ErrorMessage_U_D;
+								  end catch;
+							     fetch next from cr into 
+								 @ID_entity_D,@login_name_2_D,@ModifiedDate_D,@Name_action_D
+						         end
+						   close cr
+                           deallocate cr
+                                   					
                 END
             ELSE
                 BEGIN
-                    INSERT  INTO dbo.Exemplar_Audit
-                            ( 
-                               ID_Exemplar       
-							   ,ModifiedBy       
-							   ,ModifiedDate     
-                               ,Operation                                                   
-                            )
-                            SELECT  
-                                    d.ID_Exemplar
-									,@login_name 
-									,GETDATE()   
-                                    ,'D'                                                                     
-                            FROM    Deleted D
+                            declare @t_D_D table 
+							(
+							Id_Num         bigint        identity(1,1) not null,
+							ID_entity      bigint        null,
+							login_name     nvarchar(128) null,
+							ModifiedDate   DATETIME      null,
+							Name_action    char(1)       null
+							);
 
-							declare @AuditID_2 bigint
-							set @AuditID_2 = (SELECT  SCOPE_IDENTITY())
+
+							insert into @t_D_D (ID_entity,login_name,ModifiedDate,Name_action)
+							SELECT d.ID_Exemplar,@login_name,GETDATE(),'D'  
+							FROM  Deleted D
+
+
+							DECLARE @ID_entity_D_2    bigint       ;
+							DECLARE @login_name_2_D_2 nvarchar(128);
+							DECLARE @ModifiedDate_D_2 DATETIME     ;
+							DECLARE @Name_action_D_2  char(1)      ;
 
 		                   DECLARE @OldID_Exemplar_2                bigint         ;
 						   DECLARE @OldId_Item_2                    bigint         ;
@@ -251,83 +315,157 @@ AS
 						   DECLARE @OldDate_Сreated_2               datetime       ;
 						   DECLARE @OldDescription_2                nvarchar(4000) ;    	  	
 
-                            SELECT 
-							    @OldID_Exemplar_2             	  = ID_Exemplar              ,
-								@OldId_Item_2                 	  = Id_Item                  ,
-								@OldID_Currency_2             	  = ID_Currency              ,
-								@OldID_Storage_location_2     	  = ID_Storage_location      ,
-								@OldKeySource_2               	  = KeySource                ,
-								@OldSerial_number_2           	  = Serial_number            ,
-								@OldID_Condition_of_the_item_2	  = ID_Condition_of_the_item ,
-								@OldOld_Price_no_NDS_2        	  = Old_Price_no_NDS         ,
-								@OldRefund_2                  	  = Refund                   ,
-								@OldDate_Refund_2             	  = Date_Refund              ,
-								@OldReturn_Note_2             	  = Return_Note              ,
-								@OldOld_Price_NDS_2           	  = Old_Price_NDS            ,
-								@OldJSON_Size_Volume_2        	  = JSON_Size_Volume         ,
-								@OldNew_Price_NDS_2           	  = New_Price_NDS            ,
-								@OldNew_Price_no_NDS_2        	  = New_Price_no_NDS         ,
-								@OldDate_Сreated_2                = Date_Сreated             ,
-								@OldDescription_2                 = [Description]        
-							FROM deleted;									 
+						   declare cr_2 cursor local fast_forward for
+						   
+						   select 
+						   ID_entity   
+						   ,login_name  
+						   ,ModifiedDate
+						   ,Name_action 
+						   from @t_D_D 
+                           open cr_2       
+						   
+						   fetch next from cr_2 into 
+						   @ID_entity_D_2,@login_name_2_D_2,@ModifiedDate_D_2,@Name_action_D_2 
+						   while @@FETCH_STATUS  = 0
+						        begin
+							        begin try
+                                            SELECT 
+							                    @OldID_Exemplar_2             	  = D.ID_Exemplar              ,
+							                	@OldId_Item_2                 	  = D.Id_Item                  ,
+							                	@OldID_Currency_2             	  = D.ID_Currency              ,
+							                	@OldID_Storage_location_2     	  = D.ID_Storage_location      ,
+							                	@OldKeySource_2               	  = D.KeySource                ,
+							                	@OldSerial_number_2           	  = D.Serial_number            ,
+							                	@OldID_Condition_of_the_item_2	  = D.ID_Condition_of_the_item ,
+							                	@OldOld_Price_no_NDS_2        	  = D.Old_Price_no_NDS         ,
+							                	@OldRefund_2                  	  = D.Refund                   ,
+							                	@OldDate_Refund_2             	  = D.Date_Refund              ,
+							                	@OldReturn_Note_2             	  = D.Return_Note              ,
+							                	@OldOld_Price_NDS_2           	  = D.Old_Price_NDS            ,
+							                	@OldJSON_Size_Volume_2        	  = D.JSON_Size_Volume         ,
+							                	@OldNew_Price_NDS_2           	  = D.New_Price_NDS            ,
+							                	@OldNew_Price_no_NDS_2        	  = D.New_Price_no_NDS         ,
+							                	@OldDate_Сreated_2                = D.Date_Сreated             ,
+							                	@OldDescription_2                 = D.[Description]        
+							                FROM deleted D	
+											where @ID_entity_D_2 = D.ID_Exemplar
 
-                            SET @ChangeDescription = 'Deleted: '
-							+ 'ID_Exemplar'             +' = "'+  ISNULL(CAST(@OldID_Exemplar_2     AS NVARCHAR(20)),'')+ '", '
-							+ 'Id_Item'                 +' = "'+  ISNULL(CAST(@OldId_Item_2  AS NVARCHAR(20)),'')+ '", '
-							+ 'ID_Currency'             +' = "'+  ISNULL(CAST(@OldID_Currency_2 AS NVARCHAR(20)),'') + '", '
-							+ 'ID_Storage_location'     +' = "'+  ISNULL(CAST(@OldID_Storage_location_2 AS NVARCHAR(20)),'') + '", '
-							+ 'KeySource'               +' = "'+  ISNULL(CAST(@OldKeySource_2 AS NVARCHAR(50)),'')+ '", '				
-							+ 'Serial_number'           +' = "'+  ISNULL(@OldSerial_number_2,'')+ '", '
-							+ 'ID_Condition_of_the_item'+' = "'+  ISNULL(CAST(@OldID_Condition_of_the_item_2 AS NVARCHAR(20)),'') + '", '
-							+ 'Old_Price_no_NDS'        +' = "'+  ISNULL(CAST(@OldOld_Price_no_NDS_2 AS NVARCHAR(50)),'')+ '", '
-							+ 'Refund'                  +' = "'+  ISNULL(CAST(@OldRefund_2 AS NVARCHAR(1)),'') + '", '
-							+ 'Date_Refund'             +' = "'+  ISNULL(CAST(Format(@OldDate_Refund_2,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", '
-							+ 'Return_Note'             +' = "'+  ISNULL(@OldReturn_Note_2,'')+ '", '
-							+ 'Old_Price_NDS'           +' = "'+  ISNULL(CAST(@OldOld_Price_NDS_2 AS NVARCHAR(50)),'') + '", '
-							+ 'JSON_Size_Volume'        +' = "'+  ISNULL(CAST(@OldJSON_Size_Volume_2 AS NVARCHAR(MAX)),'') + '", '
-							+ 'New_Price_NDS'           +' = "'+  ISNULL(CAST(@OldNew_Price_NDS_2 AS NVARCHAR(50)),'') + '", '
-							+ 'New_Price_no_NDS'        +' = "'+  ISNULL(CAST(@OldNew_Price_no_NDS_2 AS NVARCHAR(50)),'') + '", '
-							+ 'Date_Сreated'            +' = "'+  ISNULL(CAST(Format(@OldDate_Сreated_2,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", '
-            				+ 'Description'             +' = "'+  ISNULL(@OldDescription_2  ,'') + '", '
+                                            SET @ChangeDescription = 'Deleted: '
+							                + 'ID_Exemplar'             +' = "'+  ISNULL(CAST(@OldID_Exemplar_2     AS NVARCHAR(20)),'')+ '", '
+							                + 'Id_Item'                 +' = "'+  ISNULL(CAST(@OldId_Item_2  AS NVARCHAR(20)),'')+ '", '
+							                + 'ID_Currency'             +' = "'+  ISNULL(CAST(@OldID_Currency_2 AS NVARCHAR(20)),'') + '", '
+							                + 'ID_Storage_location'     +' = "'+  ISNULL(CAST(@OldID_Storage_location_2 AS NVARCHAR(20)),'') + '", '
+							                + 'KeySource'               +' = "'+  ISNULL(CAST(@OldKeySource_2 AS NVARCHAR(50)),'')+ '", '				
+							                + 'Serial_number'           +' = "'+  ISNULL(@OldSerial_number_2,'')+ '", '
+							                + 'ID_Condition_of_the_item'+' = "'+  ISNULL(CAST(@OldID_Condition_of_the_item_2 AS NVARCHAR(20)),'') + '", '
+							                + 'Old_Price_no_NDS'        +' = "'+  ISNULL(CAST(@OldOld_Price_no_NDS_2 AS NVARCHAR(50)),'')+ '", '
+							                + 'Refund'                  +' = "'+  ISNULL(CAST(@OldRefund_2 AS NVARCHAR(1)),'') + '", '
+							                + 'Date_Refund'             +' = "'+  ISNULL(CAST(Format(@OldDate_Refund_2,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", '
+							                + 'Return_Note'             +' = "'+  ISNULL(@OldReturn_Note_2,'')+ '", '
+							                + 'Old_Price_NDS'           +' = "'+  ISNULL(CAST(@OldOld_Price_NDS_2 AS NVARCHAR(50)),'') + '", '
+							                + 'JSON_Size_Volume'        +' = "'+  ISNULL(CAST(@OldJSON_Size_Volume_2 AS NVARCHAR(MAX)),'') + '", '
+							                + 'New_Price_NDS'           +' = "'+  ISNULL(CAST(@OldNew_Price_NDS_2 AS NVARCHAR(50)),'') + '", '
+							                + 'New_Price_no_NDS'        +' = "'+  ISNULL(CAST(@OldNew_Price_no_NDS_2 AS NVARCHAR(50)),'') + '", '
+							                + 'Date_Сreated'            +' = "'+  ISNULL(CAST(Format(@OldDate_Сreated_2,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", '
+            				                + 'Description'             +' = "'+  ISNULL(@OldDescription_2  ,'') + '", '
 
-							IF LEN(@ChangeDescription) > 0
-                                SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
+							               IF LEN(@ChangeDescription) > 0
+                                                 SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
 
-                          update u
-						  set ChangeDescription = @ChangeDescription
-						  from Exemplar_Audit u
-						  where @AuditID_2  = AuditID                          
-                END  
+                                           INSERT  INTO dbo.Exemplar_Audit
+                                           ( 
+                                            ID_Exemplar,ModifiedBy,ModifiedDate,Operation,ChangeDescription                
+                                           )
+                                            SELECT  @ID_entity_D_2,@login_name_2_D_2,@ModifiedDate_D_2,@Name_action_D_2,@ChangeDescription;              
+                                     
+									       set @ChangeDescription = null     
+								  end try
+								  begin catch
+								     if xact_state() in (1, -1)
+									    begin
+									       ROLLBACK TRAN
+									    end
+								     SELECT 
+									   ERROR_NUMBER() AS ErrorNumber_D_D,
+									   ERROR_SEVERITY() AS ErrorSeverity_D_D,
+									   ERROR_STATE() as ErrorState_D_D,
+									   ERROR_PROCEDURE() as ErrorProcedure_D_D,
+									   ERROR_LINE() as ErrorLine_D_D,
+									   ERROR_MESSAGE() as ErrorMessage_D_D;
+								  end catch;
+							     fetch next from cr_2 into 
+								 @ID_entity_D_2,@login_name_2_D_2,@ModifiedDate_D_2,@Name_action_D_2
+						         end
+						   close cr_2
+                           deallocate cr_2
+                 END
         END
     ELSE
         BEGIN
-            INSERT  INTO dbo.Exemplar_Audit
-                    ( 
-                          ID_Exemplar  
-						  ,ModifiedBy  
-						  ,ModifiedDate
-						  ,Operation				  
-                            )
-                            SELECT   
-									I.ID_Exemplar
-									,@login_name 
-									,GETDATE()   
-                                    ,'I'                                                                                         
-                    FROM    Inserted I
+                   DECLARE @ID_entity_I_2    bigint       ;
+				   DECLARE @login_name_2_I_2 nvarchar(128);
+				   DECLARE @ModifiedDate_I_2 DATETIME     ;
+				   DECLARE @Name_action_I_2  char(1)      ;
 
-					declare @AuditID_3 bigint
-					set @AuditID_3 = (SELECT  SCOPE_IDENTITY())
+				   declare @t_I_I table 
+				   (
+				   Id_Num         bigint        identity(1,1) not null,
+				   ID_entity      bigint        null,
+				   login_name     nvarchar(128) null,
+				   ModifiedDate   DATETIME      null,
+				   Name_action    char(1)       null
+				   );
 
-					DECLARE @ID_Exemplar_3 BIGINT;
-                    SELECT @ID_Exemplar_3 = ID_Exemplar FROM inserted;
-		            
-                    SET @ChangeDescription = 'Inserted: '
-                                         + 'ID_Exemplar = "' + CAST(@ID_Exemplar_3 AS NVARCHAR(20)) + '" ';
-                    
-                    update i
-					set ChangeDescription = @ChangeDescription
-					from Exemplar_Audit i
-					where @AuditID_3  = AuditID                
+
+					insert into @t_I_I (ID_entity,login_name,ModifiedDate,Name_action)
+					SELECT I.ID_Exemplar,@login_name,GETDATE(),'I'  
+					FROM  inserted I  
+
+					declare cr_3 cursor local fast_forward for
+						   
+					select 
+					ID_entity   
+					,login_name  
+					,ModifiedDate
+					,Name_action 
+					from @t_I_I 
+                    open cr_3       
+					
+					fetch next from cr_3 into 
+					@ID_entity_I_2,@login_name_2_I_2,@ModifiedDate_I_2,@Name_action_I_2 
+					while @@FETCH_STATUS  = 0
+						   begin
+							      begin try
+                                        SET @ChangeDescription = 'Inserted: '
+                                               + 'ID_Exemplar = "' + CAST(@ID_entity_I_2 AS NVARCHAR(20)) + '" ';
+                                        
+										 INSERT  INTO dbo.Exemplar_Audit
+                                         ( 
+                                          ID_Exemplar,ModifiedBy,ModifiedDate,Operation,ChangeDescription                
+                                         )
+                                          SELECT  @ID_entity_I_2,@login_name_2_I_2,@ModifiedDate_I_2,@Name_action_I_2,@ChangeDescription;              
+                                     
+									     set @ChangeDescription = null
+                                  end try
+								  begin catch
+								     if xact_state() in (1, -1)
+									    begin
+									       ROLLBACK TRAN
+									    end
+								     SELECT 
+									   ERROR_NUMBER() AS ErrorNumber_I_I,
+									   ERROR_SEVERITY() AS ErrorSeverity_I_I,
+									   ERROR_STATE() as ErrorState_I_I,
+									   ERROR_PROCEDURE() as ErrorProcedure_I_I,
+									   ERROR_LINE() as ErrorLine_I_I,
+									   ERROR_MESSAGE() as ErrorMessage_I_I;
+								  end catch;
+							     fetch next from cr_3 into 
+								 @ID_entity_I_2,@login_name_2_I_2,@ModifiedDate_I_2,@Name_action_I_2
+						         end
+						   close cr_3
+                           deallocate cr_3               
 
                     END
 
