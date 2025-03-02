@@ -84,7 +84,7 @@ AS
 						   DECLARE @OldJSON_Size_Volume           nvarchar(max)  ;
 						   DECLARE @OldNew_Price_NDS              float          ;
 						   DECLARE @OldNew_Price_no_NDS           float          ;
-						   DECLARE @OldDate_Сreated               datetime       ;
+						   DECLARE @OldDate_Created               datetime       ;
 						   DECLARE @OldDescription                nvarchar(4000) ;
 
 						   DECLARE @NewID_Exemplar                bigint         ;
@@ -102,7 +102,7 @@ AS
 						   DECLARE @NewJSON_Size_Volume           nvarchar(max)  ;
 						   DECLARE @NewNew_Price_NDS              float          ;
 						   DECLARE @NewNew_Price_no_NDS           float          ;
-						   DECLARE @NewDate_Сreated               datetime       ;
+						   DECLARE @NewDate_Created               datetime       ;
 						   DECLARE @NewDescription                nvarchar(4000) ;
 
 						   declare cr cursor local fast_forward for
@@ -136,7 +136,7 @@ AS
 							            	@OldJSON_Size_Volume        	= D.JSON_Size_Volume        ,
 							            	@OldNew_Price_NDS           	= D.New_Price_NDS           ,
 							            	@OldNew_Price_no_NDS        	= D.New_Price_no_NDS        ,
-							            	@OldDate_Сreated                = D.Date_Сreated            , 
+							            	@OldDate_Created                = D.Date_Created            , 
 							            	@OldDescription                 = D.[Description]        	  					
 							            FROM Deleted D																		 
 										where @ID_entity_D = D.ID_Exemplar;
@@ -157,7 +157,7 @@ AS
 							            	@NewJSON_Size_Volume        	= I.JSON_Size_Volume        ,
 							            	@NewNew_Price_NDS           	= I.New_Price_NDS           ,
 							            	@NewNew_Price_no_NDS        	= I.New_Price_no_NDS        ,
-							            	@NewDate_Сreated                = I.Date_Сreated            ,
+							            	@NewDate_Created                = I.Date_Created            ,
 							            	@NewDescription                 = I.[Description]        	  
 							            FROM inserted I
 										where @ID_entity_D = I.ID_Exemplar;	
@@ -233,9 +233,9 @@ AS
 							                  SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  New_Price_no_NDS = Old ->"' +  ISNULL(CAST(@OldNew_Price_no_NDS AS NVARCHAR(50)),'') + ' " NEW -> "' + isnull(CAST(@NewNew_Price_no_NDS AS NVARCHAR(50)),'') + '", ';
 							                 end
                                           
-							              IF @NewDate_Сreated <> @OldDate_Сreated
+							              IF @NewDate_Created <> @OldDate_Created
 							                 begin
-							                  SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Date_Сreated = Old ->"' +  ISNULL(CAST(Format(@OldDate_Сreated,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(Format(@NewDate_Сreated,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", ';
+							                  SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Date_Created = Old ->"' +  ISNULL(CAST(Format(@OldDate_Created,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(Format(@NewDate_Created,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", ';
 							                 end
 							              
                                           IF @NewDescription <> @OldDescription
@@ -312,7 +312,7 @@ AS
 						   DECLARE @OldJSON_Size_Volume_2           nvarchar(max)  ;
 						   DECLARE @OldNew_Price_NDS_2              float          ;
 						   DECLARE @OldNew_Price_no_NDS_2           float          ;
-						   DECLARE @OldDate_Сreated_2               datetime       ;
+						   DECLARE @OldDate_Created_2               datetime       ;
 						   DECLARE @OldDescription_2                nvarchar(4000) ;    	  	
 
 						   declare cr_2 cursor local fast_forward for
@@ -346,7 +346,7 @@ AS
 							                	@OldJSON_Size_Volume_2        	  = D.JSON_Size_Volume         ,
 							                	@OldNew_Price_NDS_2           	  = D.New_Price_NDS            ,
 							                	@OldNew_Price_no_NDS_2        	  = D.New_Price_no_NDS         ,
-							                	@OldDate_Сreated_2                = D.Date_Сreated             ,
+							                	@OldDate_Created_2                = D.Date_Created             ,
 							                	@OldDescription_2                 = D.[Description]        
 							                FROM deleted D	
 											where @ID_entity_D_2 = D.ID_Exemplar
@@ -367,7 +367,7 @@ AS
 							                + 'JSON_Size_Volume'        +' = "'+  ISNULL(CAST(@OldJSON_Size_Volume_2 AS NVARCHAR(MAX)),'') + '", '
 							                + 'New_Price_NDS'           +' = "'+  ISNULL(CAST(@OldNew_Price_NDS_2 AS NVARCHAR(50)),'') + '", '
 							                + 'New_Price_no_NDS'        +' = "'+  ISNULL(CAST(@OldNew_Price_no_NDS_2 AS NVARCHAR(50)),'') + '", '
-							                + 'Date_Сreated'            +' = "'+  ISNULL(CAST(Format(@OldDate_Сreated_2,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", '
+							                + 'Date_Created'            +' = "'+  ISNULL(CAST(Format(@OldDate_Created_2,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", '
             				                + 'Description'             +' = "'+  ISNULL(@OldDescription_2  ,'') + '", '
 
 							               IF LEN(@ChangeDescription) > 0

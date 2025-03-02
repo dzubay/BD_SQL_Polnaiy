@@ -1,4 +1,4 @@
-begin tran
+﻿begin tran
 create table Branch_Audit 
 (
 AuditID       INTEGER         NOT NULL IDENTITY(1, 1) ,

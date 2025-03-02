@@ -78,7 +78,7 @@ AS
 						   DECLARE @OldAdress                     nvarchar(800)  ;
 						   DECLARE @OldMail                       nvarchar(250)  ;
 						   DECLARE @OldPhone                      nvarchar(30)   ;
-						   DECLARE @OldDate_Сreated               datetime       ;
+						   DECLARE @OldDate_Created               datetime       ;
 						   DECLARE @OldDescription                nvarchar(4000) ;
 
                            DECLARE @NewID_Storage_location        bigint         ;
@@ -90,7 +90,7 @@ AS
 						   DECLARE @NewAdress                     nvarchar(800)  ;
 						   DECLARE @NewMail                       nvarchar(250)  ;
 						   DECLARE @NewPhone                      nvarchar(30)   ;
-						   DECLARE @NewDate_Сreated               datetime       ;
+						   DECLARE @NewDate_Created               datetime       ;
 						   DECLARE @NewDescription                nvarchar(4000) ; 
 
 						   declare cr cursor local fast_forward for
@@ -118,7 +118,7 @@ AS
 							            	@OldAdress                  	= D.Adress                  ,
 							            	@OldMail                    	= D.Mail                    ,
 							            	@OldPhone                   	= D.Phone                   ,
-							            	@OldDate_Сreated                = D.Date_Сreated            ,
+							            	@OldDate_Created                = D.Date_Created            ,
 							            	@OldDescription                 = D.[Description]        	  					
 							            FROM Deleted D	
 										 where @ID_entity_D = D.ID_Storage_location
@@ -133,7 +133,7 @@ AS
 							            	@NewAdress                  	= I.Adress                  ,
 							            	@NewMail                    	= I.Mail                    ,
 							            	@NewPhone                   	= I.Phone                   ,
-							            	@NewDate_Сreated                = I.Date_Сreated            ,
+							            	@NewDate_Created                = I.Date_Created            ,
 							            	@NewDescription                 = I.[Description]        	  
 							            FROM inserted I									 
 							            where @ID_entity_D = I.ID_Storage_location;
@@ -179,9 +179,9 @@ AS
 							                SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Phone = Old ->"' +  ISNULL(@OldPhone,'') + ' " NEW -> "' + isnull(@NewPhone,'') + '", ';
 							               end
 							            
-                                        IF @NewDate_Сreated <> @OldDate_Сreated
+                                        IF @NewDate_Created <> @OldDate_Created
 							               begin
-							                SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Date_Сreated = Old ->"' +  ISNULL(CAST(Format(@OldDate_Сreated,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(Format(@NewDate_Сreated,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", ';
+							                SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Date_Created = Old ->"' +  ISNULL(CAST(Format(@OldDate_Created,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(Format(@NewDate_Created,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", ';
 							               end
 							            
                                         IF @NewDescription <> @OldDescription
@@ -252,7 +252,7 @@ AS
 							DECLARE @OldAdress_2                     nvarchar(800)  ;
 							DECLARE @OldMail_2                       nvarchar(250)  ;
 							DECLARE @OldPhone_2                      nvarchar(30)   ;
-							DECLARE @OldDate_Сreated_2               datetime       ;
+							DECLARE @OldDate_Created_2               datetime       ;
 							DECLARE @OldDescription_2                nvarchar(4000) ;
 
 							declare cr_2 cursor local fast_forward for
@@ -280,7 +280,7 @@ AS
 							                    	@OldAdress_2                  	  = D.Adress                  ,
 							                    	@OldMail_2                    	  = D.Mail                    ,
 							                    	@OldPhone_2                   	  = D.Phone                   ,
-							                    	@OldDate_Сreated_2                = D.Date_Сreated            ,
+							                    	@OldDate_Created_2                = D.Date_Created            ,
 							                    	@OldDescription_2                 = D.[Description]        
 							                    FROM deleted D	
 												where @ID_entity_D_2 = D.ID_Storage_location
@@ -295,7 +295,7 @@ AS
 							                    + 'Adress'                   +' = "'+  ISNULL(@OldAdress_2,'')+ '", '
 							                    + 'Mail'                     +' = "'+  ISNULL(@OldMail_2,'') + '", '
 							                    + 'Phone'                    +' = "'+  ISNULL(@OldPhone_2,'')+ '", '
-							                    + 'Date_Сreated'             +' = "'+  ISNULL(CAST(Format(@OldDate_Сreated_2,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", '
+							                    + 'Date_Created'             +' = "'+  ISNULL(CAST(Format(@OldDate_Created_2,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", '
             				                    + 'Description'              +' = "'+  ISNULL(@OldDescription_2  ,'') + '", '
 
 							                    IF LEN(@ChangeDescription) > 0

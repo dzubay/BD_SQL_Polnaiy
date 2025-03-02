@@ -1,4 +1,4 @@
-CREATE TABLE PERSONS
+п»їCREATE TABLE PERSONS
 (
 PERSON_ID INT NOT NULL IDENTITY PRIMARY KEY,
 SURNAME VARCHAR(150) NOT NULL,
@@ -19,14 +19,14 @@ OTCHESTVO VARCHAR(150) NOT NULL
 
 
 --view sourceprint?
---- ТРИГГЕР ОТСЛЕЖИВАЮЩИЙ ИЗМЕНЕНИЯ
+--- РўР РР“Р“Р•Р  РћРўРЎР›Р•Р–РР’РђР®Р©РР™ РР—РњР•РќР•РќРРЇ
 create trigger dbo.changes_persons_trigger
 on  PERSONS FOR INSERT, UPDATE, DELETE NOT FOR REPLICATION
 as
--- SET NOCOUNT ON добавлен чтобы не было лишних результатов выполнения операции
+-- SET NOCOUNT ON РґРѕР±Р°РІР»РµРЅ С‡С‚РѕР±С‹ РЅРµ Р±С‹Р»Рѕ Р»РёС€РЅРёС… СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ РІС‹РїРѕР»РЅРµРЅРёСЏ РѕРїРµСЂР°С†РёРё
 set NOCOUNT ON;
  
--- определеяем тип произошедших изменений INSERT,UPDATE, or DELETE
+-- РѕРїСЂРµРґРµР»РµСЏРµРј С‚РёРї РїСЂРѕРёР·РѕС€РµРґС€РёС… РёР·РјРµРЅРµРЅРёР№ INSERT,UPDATE, or DELETE
 declare @change_type as varchar(10)
 declare @count as int
 set @change_type = 'inserted'
@@ -39,40 +39,40 @@ begin
         set @change_type = 'updated'
 end
          
--- обработка удаления
+-- РѕР±СЂР°Р±РѕС‚РєР° СѓРґР°Р»РµРЅРёСЏ
 if @change_type = 'deleted'
 begin
     insert into CHANGES_PERSONS(CHANGE_TYPE, PERSON_ID, SURNAME, NAME, OTCHESTVO) select 'deleted', PERSON_ID, SURNAME, NAME, OTCHESTVO from deleted
 end
 else
 begin
--- триггер не различает вставку и удаление, так что добавим ручную обработку
--- обработка вставки
+-- С‚СЂРёРіРіРµСЂ РЅРµ СЂР°Р·Р»РёС‡Р°РµС‚ РІСЃС‚Р°РІРєСѓ Рё СѓРґР°Р»РµРЅРёРµ, С‚Р°Рє С‡С‚Рѕ РґРѕР±Р°РІРёРј СЂСѓС‡РЅСѓСЋ РѕР±СЂР°Р±РѕС‚РєСѓ
+-- РѕР±СЂР°Р±РѕС‚РєР° РІСЃС‚Р°РІРєРё
     if @change_type = 'inserted'
     begin
         insert into CHANGES_PERSONS(CHANGE_TYPE, PERSON_ID, SURNAME, NAME, OTCHESTVO) 
 		select 'inserted', PERSON_ID, SURNAME, NAME, OTCHESTVO from inserted
     end
--- обработка обновления
+-- РѕР±СЂР°Р±РѕС‚РєР° РѕР±РЅРѕРІР»РµРЅРёСЏ
     else
     begin
         insert into CHANGES_PERSONS(CHANGE_TYPE, PERSON_ID, SURNAME, NAME, OTCHESTVO) 
 		select 'updates', PERSON_ID, SURNAME, NAME, OTCHESTVO from inserted
     end
-end -- завершение if
--- завершение dbo.changes_persons
+end -- Р·Р°РІРµСЂС€РµРЅРёРµ if
+-- Р·Р°РІРµСЂС€РµРЅРёРµ dbo.changes_persons
 
-----------------------------Проверка с добавлением и изменением---------------------------------------------
+----------------------------РџСЂРѕРІРµСЂРєР° СЃ РґРѕР±Р°РІР»РµРЅРёРµРј Рё РёР·РјРµРЅРµРЅРёРµРј---------------------------------------------
 insert into PERSONS (SURNAME,NAME,OTCHESTVO) values
- ('Антон','Антонов','Антонович')
-,('Сергей','Сергеев','Сергеевич')
-,('Алексей','Алексеев','Алексеевич')
-,('Александр','Александров','Александрович')
-,('Василий','Васильев','Васильевич')
+ ('РђРЅС‚РѕРЅ','РђРЅС‚РѕРЅРѕРІ','РђРЅС‚РѕРЅРѕРІРёС‡')
+,('РЎРµСЂРіРµР№','РЎРµСЂРіРµРµРІ','РЎРµСЂРіРµРµРІРёС‡')
+,('РђР»РµРєСЃРµР№','РђР»РµРєСЃРµРµРІ','РђР»РµРєСЃРµРµРІРёС‡')
+,('РђР»РµРєСЃР°РЅРґСЂ','РђР»РµРєСЃР°РЅРґСЂРѕРІ','РђР»РµРєСЃР°РЅРґСЂРѕРІРёС‡')
+,('Р’Р°СЃРёР»РёР№','Р’Р°СЃРёР»СЊРµРІ','Р’Р°СЃРёР»СЊРµРІРёС‡')
 
 
 update s
-set  SURNAME = 'Оболтус'
+set  SURNAME = 'РћР±РѕР»С‚СѓСЃ'
 from  PERSONS s
 where  PERSON_ID =11
 
@@ -82,7 +82,7 @@ where  PERSON_ID =11
 --select * from  CHANGES_PERSONS
 
 
--------------------------------------Пример с указанием пользователя, который внёс изменение-----------------------------------------------------------------------
+-------------------------------------РџСЂРёРјРµСЂ СЃ СѓРєР°Р·Р°РЅРёРµРј РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ, РєРѕС‚РѕСЂС‹Р№ РІРЅС‘СЃ РёР·РјРµРЅРµРЅРёРµ-----------------------------------------------------------------------
 CREATE TABLE Employees_2
     (
       EmployeeID integer NOT NULL IDENTITY(1, 1) ,

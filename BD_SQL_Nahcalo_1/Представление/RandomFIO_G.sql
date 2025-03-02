@@ -1,4 +1,4 @@
-
+﻿
 
 create view RandomFIO_G  
 as

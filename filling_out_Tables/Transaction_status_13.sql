@@ -84,5 +84,5 @@ insert into  Transaction_status(TypeTransactionName,SysTypeTransactionName,Descr
 ,('Заблокирована', 'SysTypeTransactionName_Blocked', null)
 ,('Дублирована', 'SysTypeTransactionName_Duplicated', null)
 ,('Частично выполнена', 'SysTypeTransactionName_PartiallyCompleted', null)
-rollback
---commit
+--rollback
+commit

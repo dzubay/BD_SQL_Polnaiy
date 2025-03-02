@@ -1,6 +1,6 @@
---select * from Department
+п»ї--select * from Department
 
----- Если с самого начала создаётся на с ID равным = 1, то можно обновить таблицу с помощью процы, и заполнить таблицу.
+---- Р•СЃР»Рё СЃ СЃР°РјРѕРіРѕ РЅР°С‡Р°Р»Р° СЃРѕР·РґР°С‘С‚СЃСЏ РЅР° СЃ ID СЂР°РІРЅС‹Рј = 1, С‚Рѕ РјРѕР¶РЅРѕ РѕР±РЅРѕРІРёС‚СЊ С‚Р°Р±Р»РёС†Сѓ СЃ РїРѕРјРѕС‰СЊСЋ РїСЂРѕС†С‹, Рё Р·Р°РїРѕР»РЅРёС‚СЊ С‚Р°Р±Р»РёС†Сѓ.
 /*
 begin tran
 if exists 
@@ -29,10 +29,10 @@ go
 set nocount,xact_abort on
 go
 begin tran
-	  insert into  Department (Name_Department,ID_Branch,Department_Сode) 
+	  insert into  Department (Name_Department,ID_Branch,Department_Code) 
       values
         (
-        'Финансовый депортамент',
+        'Р¤РёРЅР°РЅСЃРѕРІС‹Р№ РґРµРїРѕСЂС‚Р°РјРµРЅС‚',
         (case  when round(rand()*4,0) = 1 then  round(rand()*579,0)
 	           when round(rand()*4,0) = 2 then  round(rand()*579,0)
 	    	   when round(rand()*4,0) = 3 then  round(rand()*579,0)
@@ -44,10 +44,10 @@ begin tran
 	    	   when round(rand()*4,0) = 4 then  FLOOR(round(rand()*9999999,0))
 	    else  round(rand()*9999999,0)  end) 
 	    )
-			  insert into  Department (Name_Department,ID_Branch,Department_Сode) 
+			  insert into  Department (Name_Department,ID_Branch,Department_Code) 
       values
         (
-        'Депортамен HR',
+        'Р”РµРїРѕСЂС‚Р°РјРµРЅ HR',
         (case  when round(rand()*4,0) = 1 then  round(rand()*579,0)
 	           when round(rand()*4,0) = 2 then  round(rand()*579,0)
 	    	   when round(rand()*4,0) = 3 then  round(rand()*579,0)
@@ -59,10 +59,10 @@ begin tran
 	    	   when round(rand()*4,0) = 4 then  FLOOR(round(rand()*9999999,0))
 	    else  round(rand()*9999999,0)  end) 
 	    )
-			  insert into  Department (Name_Department,ID_Branch,Department_Сode) 
+			  insert into  Department (Name_Department,ID_Branch,Department_Code) 
       values
         (
-        'Депортамент продаж',
+        'Р”РµРїРѕСЂС‚Р°РјРµРЅС‚ РїСЂРѕРґР°Р¶',
         (case  when round(rand()*4,0) = 1 then  round(rand()*579,0)
 	           when round(rand()*4,0) = 2 then  round(rand()*579,0)
 	    	   when round(rand()*4,0) = 3 then  round(rand()*579,0)
@@ -74,10 +74,10 @@ begin tran
 	    	   when round(rand()*4,0) = 4 then  FLOOR(round(rand()*9999999,0))
 	    else  round(rand()*9999999,0)  end) 
 	    )
-			  insert into  Department (Name_Department,ID_Branch,Department_Сode) 
+			  insert into  Department (Name_Department,ID_Branch,Department_Code) 
       values
         (
-        'Маркетинговый депортамент',
+        'РњР°СЂРєРµС‚РёРЅРіРѕРІС‹Р№ РґРµРїРѕСЂС‚Р°РјРµРЅС‚',
         (case  when round(rand()*4,0) = 1 then  round(rand()*579,0)
 	           when round(rand()*4,0) = 2 then  round(rand()*579,0)
 	    	   when round(rand()*4,0) = 3 then  round(rand()*579,0)
@@ -89,10 +89,10 @@ begin tran
 	    	   when round(rand()*4,0) = 4 then  FLOOR(round(rand()*9999999,0))
 	    else  round(rand()*9999999,0)  end) 
 	    )
-			  insert into  Department (Name_Department,ID_Branch,Department_Сode) 
+			  insert into  Department (Name_Department,ID_Branch,Department_Code) 
       values
         (
-        'Операционный депортамент',
+        'РћРїРµСЂР°С†РёРѕРЅРЅС‹Р№ РґРµРїРѕСЂС‚Р°РјРµРЅС‚',
         (case  when round(rand()*4,0) = 1 then  round(rand()*579,0)
 	           when round(rand()*4,0) = 2 then  round(rand()*579,0)
 	    	   when round(rand()*4,0) = 3 then  round(rand()*579,0)
@@ -104,10 +104,10 @@ begin tran
 	    	   when round(rand()*4,0) = 4 then  FLOOR(round(rand()*9999999,0))
 	    else  round(rand()*9999999,0)  end) 
 	    )
-			  insert into  Department (Name_Department,ID_Branch,Department_Сode) 
+			  insert into  Department (Name_Department,ID_Branch,Department_Code) 
       values
         (
-        'Депортамен IT (информационных технологий)',
+        'Р”РµРїРѕСЂС‚Р°РјРµРЅ IT (РёРЅС„РѕСЂРјР°С†РёРѕРЅРЅС‹С… С‚РµС…РЅРѕР»РѕРіРёР№)',
         (case  when round(rand()*4,0) = 1 then  round(rand()*579,0)
 	           when round(rand()*4,0) = 2 then  round(rand()*579,0)
 	    	   when round(rand()*4,0) = 3 then  round(rand()*579,0)
@@ -119,10 +119,10 @@ begin tran
 	    	   when round(rand()*4,0) = 4 then  FLOOR(round(rand()*9999999,0))
 	    else  round(rand()*9999999,0)  end) 
 	    )
-			  insert into  Department (Name_Department,ID_Branch,Department_Сode) 
+			  insert into  Department (Name_Department,ID_Branch,Department_Code) 
       values
         (
-        'Юридический Депортамент',
+        'Р®СЂРёРґРёС‡РµСЃРєРёР№ Р”РµРїРѕСЂС‚Р°РјРµРЅС‚',
         (case  when round(rand()*4,0) = 1 then  round(rand()*579,0)
 	           when round(rand()*4,0) = 2 then  round(rand()*579,0)
 	    	   when round(rand()*4,0) = 3 then  round(rand()*579,0)
@@ -134,10 +134,10 @@ begin tran
 	    	   when round(rand()*4,0) = 4 then  FLOOR(round(rand()*9999999,0))
 	    else  round(rand()*9999999,0)  end) 
 	    )
-	  insert into  Department (Name_Department,ID_Branch,Department_Сode) 
+	  insert into  Department (Name_Department,ID_Branch,Department_Code) 
       values
         (
-        'Депортамент службы безопастности',
+        'Р”РµРїРѕСЂС‚Р°РјРµРЅС‚ СЃР»СѓР¶Р±С‹ Р±РµР·РѕРїР°СЃС‚РЅРѕСЃС‚Рё',
         (case  when round(rand()*4,0) = 1 then  round(rand()*579,0)
 	           when round(rand()*4,0) = 2 then  round(rand()*579,0)
 	    	   when round(rand()*4,0) = 3 then  round(rand()*579,0)

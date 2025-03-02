@@ -1,4 +1,4 @@
-begin tran 
+ï»¿begin tran 
 create table Connection_String_Audit 
 (
 AuditID                INTEGER        NOT NULL IDENTITY(1, 1) ,
@@ -8,7 +8,7 @@ Operation              CHAR(1)        null,
 ID_Connection_String   bigint         null,
 Password               nvarchar(50)   null,
 Login                  nvarchar(100)  null,
-Date_Ñreated           datetime       null,
+Date_Created           datetime       null,
 [Description]          nvarchar(1000) null,
 PRIMARY KEY CLUSTERED ( AuditID )
 ) on Employee_Group
@@ -32,7 +32,7 @@ AS
                                ,ID_Connection_String 
                                ,Password             
                                ,Login                
-                               ,Date_Ñreated         
+                               ,Date_Created         
                                ,[Description]                 
                             )
                             SELECT  
@@ -42,7 +42,7 @@ AS
                                     ,D.ID_Connection_String 
                                     ,D.Password             
                                     ,D.Login                
-                                    ,D.Date_Ñreated         
+                                    ,D.Date_Created         
                                     ,D.[Description]                   
                             FROM    Deleted D
                 END
@@ -56,7 +56,7 @@ AS
                                ,ID_Connection_String 
                                ,Password             
                                ,Login                
-                               ,Date_Ñreated         
+                               ,Date_Created         
                                ,[Description]                           
                             )
                             SELECT  
@@ -66,7 +66,7 @@ AS
                                     ,D.ID_Connection_String 
                                     ,D.Password             
                                     ,D.Login                
-                                    ,D.Date_Ñreated         
+                                    ,D.Date_Created         
                                     ,D.[Description]                           
                             FROM    Deleted D
                 END  
@@ -81,7 +81,7 @@ AS
                                ,ID_Connection_String 
                                ,Password             
                                ,Login                
-                               ,Date_Ñreated         
+                               ,Date_Created         
                                ,[Description]                            
                             )
                             SELECT   
@@ -91,7 +91,7 @@ AS
                                     ,I.ID_Connection_String 
                                     ,I.Password             
                                     ,I.Login                
-                                    ,I.Date_Ñreated         
+                                    ,I.Date_Created         
                                     ,I.[Description]                  
                     FROM    Inserted I
         END

@@ -1,4 +1,4 @@
-begin tran
+﻿begin tran
 create table dbo.Passport_Audit
 (
 AuditID                    INTEGER        NOT NULL IDENTITY(1, 1) ,

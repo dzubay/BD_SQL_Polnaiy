@@ -1,4 +1,4 @@
-use Magaz_DB
+﻿use Magaz_DB
 go
 ALTER TABLE dbo.[Employees]
 Add 

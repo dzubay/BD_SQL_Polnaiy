@@ -1,4 +1,4 @@
-begin tran
+ï»¿begin tran
 create table dbo.[Employees_Audit]
 (
 AuditID                    INTEGER        NOT NULL IDENTITY(1, 1) ,
@@ -19,7 +19,7 @@ Name                       nvarchar(100)  null,
 SurName                    nvarchar(100)  null,
 LastName                   nvarchar(100)  null,
 Date_Of_Hiring             datetime       null, 
-Date_Ñard_Ñreated_Employee datetime       null,
+Date_Card_Created_Employee datetime       null,
 Residential_Address        nvarchar(400)  null,
 Home_Phone                 nvarchar(30)   null,
 Cell_Phone                 nvarchar(30)   null, 
@@ -65,7 +65,7 @@ AS
 							   ,SurName                   
 							   ,LastName                  
 							   ,Date_Of_Hiring            
-							   ,Date_Ñard_Ñreated_Employee
+							   ,Date_Card_Created_Employee
 							   ,Residential_Address       
 							   ,Home_Phone                
 							   ,Cell_Phone                
@@ -95,7 +95,7 @@ AS
 									,D.SurName                   
 									,D.LastName                  
 									,D.Date_Of_Hiring            
-									,D.Date_Ñard_Ñreated_Employee
+									,D.Date_Card_Created_Employee
 									,D.Residential_Address       
 									,D.Home_Phone                
 									,D.Cell_Phone                
@@ -129,7 +129,7 @@ AS
 							   ,SurName                   
 							   ,LastName                  
 							   ,Date_Of_Hiring            
-							   ,Date_Ñard_Ñreated_Employee
+							   ,Date_Card_Created_Employee
 							   ,Residential_Address       
 							   ,Home_Phone                
 							   ,Cell_Phone                
@@ -159,7 +159,7 @@ AS
 									,D.SurName                   
 									,D.LastName                  
 									,D.Date_Of_Hiring            
-									,D.Date_Ñard_Ñreated_Employee
+									,D.Date_Card_Created_Employee
 									,D.Residential_Address       
 									,D.Home_Phone                
 									,D.Cell_Phone                
@@ -194,7 +194,7 @@ AS
 							   ,SurName                   
 							   ,LastName                  
 							   ,Date_Of_Hiring            
-							   ,Date_Ñard_Ñreated_Employee
+							   ,Date_Card_Created_Employee
 							   ,Residential_Address       
 							   ,Home_Phone                
 							   ,Cell_Phone                
@@ -224,7 +224,7 @@ AS
 									,I.SurName                   
 									,I.LastName                  
 									,I.Date_Of_Hiring            
-									,I.Date_Ñard_Ñreated_Employee
+									,I.Date_Card_Created_Employee
 									,I.Residential_Address       
 									,I.Home_Phone                
 									,I.Cell_Phone                

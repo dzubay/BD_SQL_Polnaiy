@@ -70,32 +70,36 @@ AS
 							DECLARE @ModifiedDate_I DATETIME     ;
 							DECLARE @Name_action_I  char(1)      ;
 	                       
-						   DECLARE @OldID_Orders        bigint              ;
-						   DECLARE @OldID_status        bigint        		;
-						   DECLARE @OldID_TypeOrders    bigint        		;
-						   DECLARE @OldID_Currency      bigint        		;
-						   DECLARE @OldDate             datetime      		;
-						   DECLARE @OldPayment_Date     datetime      		;
-						   DECLARE @OldAmount           float         		;
-						   DECLARE @OldAmountCurr       float         		;
-						   DECLARE @OldAmountNDS        float         		;
-						   DECLARE @OldAmountCurrNDS    float         		;
-						   DECLARE @OldNum              nvarchar(50)  		;
-						   DECLARE @OldDescription      nvarchar(4000)		;
+						   DECLARE @OldID_Orders          bigint                ;
+						   DECLARE @OldID_status          bigint        		;
+						   DECLARE @OldID_TypeOrders      bigint        		;
+						   DECLARE @OldID_Currency        bigint        		;
+						   DECLARE @OldID_OrderAssignment bigint        		;
+						   DECLARE @OldID_OrderCategory	  bigint        		;
+						   DECLARE @OldDate               datetime      		;
+						   DECLARE @OldPayment_Date       datetime      		;
+						   DECLARE @OldAmount             float         		;
+						   DECLARE @OldAmountCurr         float         		;
+						   DECLARE @OldAmountNDS          float         		;
+						   DECLARE @OldAmountCurrNDS      float         		;
+						   DECLARE @OldNum                nvarchar(50)  		;
+						   DECLARE @OldDescription        nvarchar(4000)		;
 
 
-						   DECLARE @NewID_Orders        bigint              ;
-						   DECLARE @NewID_status        bigint        		;
-						   DECLARE @NewID_TypeOrders    bigint        		;
-						   DECLARE @NewID_Currency      bigint        		;
-						   DECLARE @NewDate             datetime      		;
-						   DECLARE @NewPayment_Date     datetime      		;
-						   DECLARE @NewAmount           float         		;
-						   DECLARE @NewAmountCurr       float         		;
-						   DECLARE @NewAmountNDS        float         		;
-						   DECLARE @NewAmountCurrNDS    float         		;
-						   DECLARE @NewNum              nvarchar(50)  		;
-						   DECLARE @NewDescription      nvarchar(4000)		;
+						   DECLARE @NewID_Orders           bigint               ;
+						   DECLARE @NewID_status           bigint        		;
+						   DECLARE @NewID_TypeOrders       bigint        		;
+						   DECLARE @NewID_Currency         bigint        		;
+						   DECLARE @NewID_OrderAssignment  bigint        		;
+						   DECLARE @NewID_OrderCategory	   bigint        		;
+						   DECLARE @NewDate                datetime      		;
+						   DECLARE @NewPayment_Date        datetime      		;
+						   DECLARE @NewAmount              float         		;
+						   DECLARE @NewAmountCurr          float         		;
+						   DECLARE @NewAmountNDS           float         		;
+						   DECLARE @NewAmountCurrNDS       float         		;
+						   DECLARE @NewNum                 nvarchar(50)  		;
+						   DECLARE @NewDescription         nvarchar(4000)		;
 						
                            declare cr cursor local fast_forward for
 						   
@@ -114,34 +118,38 @@ AS
 							      begin try
 
 							            SELECT 
-							                   @OldID_Orders      =  D.ID_Orders        ,
-							            	   @OldID_status      =  D.ID_status    	,
-							            	   @OldID_TypeOrders  =  D.ID_TypeOrders	,
-							            	   @OldID_Currency    =  D.ID_Currency  	,
-							            	   @OldDate           =  D.Date             ,       --convert(datetime,Date,109),
-							            	   @OldPayment_Date   =  D.Payment_Date     ,       --convert(datetime,Payment_Date,109),
-							            	   @OldAmount         =  D.Amount       	,
-							            	   @OldAmountCurr     =  D.AmountCurr   	,
-							            	   @OldAmountNDS      =  D.AmountNDS    	,
-							            	   @OldAmountCurrNDS  =  D.AmountCurrNDS	,
-							            	   @OldNum            =  D.Num          	,
-							            	   @OldDescription    =  D.[Description]  
+							                   @OldID_Orders           =  D.ID_Orders         ,
+							            	   @OldID_status           =  D.ID_status    	  ,
+							            	   @OldID_TypeOrders       =  D.ID_TypeOrders	  ,
+							            	   @OldID_Currency         =  D.ID_Currency  	  ,
+											   @OldID_OrderAssignment  =  D.ID_OrderAssignment,
+											   @OldID_OrderCategory	   =  D.ID_OrderCategory  ,
+							            	   @OldDate                =  D.Date              ,       --convert(datetime,Date,109),
+							            	   @OldPayment_Date        =  D.Payment_Date      ,       --convert(datetime,Payment_Date,109),
+							            	   @OldAmount              =  D.Amount            ,
+							            	   @OldAmountCurr          =  D.AmountCurr        ,
+							            	   @OldAmountNDS           =  D.AmountNDS         ,
+							            	   @OldAmountCurrNDS       =  D.AmountCurrNDS     ,
+							            	   @OldNum                 =  D.Num               ,
+							            	   @OldDescription         =  D.[Description]  
 							            FROM Deleted D																		 
 										where @ID_entity_D = D.ID_Orders
 
 										SELECT 
-                                               @NewID_Orders      =  I.ID_Orders        ,
-							            	   @NewID_status      =  I.ID_status    	,
-							            	   @NewID_TypeOrders  =  I.ID_TypeOrders	,
-							            	   @NewID_Currency    =  I.ID_Currency  	,
-							            	   @NewDate           =  I.Date             ,         --convert(datetime,Date,109),     
-							            	   @NewPayment_Date   =  I.Payment_Date     ,         --convert(datetime,Payment_Date,109),
-							            	   @NewAmount         =  I.Amount       	,
-							            	   @NewAmountCurr     =  I.AmountCurr   	,
-							            	   @NewAmountNDS      =  I.AmountNDS    	,
-							            	   @NewAmountCurrNDS  =  I.AmountCurrNDS	,
-							            	   @NewNum            =  I.Num          	,
-							            	   @NewDescription    =  I.[Description]  
+                                               @NewID_Orders           =  I.ID_Orders         ,
+							            	   @NewID_status           =  I.ID_status    	  ,
+							            	   @NewID_TypeOrders       =  I.ID_TypeOrders	  ,
+							            	   @NewID_Currency         =  I.ID_Currency  	  ,
+											   @NewID_OrderAssignment  =  I.ID_OrderAssignment,
+											   @NewID_OrderCategory	   =  I.ID_OrderCategory  ,
+							            	   @NewDate                =  I.Date              ,         --convert(datetime,Date,109),     
+							            	   @NewPayment_Date        =  I.Payment_Date      ,         --convert(datetime,Payment_Date,109),
+							            	   @NewAmount              =  I.Amount       	  ,
+							            	   @NewAmountCurr          =  I.AmountCurr   	  ,
+							            	   @NewAmountNDS           =  I.AmountNDS    	  ,
+							            	   @NewAmountCurrNDS       =  I.AmountCurrNDS	  ,
+							            	   @NewNum                 =  I.Num          	  ,
+							            	   @NewDescription         =  I.[Description]  
 							            FROM inserted I									 
 										where @ID_entity_D = I.ID_Orders
 
@@ -159,7 +167,16 @@ AS
 							               begin
 							                  SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_Currency = Old ->"' +  ISNULL(CAST(@OldID_Currency AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewID_Currency AS NVARCHAR(50)),'') + '", ';
 							               end
-                                                                                                
+                                        IF @NewID_OrderAssignment <> @OldID_OrderAssignment 
+							               begin
+							                  SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_OrderAssignment = Old ->"' +  ISNULL(CAST(@OldID_OrderAssignment AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewID_OrderAssignment AS NVARCHAR(50)),'') + '", ';
+							               end        
+										IF @NewID_OrderCategory <> @OldID_OrderCategory 
+							               begin
+							                  SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_OrderCategory = Old ->"' +  ISNULL(CAST(@OldID_OrderCategory AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewID_OrderCategory AS NVARCHAR(50)),'') + '", ';
+							               end		
+
+
 							            IF @NewDate <> @OldDate 
 							               begin
 							                  SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Date = Old ->"' +  ISNULL(CAST(Format(@OldDate,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(Format(@NewDate,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", ';
@@ -249,18 +266,20 @@ AS
 							DECLARE @ModifiedDate_D_2 DATETIME     ;
 							DECLARE @Name_action_D_2  char(1)      ;
 
-                            DECLARE @OldID_Orders_2        bigint        ;
-							DECLARE @OldID_status_2        bigint        ;
-							DECLARE @OldID_TypeOrders_2    bigint        ;
-							DECLARE @OldID_Currency_2      bigint        ;
-							DECLARE @OldDate_2             datetime      ;
-							DECLARE @OldPayment_Date_2     datetime      ;
-							DECLARE @OldAmount_2           float         ;
-							DECLARE @OldAmountCurr_2       float         ;
-							DECLARE @OldAmountNDS_2        float         ;
-							DECLARE @OldAmountCurrNDS_2    float         ;
-							DECLARE @OldNum_2              nvarchar(50)  ;
-							DECLARE @OldDescription_2      nvarchar(4000);
+                            DECLARE @OldID_Orders_2           bigint        ;
+							DECLARE @OldID_status_2           bigint        ;
+							DECLARE @OldID_TypeOrders_2       bigint        ;
+							DECLARE @OldID_Currency_2         bigint        ;
+							DECLARE @OldID_OrderAssignment_2  bigint        ;
+						    DECLARE @OldID_OrderCategory_2	  bigint        ;
+							DECLARE @OldDate_2                datetime      ;
+							DECLARE @OldPayment_Date_2        datetime      ;
+							DECLARE @OldAmount_2              float         ;
+							DECLARE @OldAmountCurr_2          float         ;
+							DECLARE @OldAmountNDS_2           float         ;
+							DECLARE @OldAmountCurrNDS_2       float         ;
+							DECLARE @OldNum_2                 nvarchar(50)  ;
+							DECLARE @OldDescription_2         nvarchar(4000);
 
 							declare cr_2 cursor local fast_forward for
 						   
@@ -278,34 +297,38 @@ AS
 						        begin
 							       begin try
 							            SELECT 
-							               @OldID_Orders_2       =  D.ID_Orders        ,
-							               @OldID_status_2     	 =  D.ID_status    	   ,
-							               @OldID_TypeOrders_2 	 =  D.ID_TypeOrders	   ,
-							               @OldID_Currency_2   	 =  D.ID_Currency  	   ,
-							               @OldDate_2          	 =  D.Date             ,    --convert(datetime,Date,109),         	 
-							               @OldPayment_Date_2  	 =  D.Payment_Date     ,    --convert(datetime,Payment_Date,109), 	 
-							               @OldAmount_2        	 =  D.Amount       	   ,
-							               @OldAmountCurr_2    	 =  D.AmountCurr   	   ,
-							               @OldAmountNDS_2     	 =  D.AmountNDS    	   ,
-							               @OldAmountCurrNDS_2 	 =  D.AmountCurrNDS	   ,
-							               @OldNum_2           	 =  D.Num          	   ,
-							               @OldDescription_2   	 =  D.[Description]  	 
+							               @OldID_Orders_2          =  D.ID_Orders         ,
+							               @OldID_status_2     	    =  D.ID_status    	   ,
+							               @OldID_TypeOrders_2 	    =  D.ID_TypeOrders	   ,
+							               @OldID_Currency_2   	    =  D.ID_Currency  	   ,
+										   @OldID_OrderAssignment_2 =  D.ID_OrderAssignment,
+										   @OldID_OrderCategory_2	=  D.ID_OrderCategory  ,
+							               @OldDate_2          	    =  D.Date              ,    --convert(datetime,Date,109),         	 
+							               @OldPayment_Date_2  	    =  D.Payment_Date      ,    --convert(datetime,Payment_Date,109), 	 
+							               @OldAmount_2        	    =  D.Amount       	   ,
+							               @OldAmountCurr_2    	    =  D.AmountCurr   	   ,
+							               @OldAmountNDS_2     	    =  D.AmountNDS    	   ,
+							               @OldAmountCurrNDS_2 	    =  D.AmountCurrNDS	   ,
+							               @OldNum_2           	    =  D.Num          	   ,
+							               @OldDescription_2   	    =  D.[Description]  	 
 							            FROM deleted D									 
 										where @ID_entity_D_2 = D.ID_Orders
 
                                         SET @ChangeDescription = 'Deleted: '
-							            + 'ID_Orders'      +' = "'+  ISNULL(CAST(@OldID_Orders_2     AS NVARCHAR(50)),'')     + '", '
-							            + 'ID_status'      +' = "'+  ISNULL(CAST(@OldID_status_2     AS NVARCHAR(50)),'') 	   + '", '
-							            + 'ID_TypeOrders'  +' = "'+  ISNULL(CAST(@OldID_TypeOrders_2 AS NVARCHAR(50)),'') 	   + '", '
-							            + 'ID_Currency'    +' = "'+  ISNULL(CAST(@OldID_Currency_2   AS NVARCHAR(50)),'') 	   + '", '
-							            + 'Date'           +' = "'+  ISNULL(CAST(Format(@OldDate_2,'yyyy-MM-dd HH:mm:ss.fff')          AS NVARCHAR(50)),'') 	   + '", '
-							            + 'Payment_Date'   +' = "'+  ISNULL(CAST(Format(@OldPayment_Date_2,'yyyy-MM-dd HH:mm:ss.fff')  AS NVARCHAR(50)),'') 	   + '", '
-							            + 'Amount'         +' = "'+  ISNULL(CAST(@OldAmount_2        AS NVARCHAR(50)),'') 	   + '", '
-							            + 'AmountCurr'     +' = "'+  ISNULL(CAST(@OldAmountCurr_2    AS NVARCHAR(50)),'') 	   + '", '
-							            + 'AmountNDS'      +' = "'+  ISNULL(CAST(@OldAmountNDS_2     AS NVARCHAR(50)),'') 	   + '", '
-							            + 'AmountCurrNDS'  +' = "'+  ISNULL(CAST(@OldAmountCurrNDS_2 AS NVARCHAR(50)),'') 	   + '", '
-							            + 'Num'            +' = "'+  ISNULL(@OldNum_2          ,'') 	   + '", '
-							            + '[Description]'  +' = "'+  ISNULL(@OldDescription_2  ,'') 	   + '", '
+							            + 'ID_Orders'           +' = "'+  ISNULL(CAST(@OldID_Orders_2          AS NVARCHAR(50)),'')        + '", '
+							            + 'ID_status'           +' = "'+  ISNULL(CAST(@OldID_status_2          AS NVARCHAR(50)),'') 	   + '", '
+							            + 'ID_TypeOrders'       +' = "'+  ISNULL(CAST(@OldID_TypeOrders_2      AS NVARCHAR(50)),'') 	   + '", '
+							            + 'ID_Currency'         +' = "'+  ISNULL(CAST(@OldID_Currency_2        AS NVARCHAR(50)),'') 	   + '", '
+										+ 'ID_OrderAssignment'  +' = "'+  ISNULL(CAST(@OldID_OrderAssignment_2 AS NVARCHAR(50)),'') 	   + '", '
+							            + 'ID_OrderCategory'    +' = "'+  ISNULL(CAST(@OldID_OrderCategory_2   AS NVARCHAR(50)),'') 	   + '", '
+							            + 'Date'                +' = "'+  ISNULL(CAST(Format(@OldDate_2,'yyyy-MM-dd HH:mm:ss.fff')          AS NVARCHAR(50)),'') 	   + '", '
+							            + 'Payment_Date'        +' = "'+  ISNULL(CAST(Format(@OldPayment_Date_2,'yyyy-MM-dd HH:mm:ss.fff')  AS NVARCHAR(50)),'') 	   + '", '
+							            + 'Amount'              +' = "'+  ISNULL(CAST(@OldAmount_2             AS NVARCHAR(50)),'') 	   + '", '
+							            + 'AmountCurr'          +' = "'+  ISNULL(CAST(@OldAmountCurr_2         AS NVARCHAR(50)),'') 	   + '", '
+							            + 'AmountNDS'           +' = "'+  ISNULL(CAST(@OldAmountNDS_2          AS NVARCHAR(50)),'') 	   + '", '
+							            + 'AmountCurrNDS'       +' = "'+  ISNULL(CAST(@OldAmountCurrNDS_2      AS NVARCHAR(50)),'') 	   + '", '
+							            + 'Num'                 +' = "'+  ISNULL(@OldNum_2          ,'') 	   + '", '
+							            + '[Description]'       +' = "'+  ISNULL(@OldDescription_2  ,'') 	   + '", '
 
                                         IF LEN(@ChangeDescription) > 0
                                               SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);

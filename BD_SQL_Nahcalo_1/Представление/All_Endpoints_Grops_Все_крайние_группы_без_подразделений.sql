@@ -1,4 +1,4 @@
-
+﻿
 create view All_Endpoints_Grops
 as
 with s as(

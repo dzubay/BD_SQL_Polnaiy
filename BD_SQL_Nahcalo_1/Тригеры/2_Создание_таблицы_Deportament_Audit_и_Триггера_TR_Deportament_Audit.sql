@@ -1,4 +1,4 @@
-
+ï»¿
 begin tran 
 create table dbo.[Department_Audit]
 (
@@ -11,7 +11,7 @@ ID_Head_Department          bigint         null,
 ID_Vice_Head_Department     bigint         null,
 Name_Department             nvarchar(300)  null,
 ID_Branch                   bigint         null,
-Department_Ñode             int            null,
+Department_Code             int            null,
 [Description]               nvarchar(1000) null, 
 PRIMARY KEY CLUSTERED ( AuditID )
 ) on Employee_Group
@@ -37,7 +37,7 @@ AS
 							   ,ID_Vice_Head_Department  
 							   ,Name_Department          
 							   ,ID_Branch                
-							   ,Department_Ñode          
+							   ,Department_Code          
 							   ,[Description]            
                             )
                             SELECT  
@@ -49,7 +49,7 @@ AS
 									,D.ID_Vice_Head_Department  
 									,D.Name_Department          
 									,D.ID_Branch                
-									,D.Department_Ñode          
+									,D.Department_Code          
 									,D.[Description]            
                             FROM    Deleted D
                 END
@@ -65,7 +65,7 @@ AS
 							   ,ID_Vice_Head_Department  
 							   ,Name_Department          
 							   ,ID_Branch                
-							   ,Department_Ñode          
+							   ,Department_Code          
 							   ,[Description]                    
                             )
                             SELECT  
@@ -77,7 +77,7 @@ AS
 									,D.ID_Vice_Head_Department  
 									,D.Name_Department          
 									,D.ID_Branch                
-									,D.Department_Ñode          
+									,D.Department_Code          
 									,D.[Description]                     
                             FROM    Deleted D
                 END  
@@ -94,7 +94,7 @@ AS
 							   ,ID_Vice_Head_Department  
 							   ,Name_Department          
 							   ,ID_Branch                
-							   ,Department_Ñode          
+							   ,Department_Code          
 							   ,[Description]                     
                             )
                             SELECT   
@@ -106,7 +106,7 @@ AS
 									,I.ID_Vice_Head_Department 
 									,I.Name_Department         
 									,I.ID_Branch               
-									,I.Department_Ñode         
+									,I.Department_Code         
 									,I.[Description]           
                     FROM    Inserted I
         END

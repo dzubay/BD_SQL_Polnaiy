@@ -1,4 +1,4 @@
-
+ï»¿
 begin tran
 create table dbo.[The_Subgroup_Audit] 
 (
@@ -12,7 +12,7 @@ ID_Vice_Head_The_Subgroup  bigint         null,
 ID_Group                   bigint         null,
 Name_The_Subgroup          nvarchar(300)  null,
 ID_Branch                  bigint         null,
-Department_Ñode            int            null,
+Department_Code            int            null,
 [Description]              nvarchar(1000) null,
 ID_Parent_The_Subgroup     bigint         null,
 PRIMARY KEY CLUSTERED ( AuditID )
@@ -41,7 +41,7 @@ AS
 							   ,ID_Group                 
 							   ,Name_The_Subgroup        
 							   ,ID_Branch                
-							   ,Department_Ñode          
+							   ,Department_Code          
 							   ,[Description]            
 							   ,ID_Parent_The_Subgroup            
                             )
@@ -55,7 +55,7 @@ AS
                                     ,D.ID_Group                 
                                     ,D.Name_The_Subgroup        
                                     ,D.ID_Branch                
-                                    ,D.Department_Ñode          
+                                    ,D.Department_Code          
                                     ,D.[Description]            
                                     ,D.ID_Parent_The_Subgroup                   
                             FROM    Deleted D
@@ -73,7 +73,7 @@ AS
                                ,ID_Group                 
                                ,Name_The_Subgroup        
                                ,ID_Branch                
-                               ,Department_Ñode          
+                               ,Department_Code          
                                ,[Description]            
                                ,ID_Parent_The_Subgroup                          
                             )
@@ -87,7 +87,7 @@ AS
                                     ,D.ID_Group                 
                                     ,D.Name_The_Subgroup        
                                     ,D.ID_Branch                
-                                    ,D.Department_Ñode          
+                                    ,D.Department_Code          
                                     ,D.[Description]            
                                     ,D.ID_Parent_The_Subgroup                       
                             FROM    Deleted D
@@ -106,7 +106,7 @@ AS
                                 ,ID_Group                 
                                 ,Name_The_Subgroup        
                                 ,ID_Branch                
-                                ,Department_Ñode          
+                                ,Department_Code          
                                 ,[Description]            
                                 ,ID_Parent_The_Subgroup                         
                             )
@@ -120,7 +120,7 @@ AS
                                     ,I.ID_Group                 
                                     ,I.Name_The_Subgroup        
                                     ,I.ID_Branch                
-                                    ,I.Department_Ñode          
+                                    ,I.Department_Code          
                                     ,I.[Description]            
                                     ,I.ID_Parent_The_Subgroup               
                     FROM    Inserted I

@@ -1,14 +1,14 @@
-create view All_Otdel
+п»їcreate view All_Otdel
 as
 select 
-d.ID_Department		   as 'ID_Департамента'
-,d.Name_Department	   as 'Наименование_Департамента'
-,g.ID_Group			   as 'ID_Группы_или_отдела'
-,g.Name_Group		   as 'Наименование отдела'
-,t.ID_The_Subgroup	   as 'ID_Группы'
-,t.Name_The_Subgroup   as 'Наименование_группы'
-,t2.ID_The_Subgroup	   as 'ID_подгруппы'
-,t2.Name_The_Subgroup  as 'Наименование_подгруппы'
+d.ID_Department		   as 'ID_Р”РµРїР°СЂС‚Р°РјРµРЅС‚Р°'
+,d.Name_Department	   as 'РќР°РёРјРµРЅРѕРІР°РЅРёРµ_Р”РµРїР°СЂС‚Р°РјРµРЅС‚Р°'
+,g.ID_Group			   as 'ID_Р“СЂСѓРїРїС‹_РёР»Рё_РѕС‚РґРµР»Р°'
+,g.Name_Group		   as 'РќР°РёРјРµРЅРѕРІР°РЅРёРµ РѕС‚РґРµР»Р°'
+,t.ID_The_Subgroup	   as 'ID_Р“СЂСѓРїРїС‹'
+,t.Name_The_Subgroup   as 'РќР°РёРјРµРЅРѕРІР°РЅРёРµ_РіСЂСѓРїРїС‹'
+,t2.ID_The_Subgroup	   as 'ID_РїРѕРґРіСЂСѓРїРїС‹'
+,t2.Name_The_Subgroup  as 'РќР°РёРјРµРЅРѕРІР°РЅРёРµ_РїРѕРґРіСЂСѓРїРїС‹'
 from Department d 
 left join  [Group] as g on g.ID_Department = d.ID_Department
 left join  The_Subgroup as t on t.[ID_Group] = g.[ID_Group] and t.[ID_Parent_The_Subgroup] is null

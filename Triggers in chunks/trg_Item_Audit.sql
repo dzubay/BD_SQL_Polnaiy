@@ -83,7 +83,7 @@ AS
 						   DECLARE @OldMail                        nvarchar(250)  	;
 						   DECLARE @OldPhone                       nvarchar(30)   	;
 						   DECLARE @OldLogo                        varbinary(max) 	;
-						   DECLARE @OldDate_Сreated                datetime       	;
+						   DECLARE @OldDate_Created                datetime       	;
 						   DECLARE @OldQuantity                    int              ;
 	                       DECLARE @OldDescription                 nvarchar(4000)	;
 
@@ -100,7 +100,7 @@ AS
 						   DECLARE @NewMail                        nvarchar(250)  	;
 						   DECLARE @NewPhone                       nvarchar(30)   	;
 						   DECLARE @NewLogo                        varbinary(max) 	;
-						   DECLARE @NewDate_Сreated                datetime       	;
+						   DECLARE @NewDate_Created                datetime       	;
 						   DECLARE @NewQuantity                    int              ;
 						   DECLARE @NewDescription                 nvarchar(4000)	;
 						   
@@ -135,7 +135,7 @@ AS
 							                		@NewMail                  	   =  I.Mail                   ,
 							                		@NewPhone                 	   =  I.Phone                  ,
 							                		@NewLogo                  	   =  I.Logo                   ,
-							                		@NewDate_Сreated          	   =  I.Date_Сreated           ,
+							                		@NewDate_Created          	   =  I.Date_Created           ,
 							                		@NewQuantity                   =  I.Quantity               ,
 							                		@NewDescription                =  I.[Description]         	
 							                FROM inserted I									 
@@ -155,7 +155,7 @@ AS
 							                		@oldMail                  	   =  D.Mail                   ,
 							                		@oldPhone                 	   =  D.Phone                  ,
 							                		@oldLogo                  	   =  D.Logo                   ,
-							                		@oldDate_Сreated          	   =  D.Date_Сreated           ,
+							                		@oldDate_Created          	   =  D.Date_Created           ,
 							                		@oldQuantity                   =  D.Quantity               ,
 							                		@OldDescription                =  D.[Description]         								
 							                FROM Deleted D
@@ -221,9 +221,9 @@ AS
 							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Logo = ' +  '"Изображение было изменено или удалено", ';
 							                   end
 							                
-							                IF @NewDate_Сreated <> @OldDate_Сreated
+							                IF @NewDate_Created <> @OldDate_Created
 							                   begin
-							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Date_Сreated = Old ->"' +  ISNULL(CAST(Format(@OldDate_Сreated,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(Format(@NewDate_Сreated,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", ';
+							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Date_Created = Old ->"' +  ISNULL(CAST(Format(@OldDate_Created,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(Format(@NewDate_Created,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", ';
 							                   end
 							                
 					                        IF @NewQuantity <> @OldQuantity
@@ -303,7 +303,7 @@ AS
 						   DECLARE @OldMail_2                          nvarchar(250)  ;
 						   DECLARE @OldPhone_2                         nvarchar(30)   ;
 						   DECLARE @OldLogo_2                          varbinary(max) ;
-						   DECLARE @OldDate_Сreated_2                  datetime       ;
+						   DECLARE @OldDate_Created_2                  datetime       ;
 						   DECLARE @OldQuantity_2                      int            ;
 	                       DECLARE @OldDescription_2                   nvarchar(4000) ;
 
@@ -337,7 +337,7 @@ AS
 							                    	@OldMail_2                      = D.Mail                  ,
 							                    	@OldPhone_2                     = D.Phone                 ,
 							                    	@OldLogo_2                      = D.Logo                  ,
-							                    	@OldDate_Сreated_2              = D.Date_Сreated          ,
+							                    	@OldDate_Created_2              = D.Date_Created          ,
 							                    	@OldQuantity_2                  = D.Quantity              ,        
 							                    	@OldDescription_2               = D.[Description]        
 							                    FROM deleted D
@@ -357,7 +357,7 @@ AS
 							                    + 'Mail'                   +' = "'+  ISNULL(@OldMail_2,'')+ '", '
 							                    + 'Phone'                  +' = "'+  ISNULL(@OldPhone_2,'')+ '", '
 							                    + 'Logo'                   +' = "'+  ISNULL(cast(@OldLogo_2 as varchar(max)),'')+ '", '
-							                    + 'Date_Сreated'           +' = "'+  ISNULL(CAST(Format(@OldDate_Сreated_2,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'')+ '", '
+							                    + 'Date_Created'           +' = "'+  ISNULL(CAST(Format(@OldDate_Created_2,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'')+ '", '
 							                    + 'Quantity'               +' = "'+  ISNULL(CAST(@OldQuantity_2 AS NVARCHAR(20)),'')+ '", '
 							                    + 'Description'            +' = "'+  ISNULL(@OldDescription_2  ,'')+ '"'
 

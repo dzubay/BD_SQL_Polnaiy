@@ -1,7 +1,7 @@
-
+п»ї
 begin tran 
 declare
-@3_Image_Employees varbinary(max) = (SELECT * FROM OPENROWSET(BULK N'D:\Программы\БД\Моя база данных\Картинки для БД\q10.jpg', SINGLE_BLOB) AS image)
+@3_Image_Employees varbinary(max) = (SELECT * FROM OPENROWSET(BULK N'D:\РџСЂРѕРіСЂР°РјРјС‹\Р‘Р”\РњРѕСЏ Р±Р°Р·Р° РґР°РЅРЅС‹С…\РљР°СЂС‚РёРЅРєРё РґР»СЏ Р‘Р”\q10.jpg', SINGLE_BLOB) AS image)
 exec UpdateEmployee
  @ID_Employee                        = 13
 ,@ID_Department					     = 3		
@@ -12,20 +12,20 @@ exec UpdateEmployee
 ,@ID_Post						   	 = 3
 ,@ID_Status_Employee			   	 = 3
 ,@ID_Connection_String			   	 = 3
-,@ID_Chief						   	 = 13     --нельзя указывать на несуществующего пользователя, и на самого себя
+,@ID_Chief						   	 = 13     --РЅРµР»СЊР·СЏ СѓРєР°Р·С‹РІР°С‚СЊ РЅР° РЅРµСЃСѓС‰РµСЃС‚РІСѓСЋС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ, Рё РЅР° СЃР°РјРѕРіРѕ СЃРµР±СЏ
 ,@Name							   	 = 'hjghfghf'
 ,@SurName						   	 = 'ughvhgchg'
 ,@LastName						   	 = 'hfhgfhg'
-,@Date_Of_Hiring				   	 = '20240912'   --Дата приёма на работу
+,@Date_Of_Hiring				   	 = '20240912'   --Р”Р°С‚Р° РїСЂРёС‘РјР° РЅР° СЂР°Р±РѕС‚Сѓ
 ,@Residential_Address			   	 = 'dfvdfvxfv'
 ,@Home_Phone					   	 = 56756
 ,@Cell_Phone					   	 = 567835
 ,@Image_Employees				   	 = @3_Image_Employees
 ,@Work_Phone					   	 = 35354
 ,@Mail							   	 = 'werwer@yandex.ru'
-,@Pol							   	 = 'м'
-,@Date_Of_Dismissal				   	 = '20240910'   --Дата увольнения
-,@Date_Of_Birth					   	 = '20240910'   --Дата рождения
+,@Pol							   	 = 'Рј'
+,@Date_Of_Dismissal				   	 = '20240910'   --Р”Р°С‚Р° СѓРІРѕР»СЊРЅРµРЅРёСЏ
+,@Date_Of_Birth					   	 = '20240910'   --Р”Р°С‚Р° СЂРѕР¶РґРµРЅРёСЏ
 ,@Description					   	 = 'utytr lkhugu ljlknjh hvdtkl'
 --rollback
 commit
