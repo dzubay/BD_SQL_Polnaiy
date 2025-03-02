@@ -75,7 +75,7 @@ AS
 							DECLARE @OldID_Group                   bigint        ;
 							DECLARE @OldName_The_Subgroup          nvarchar(300) ;
 							DECLARE @OldID_Branch                  bigint        ;
-							DECLARE @OldDepartment_Сode            int           ;
+							DECLARE @OldDepartment_Code            int           ;
 							DECLARE @OldDescription                nvarchar(1000);
 							DECLARE @OldID_Parent_The_Subgroup     bigint        ;
 
@@ -86,7 +86,7 @@ AS
 							DECLARE @NewID_Group                   bigint        ;
 							DECLARE @NewName_The_Subgroup          nvarchar(300) ;
 							DECLARE @NewID_Branch                  bigint        ;
-							DECLARE @NewDepartment_Сode            int           ;
+							DECLARE @NewDepartment_Code            int           ;
 							DECLARE @NewDescription                nvarchar(1000);
 							DECLARE @NewID_Parent_The_Subgroup     bigint        ;
 							
@@ -115,7 +115,7 @@ AS
 											 @OldID_Group                  = D.ID_Group                 ,
 											 @OldName_The_Subgroup         = D.Name_The_Subgroup        ,
 											 @OldID_Branch                 = D.ID_Branch                ,
-											 @OldDepartment_Сode           = D.Department_Сode          ,
+											 @OldDepartment_Code           = D.Department_Code          ,
 											 @OldDescription               = D.[Description]            ,
 											 @OldID_Parent_The_Subgroup    = D.ID_Parent_The_Subgroup   
 							            FROM Deleted D
@@ -128,7 +128,7 @@ AS
 											 @NewID_Group                  = I.ID_Group                 ,
 											 @NewName_The_Subgroup         = I.Name_The_Subgroup        ,
 											 @NewID_Branch                 = I.ID_Branch                ,
-											 @NewDepartment_Сode           = I.Department_Сode          ,
+											 @NewDepartment_Code           = I.Department_Code          ,
 											 @NewDescription               = I.[Description]            ,
 											 @NewID_Parent_The_Subgroup    = I.ID_Parent_The_Subgroup   
 							            FROM inserted I									 
@@ -160,9 +160,9 @@ AS
 							               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_Branch = Old ->"' +  ISNULL(CAST(@OldID_Branch AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewID_Branch AS NVARCHAR(50)),'') + '", ';
 							              end
 
-									   IF @NewDepartment_Сode <> @OldDepartment_Сode
+									   IF @NewDepartment_Code <> @OldDepartment_Code
 							              begin
-							               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Department_Сode = Old ->"' +  ISNULL(CAST(@OldDepartment_Сode AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewDepartment_Сode AS NVARCHAR(50)),'') + '", ';
+							               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Department_Code = Old ->"' +  ISNULL(CAST(@OldDepartment_Code AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewDepartment_Code AS NVARCHAR(50)),'') + '", ';
 							              end
 
                                        IF @NewDescription <> @OldDescription
@@ -236,7 +236,7 @@ AS
 							DECLARE @OldID_Group_2                   bigint        ;
 							DECLARE @OldName_The_Subgroup_2          nvarchar(300) ;
 							DECLARE @OldID_Branch_2                  bigint        ;
-							DECLARE @OldDepartment_Сode_2            int           ;
+							DECLARE @OldDepartment_Code_2            int           ;
 							DECLARE @OldDescription_2                nvarchar(1000);
 							DECLARE @OldID_Parent_The_Subgroup_2     bigint        ;
 
@@ -264,7 +264,7 @@ AS
 											          @OldID_Group_2                  = D.ID_Group                 ,
 											          @OldName_The_Subgroup_2         = D.Name_The_Subgroup        ,
 											          @OldID_Branch_2                 = D.ID_Branch                ,
-											          @OldDepartment_Сode_2           = D.Department_Сode          ,
+											          @OldDepartment_Code_2           = D.Department_Code          ,
 											          @OldDescription_2               = D.[Description]            ,
 											          @OldID_Parent_The_Subgroup_2    = D.ID_Parent_The_Subgroup           
 							                FROM deleted D									 
@@ -277,7 +277,7 @@ AS
 											+ 'ID_Group'                   +' = "'+  ISNULL(CAST(@OldID_Group_2 AS NVARCHAR(50)),'') + '", '
 							                + 'Name_The_Subgroup'          +' = "'+  ISNULL(@OldName_The_Subgroup_2,'')+ '", '
 											+ 'ID_Branch'                  +' = "'+  ISNULL(CAST(@OldID_Branch_2 AS NVARCHAR(50)),'') + '", '
-											+ 'Department_Сode'            +' = "'+  ISNULL(CAST(@OldDepartment_Сode_2 AS NVARCHAR(50)),'') + '", '											
+											+ 'Department_Code'            +' = "'+  ISNULL(CAST(@OldDepartment_Code_2 AS NVARCHAR(50)),'') + '", '											
 											+ 'Description'                +' = "'+  ISNULL(@OldDescription_2  ,'') + '", '
 											+ 'ID_Parent_The_Subgroup'     +' = "'+  ISNULL(CAST(@OldID_Parent_The_Subgroup_2 AS NVARCHAR(50)),'') + '", '
 

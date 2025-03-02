@@ -1,4 +1,4 @@
-begin tran
+﻿begin tran
 create table Country_Audit 
 (
 AuditID            INTEGER          NOT NULL IDENTITY(1, 1) ,

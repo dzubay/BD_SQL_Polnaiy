@@ -1,4 +1,4 @@
-
+п»ї
 create  function  RandomFIO_Middlename
 (
    @gender     int
@@ -13,7 +13,7 @@ declare @Middlename  nvarchar(50)
 set @Middlename = (select 
 case when @gender = 1  then (select Middlename from RandomFIO_W)
      when @gender = 2  then (select Middlename from RandomFIO_G)
-	 else ' Нужно ввести 1 или 2' end as Name)
+	 else ' РќСѓР¶РЅРѕ РІРІРµСЃС‚Рё 1 РёР»Рё 2' end as Name)
 return @Middlename
 end;
 

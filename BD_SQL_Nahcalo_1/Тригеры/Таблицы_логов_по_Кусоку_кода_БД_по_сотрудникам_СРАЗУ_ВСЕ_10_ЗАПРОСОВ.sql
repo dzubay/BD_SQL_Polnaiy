@@ -1,4 +1,4 @@
-use  Magaz_DB
+ï»¿use  Magaz_DB
 go
 begin tran
 create table dbo.[Employees_Audit]
@@ -21,7 +21,7 @@ Name                       nvarchar(100)  null,
 SurName                    nvarchar(100)  null,
 LastName                   nvarchar(100)  null,
 Date_Of_Hiring             datetime       null, 
-Date_Ñard_Ñreated_Employee datetime       null,
+Date_Card_Created_Employee datetime       null,
 Residential_Address        nvarchar(400)  null,
 Home_Phone                 int            null,
 Cell_Phone                 int            null, 
@@ -67,7 +67,7 @@ AS
 							   ,SurName                   
 							   ,LastName                  
 							   ,Date_Of_Hiring            
-							   ,Date_Ñard_Ñreated_Employee
+							   ,Date_Card_Created_Employee
 							   ,Residential_Address       
 							   ,Home_Phone                
 							   ,Cell_Phone                
@@ -97,7 +97,7 @@ AS
 									,D.SurName                   
 									,D.LastName                  
 									,D.Date_Of_Hiring            
-									,D.Date_Ñard_Ñreated_Employee
+									,D.Date_Card_created_Employee
 									,D.Residential_Address       
 									,D.Home_Phone                
 									,D.Cell_Phone                
@@ -131,7 +131,7 @@ AS
 							   ,SurName                   
 							   ,LastName                  
 							   ,Date_Of_Hiring            
-							   ,Date_Ñard_Ñreated_Employee
+							   ,Date_Card_Created_Employee
 							   ,Residential_Address       
 							   ,Home_Phone                
 							   ,Cell_Phone                
@@ -161,7 +161,7 @@ AS
 									,D.SurName                   
 									,D.LastName                  
 									,D.Date_Of_Hiring            
-									,D.Date_Ñard_Ñreated_Employee
+									,D.Date_Card_Created_Employee
 									,D.Residential_Address       
 									,D.Home_Phone                
 									,D.Cell_Phone                
@@ -196,7 +196,7 @@ AS
 							   ,SurName                   
 							   ,LastName                  
 							   ,Date_Of_Hiring            
-							   ,Date_Ñard_Ñreated_Employee
+							   ,Date_Card_Created_Employee
 							   ,Residential_Address       
 							   ,Home_Phone                
 							   ,Cell_Phone                
@@ -226,7 +226,7 @@ AS
 									,I.SurName                   
 									,I.LastName                  
 									,I.Date_Of_Hiring            
-									,I.Date_Ñard_Ñreated_Employee
+									,I.Date_Card_Created_Employee
 									,I.Residential_Address       
 									,I.Home_Phone                
 									,I.Cell_Phone                
@@ -257,7 +257,7 @@ ID_Head_Department          bigint         null,
 ID_Vice_Head_Department     bigint         null,
 Name_Department             nvarchar(300)  null,
 ID_Branch                   bigint         null,
-Department_Ñode             int            null,
+Department_Code             int            null,
 [Description]               nvarchar(1000) null, 
 PRIMARY KEY CLUSTERED ( AuditID )
 ) on Employee_Group
@@ -283,7 +283,7 @@ AS
 							   ,ID_Vice_Head_Department  
 							   ,Name_Department          
 							   ,ID_Branch                
-							   ,Department_Ñode          
+							   ,Department_Code          
 							   ,[Description]            
                             )
                             SELECT  
@@ -295,7 +295,7 @@ AS
 									,D.ID_Vice_Head_Department  
 									,D.Name_Department          
 									,D.ID_Branch                
-									,D.Department_Ñode          
+									,D.Department_Code          
 									,D.[Description]            
                             FROM    Deleted D
                 END
@@ -311,7 +311,7 @@ AS
 							   ,ID_Vice_Head_Department  
 							   ,Name_Department          
 							   ,ID_Branch                
-							   ,Department_Ñode          
+							   ,Department_Code          
 							   ,[Description]                    
                             )
                             SELECT  
@@ -323,7 +323,7 @@ AS
 									,D.ID_Vice_Head_Department  
 									,D.Name_Department          
 									,D.ID_Branch                
-									,D.Department_Ñode          
+									,D.Department_Code          
 									,D.[Description]                     
                             FROM    Deleted D
                 END  
@@ -340,7 +340,7 @@ AS
 							   ,ID_Vice_Head_Department  
 							   ,Name_Department          
 							   ,ID_Branch                
-							   ,Department_Ñode          
+							   ,Department_Code          
 							   ,[Description]                     
                             )
                             SELECT   
@@ -352,7 +352,7 @@ AS
 									,I.ID_Vice_Head_Department 
 									,I.Name_Department         
 									,I.ID_Branch               
-									,I.Department_Ñode         
+									,I.Department_Code         
 									,I.[Description]           
                     FROM    Inserted I
         END
@@ -373,7 +373,7 @@ ID_Vice_Head_Group      bigint         null,
 ID_Department           bigint         null,
 Name_Group              nvarchar(300)  null,
 ID_Branch               bigint         null,
-Department_Ñode         int            null,
+Department_Code         int            null,
 [Description]           nvarchar(1000) null, 
 PRIMARY KEY CLUSTERED ( AuditID )
 ) on Employee_Group
@@ -401,7 +401,7 @@ AS
 							   ,ID_Department      
 							   ,Name_Group         
 							   ,ID_Branch          
-							   ,Department_Ñode    
+							   ,Department_Code    
 							   ,[Description]                 
                             )
                             SELECT  
@@ -414,7 +414,7 @@ AS
 									,D.ID_Department      
 									,D.Name_Group         
 									,D.ID_Branch          
-									,D.Department_Ñode    
+									,D.Department_Code    
 									,D.[Description]      
                             FROM    Deleted D
                 END
@@ -431,7 +431,7 @@ AS
 							   ,ID_Department      
 							   ,Name_Group         
 							   ,ID_Branch          
-							   ,Department_Ñode    
+							   ,Department_Code    
 							   ,[Description]      
                             )
                             SELECT  
@@ -444,7 +444,7 @@ AS
 									,D.ID_Department      
 									,D.Name_Group         
 									,D.ID_Branch          
-									,D.Department_Ñode    
+									,D.Department_Code    
 									,D.[Description]                          
                             FROM    Deleted D
                 END  
@@ -462,7 +462,7 @@ AS
 						,ID_Department      
 						,Name_Group         
 						,ID_Branch          
-						,Department_Ñode    
+						,Department_Code    
 						,[Description]                         
                             )
                             SELECT   
@@ -475,7 +475,7 @@ AS
 									,I.ID_Department      
 									,I.Name_Group         
 									,I.ID_Branch          
-									,I.Department_Ñode    
+									,I.Department_Code    
 									,I.[Description]      
                     FROM    Inserted I
         END
@@ -496,7 +496,7 @@ ID_Vice_Head_The_Subgroup  bigint         null,
 ID_Group                   bigint         null,
 Name_The_Subgroup          nvarchar(300)  null,
 ID_Branch                  bigint         null,
-Department_Ñode            int            null,
+Department_Code            int            null,
 [Description]              nvarchar(1000) null,
 ID_Parent_The_Subgroup     bigint         null,
 PRIMARY KEY CLUSTERED ( AuditID )
@@ -525,7 +525,7 @@ AS
 							   ,ID_Group                 
 							   ,Name_The_Subgroup        
 							   ,ID_Branch                
-							   ,Department_Ñode          
+							   ,Department_Code          
 							   ,[Description]            
 							   ,ID_Parent_The_Subgroup            
                             )
@@ -539,7 +539,7 @@ AS
                                     ,D.ID_Group                 
                                     ,D.Name_The_Subgroup        
                                     ,D.ID_Branch                
-                                    ,D.Department_Ñode          
+                                    ,D.Department_Code          
                                     ,D.[Description]            
                                     ,D.ID_Parent_The_Subgroup                   
                             FROM    Deleted D
@@ -557,7 +557,7 @@ AS
                                ,ID_Group                 
                                ,Name_The_Subgroup        
                                ,ID_Branch                
-                               ,Department_Ñode          
+                               ,Department_Code          
                                ,[Description]            
                                ,ID_Parent_The_Subgroup                          
                             )
@@ -571,7 +571,7 @@ AS
                                     ,D.ID_Group                 
                                     ,D.Name_The_Subgroup        
                                     ,D.ID_Branch                
-                                    ,D.Department_Ñode          
+                                    ,D.Department_Code          
                                     ,D.[Description]            
                                     ,D.ID_Parent_The_Subgroup                       
                             FROM    Deleted D
@@ -590,7 +590,7 @@ AS
                                 ,ID_Group                 
                                 ,Name_The_Subgroup        
                                 ,ID_Branch                
-                                ,Department_Ñode          
+                                ,Department_Code          
                                 ,[Description]            
                                 ,ID_Parent_The_Subgroup                         
                             )
@@ -604,7 +604,7 @@ AS
                                     ,I.ID_Group                 
                                     ,I.Name_The_Subgroup        
                                     ,I.ID_Branch                
-                                    ,I.Department_Ñode          
+                                    ,I.Department_Code          
                                     ,I.[Description]            
                                     ,I.ID_Parent_The_Subgroup               
                     FROM    Inserted I
@@ -940,7 +940,7 @@ Operation              CHAR(1)        null,
 ID_Connection_String   bigint         null,
 Password               nvarchar(50)   null,
 Login                  nvarchar(100)  null,
-Date_Ñreated           datetime       null,
+Date_Created           datetime       null,
 [Description]          nvarchar(1000) null,
 PRIMARY KEY CLUSTERED ( AuditID )
 ) on Employee_Group
@@ -964,7 +964,7 @@ AS
                                ,ID_Connection_String 
                                ,Password             
                                ,Login                
-                               ,Date_Ñreated         
+                               ,Date_Created         
                                ,[Description]                 
                             )
                             SELECT  
@@ -974,7 +974,7 @@ AS
                                     ,D.ID_Connection_String 
                                     ,D.Password             
                                     ,D.Login                
-                                    ,D.Date_Ñreated         
+                                    ,D.Date_Created         
                                     ,D.[Description]                   
                             FROM    Deleted D
                 END
@@ -988,7 +988,7 @@ AS
                                ,ID_Connection_String 
                                ,Password             
                                ,Login                
-                               ,Date_Ñreated         
+                               ,Date_Created         
                                ,[Description]                           
                             )
                             SELECT  
@@ -998,7 +998,7 @@ AS
                                     ,D.ID_Connection_String 
                                     ,D.Password             
                                     ,D.Login                
-                                    ,D.Date_Ñreated         
+                                    ,D.Date_Created         
                                     ,D.[Description]                           
                             FROM    Deleted D
                 END  
@@ -1013,7 +1013,7 @@ AS
                                ,ID_Connection_String 
                                ,Password             
                                ,Login                
-                               ,Date_Ñreated         
+                               ,Date_Created         
                                ,[Description]                            
                             )
                             SELECT   
@@ -1023,7 +1023,7 @@ AS
                                     ,I.ID_Connection_String 
                                     ,I.Password             
                                     ,I.Login                
-                                    ,I.Date_Ñreated         
+                                    ,I.Date_Created         
                                     ,I.[Description]                  
                     FROM    Inserted I
         END

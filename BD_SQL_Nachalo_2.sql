@@ -39,25 +39,54 @@ constraint PK_ID_TypeOrders Primary key(ID_TypeOrders)
 
 go
 
+
+create table Order_category                                                      --Категория заказа
+(
+ID_OrderCategory       bigint          not null  identity(1,1)  check(ID_OrderCategory != 0),   -- ID Категории заказа
+OrderCategoryName      nvarchar(300)   not null,                                                -- Наименование Категории заказа
+Abbreviation           nvarchar(10)    not null,                                                -- Аббревиатура, сокращённое наименование Категории заказа
+OrderCategorySysName   nvarchar(300)   not null,                                                -- Наименование системного типа Категории заказа
+[Description]          nvarchar(4000)  null                                                     -- Комментарии
+constraint PK_ID_OrderCategory Primary key(ID_OrderCategory)
+)  on Orders_Group_2
+
+go
+
+
+create table Order_Assignment                                                      ---Принадлежность заказа к системе  
+(
+ID_OrderAssignment       bigint          not null  identity(1,1)  check(ID_OrderAssignment != 0),   -- ID_Принадлежности_заказа_к_системе 
+OrderAssignmentName      nvarchar(300)   not null,                                                  -- Наименование Принадлежности заказа к системе
+OrderAssignmentNameEng   nvarchar(300)   not null,                                                  -- Наименование Принадлежности заказа к системе на английском
+OrderAssignmentSysName   nvarchar(300)   not null,                                                  -- Системное наименование Принадлежности заказа к системе
+[Description]            nvarchar(4000)  null                                                       -- Комментарии
+constraint PK_ID_OrderAssignment Primary key(ID_OrderAssignment)
+)  on Orders_Group_2
+
+go
+
 create table Orders                                                                 --Заказ
 (
-ID_Orders        bigint          not null identity (1,1)  check(Id_Orders !=0),      -- ID заказа
-ID_status        bigint          not null,                                           -- ID статуса заказа
-ID_TypeOrders    bigint          not null,                                           -- ID Типа заказа
-ID_Currency      bigint          not null,                                           -- Валюта заказа
-Date             datetime        not null default  getDate(),                        -- Дата создания заказа
-Payment_Date     datetime        null,                                               -- Дата Оплаты заказа
-Amount           float           null,                                               -- Сумма заказа
-AmountCurr       float           null,                                               -- Сумма заказа c начислением коммисии 
-AmountNDS        float           null,                                               -- Сумма заказа c начисленным НДС
-AmountCurrNDS    float           null,                                               -- Сумма заказа c начислением коммисии и НДС
-Num              nvarchar(50)    not null,                                           -- Номер заказа
-[Description]    nvarchar(4000)  null,                                               -- Комментарий
+ID_Orders          bigint          not null identity (1,1)  check(Id_Orders !=0),      -- ID заказа
+ID_status          bigint          not null,                                           -- ID статуса заказа
+ID_TypeOrders      bigint          not null,                                           -- ID Типа заказа
+ID_Currency        bigint          not null,                                           -- Валюта заказа
+ID_OrderAssignment BIGINT          NOT NULL,                                           -- ID_Принадлежности_заказа_к_системе
+ID_OrderCategory   BIGINT          NOT NULL,                                           -- ID Категории заказа
+Date               datetime        not null default  getDate(),                        -- Дата создания заказа
+Payment_Date       datetime        null,                                               -- Дата Оплаты заказа
+Amount             float           null,                                               -- Сумма заказа
+AmountCurr         float           null,                                               -- Сумма заказа c начислением коммисии 
+AmountNDS          float           null,                                               -- Сумма заказа c начисленным НДС
+AmountCurrNDS      float           null,                                               -- Сумма заказа c начислением коммисии и НДС
+Num                nvarchar(50)    not null,                                           -- Номер заказа
+[Description]      nvarchar(4000)  null,                                               -- Комментарий
 constraint  PK_ID_Orders               primary key (ID_Orders),
-constraint  FK_ID_Orders_status        foreign key (ID_status)       references [dbo].Orders_status   on delete NO ACTION,
-constraint  FK_ID_TypeOrders           foreign key (ID_TypeOrders)   references [dbo].TypeOrders      on delete NO ACTION,
-constraint  FK_ID_Currency_Orders      foreign key (ID_Currency  )   references [dbo].Currency        on delete NO ACTION
-
+constraint  FK_ID_Orders_status        foreign key (ID_status)            references [dbo].Orders_status         on delete NO ACTION,
+constraint  FK_ID_TypeOrders           foreign key (ID_TypeOrders)        references [dbo].TypeOrders            on delete NO ACTION,
+constraint  FK_ID_Currency_Orders      foreign key (ID_Currency)          references [dbo].Currency              on delete NO ACTION,
+constraint  FK_ID_OrderAssignment      foreign key (ID_OrderAssignment)   references [dbo].Order_Assignment      on delete NO ACTION,
+constraint  FK_ID_OrderCategory        foreign key (ID_OrderCategory)     references [dbo].Order_category        on delete NO ACTION
 )  on Orders_Group_2
 go
 
@@ -67,7 +96,7 @@ create table Connection_Buyer                                                   
 ID_Connection_Buyer   bigint             not null identity (1,1) check(ID_Connection_Buyer  != 0), -- ID данных о личном аккаунте на ресурсе покупателя 
 Password              nvarchar(50)       null,                                                     -- Пароль аккаунта на ресурсе
 Login                 nvarchar(100)      null,                                                     -- Логин аккаунта на ресурсе
-Date_Сreated          datetime           not null default GetDate(),                               -- Дата создания аккаунта
+Date_Created          datetime           not null default GetDate(),                               -- Дата создания аккаунта
 [Description]         nvarchar(1000)     null,                                                     -- Комментарий
 constraint PK_ID_Connection_Buyer  Primary key  (ID_Connection_Buyer),
 ) on Costomers_Group_2
@@ -190,7 +219,7 @@ Adress                     nvarchar(800)   null,                                
 Mail                       nvarchar(250)   null,                                                    --Электронная почта производителя товара 
 Phone                      nvarchar(30)    null,                                                    --Контактный телефон производителя товара
 Logo                       varbinary(max)  null,                                                    --Логотип производителя товара
-Date_Сreated               datetime        not null  default GetDate(),                             --Дата заведения карточки товара
+Date_Created               datetime        not null  default GetDate(),                             --Дата заведения карточки товара
 Quantity                   int             null,                                                    --Количество данного товара
 [Description]              nvarchar(4000)  null                                                     --Комментарий 
 constraint PK_Id_Item  primary key (Id_Item),
@@ -224,7 +253,7 @@ City                       nvarchar(200)       null,                            
 Adress                     nvarchar(800)       not null,                                                 --Адрес места хранения
 Mail                       nvarchar(250)       null,                                                     --Электронная почта хранение экземпляра
 Phone                      nvarchar(30)        null,                                                     --Действующий телефон хранение экземпляра
-Date_Сreated               datetime            not null  default GetDate(),                              --Дата заведения в систему места хранения
+Date_Created               datetime            not null  default GetDate(),                              --Дата заведения в систему места хранения
 [Description]              nvarchar(4000)      null                                                      --Комментарий
 constraint PK_ID_Storage_location          primary key (ID_Storage_location),
 constraint FK_ID_Type_Storage_location     foreign key (ID_Type_Storage_location)        references [dbo].Type_Storage_location    on delete NO ACTION
@@ -261,7 +290,7 @@ Old_Price_NDS             float           not null,                             
 JSON_Size_Volume          nvarchar(max)   null      check(isjson(JSON_Size_Volume)>0),            -- Данный JSON параметры самого экземпляра
 New_Price_NDS             float           not null,                                               -- Цена экземпляра с НДС после начисления коммисии  за  сервис
 New_Price_no_NDS          float           not null,                                               -- Цена экземпляра без НДС после начисления коммисии  за  сервис
-Date_Сreated              datetime        not null  default GetDate(),                            -- Дата внесения экземпляра в систему
+Date_Created              datetime        not null  default GetDate(),                            -- Дата внесения экземпляра в систему
 [Description]             nvarchar(4000)  null                                                    -- Комментарий
 constraint PK_ID_Exemplar              primary key (ID_Exemplar),
 constraint FK_ID_Item                  foreign key (Id_Item)                  references [dbo].Item                    on delete NO ACTION,

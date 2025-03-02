@@ -1,4 +1,4 @@
-create function RandomDate_View_function
+﻿create function RandomDate_View_function
 (
 )
 Returns date

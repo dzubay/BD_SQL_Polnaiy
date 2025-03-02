@@ -86,7 +86,7 @@ AS
 						   DECLARE @OldSurName                    nvarchar(100) ;
 						   DECLARE @OldLastName                   nvarchar(100) ;
 						   DECLARE @OldDate_Of_Hiring             datetime      ;
-						   DECLARE @OldDate_Сard_Сreated_Employee datetime      ;
+						   DECLARE @OldDate_Card_Created_Employee datetime      ;
 						   DECLARE @OldResidential_Address        nvarchar(400) ;
 						   DECLARE @OldHome_Phone                 nvarchar(30)  ;
 						   DECLARE @OldCell_Phone                 nvarchar(30)  ;
@@ -112,7 +112,7 @@ AS
 						   DECLARE @NewSurName                    nvarchar(100) ;
 						   DECLARE @NewLastName                   nvarchar(100) ;
 						   DECLARE @NewDate_Of_Hiring             datetime      ;
-						   DECLARE @NewDate_Сard_Сreated_Employee datetime      ;
+						   DECLARE @NewDate_Card_Created_Employee datetime      ;
 						   DECLARE @NewResidential_Address        nvarchar(400) ;
 						   DECLARE @NewHome_Phone                 nvarchar(30)  ;
 						   DECLARE @NewCell_Phone                 nvarchar(30)  ;
@@ -157,7 +157,7 @@ AS
 										 @OldSurName                   	  = D.SurName                   ,
 										 @OldLastName                  	  = D.LastName                  ,
 										 @OldDate_Of_Hiring            	  = D.Date_Of_Hiring            ,
-										 @OldDate_Сard_Сreated_Employee	  = D.Date_Сard_Сreated_Employee,
+										 @OldDate_Card_Created_Employee	  = D.Date_Card_Created_Employee,
 										 @OldResidential_Address       	  = D.Residential_Address       ,
 										 @OldHome_Phone                	  = D.Home_Phone                ,
 										 @OldCell_Phone                	  = D.Cell_Phone                ,
@@ -186,7 +186,7 @@ AS
 										 @NewSurName                   	  = I.SurName                   ,
 										 @NewLastName                  	  = I.LastName                  ,
 										 @NewDate_Of_Hiring            	  = I.Date_Of_Hiring            ,
-										 @NewDate_Сard_Сreated_Employee	  = I.Date_Сard_Сreated_Employee,
+										 @NewDate_Card_Created_Employee	  = I.Date_Card_Created_Employee,
 										 @NewResidential_Address       	  = I.Residential_Address       ,
 										 @NewHome_Phone                	  = I.Home_Phone                ,
 										 @NewCell_Phone                	  = I.Cell_Phone                ,
@@ -265,9 +265,9 @@ AS
 							               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Date_Of_Hiring = Old ->"' +  ISNULL(CAST(Format(@OldDate_Of_Hiring,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(Format(@NewDate_Of_Hiring,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", ';
 							              end
 
-									IF @NewDate_Сard_Сreated_Employee <> @OldDate_Сard_Сreated_Employee
+									IF @NewDate_Card_Created_Employee <> @OldDate_Card_Created_Employee
 							              begin
-							               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Date_Сard_Сreated_Employee = Old ->"' +  ISNULL(CAST(Format(@OldDate_Сard_Сreated_Employee,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(Format(@NewDate_Сard_Сreated_Employee,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", ';
+							               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Date_Card_Created_Employee = Old ->"' +  ISNULL(CAST(Format(@OldDate_Card_Created_Employee,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(Format(@NewDate_Card_Created_Employee,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", ';
 							              end
                                    
 									IF @NewResidential_Address <> @OldResidential_Address 
@@ -391,7 +391,7 @@ AS
 						    DECLARE @OldSurName_2                    nvarchar(100) ;
 						    DECLARE @OldLastName_2                   nvarchar(100) ;
 						    DECLARE @OldDate_Of_Hiring_2             datetime      ;
-						    DECLARE @OldDate_Сard_Сreated_Employee_2 datetime      ;
+						    DECLARE @OldDate_Card_Created_Employee_2 datetime      ;
 						    DECLARE @OldResidential_Address_2        nvarchar(400) ;
 						    DECLARE @OldHome_Phone_2                 nvarchar(30)  ;
 						    DECLARE @OldCell_Phone_2                 nvarchar(30)  ;
@@ -434,7 +434,7 @@ AS
 										 @OldSurName_2                   	  = D.SurName                   ,
 										 @OldLastName_2                  	  = D.LastName                  ,
 										 @OldDate_Of_Hiring_2            	  = D.Date_Of_Hiring            ,
-										 @OldDate_Сard_Сreated_Employee_2	  = D.Date_Сard_Сreated_Employee,
+										 @OldDate_Card_Created_Employee_2	  = D.Date_Card_Created_Employee,
 										 @OldResidential_Address_2       	  = D.Residential_Address       ,
 										 @OldHome_Phone_2                	  = D.Home_Phone                ,
 										 @OldCell_Phone_2                	  = D.Cell_Phone                ,
@@ -463,7 +463,7 @@ AS
 							         +  'SurName'                     +' = "'+ ISNULL(@OldSurName_2,'')+ '", '
 							         +  'LastName'                    +' = "'+ ISNULL(@OldLastName_2,'') + '", '	
 									 +  'Date_Of_Hiring'              +' = "'+ ISNULL(CAST(Format(@OldDate_Of_Hiring_2,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", '
-									 +  'Date_Сard_Сreated_Employee'  +' = "'+ ISNULL(CAST(Format(@OldDate_Сard_Сreated_Employee_2,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", '
+									 +  'Date_Card_Created_Employee'  +' = "'+ ISNULL(CAST(Format(@OldDate_Card_Created_Employee_2,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", '
 							         +  'Residential_Address'         +' = "'+ ISNULL(@OldResidential_Address_2,'') + '", '
 							         +  'Home_Phone'                  +' = "'+ ISNULL(@OldHome_Phone_2,'')+ '", '				
 							         +  'Cell_Phone'                  +' = "'+ ISNULL(@OldCell_Phone_2,'')+ '", '

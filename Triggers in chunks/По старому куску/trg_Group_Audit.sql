@@ -75,7 +75,7 @@ AS
 							DECLARE @OldID_Department           bigint        ;
 							DECLARE @OldName_Group              nvarchar(300) ;
 							DECLARE @OldID_Branch               bigint        ;
-							DECLARE @OldDepartment_Сode         int           ;
+							DECLARE @OldDepartment_Code         int           ;
 							DECLARE @OldDescription             nvarchar(1000);
 
 							DECLARE @NewID_Group                bigint        ;
@@ -84,7 +84,7 @@ AS
 							DECLARE @NewID_Department           bigint        ;
 							DECLARE @NewName_Group              nvarchar(300) ;
 							DECLARE @NewID_Branch               bigint        ;
-							DECLARE @NewDepartment_Сode         int           ;
+							DECLARE @NewDepartment_Code         int           ;
 							DECLARE @NewDescription             nvarchar(1000);
 							
 						   declare cr cursor local fast_forward for
@@ -110,7 +110,7 @@ AS
 											@OldID_Department      = D.ID_Department     ,
 											@OldName_Group         = D.Name_Group        ,
 											@OldID_Branch          = D.ID_Branch         ,
-											@OldDepartment_Сode    = D.Department_Сode   ,
+											@OldDepartment_Code    = D.Department_Code   ,
 											@OldDescription        = D.[Description]       							
 							            FROM Deleted D
 										where @ID_entity_D = D.ID_Group;
@@ -122,7 +122,7 @@ AS
 											@NewID_Department      = I.ID_Department     ,
 											@NewName_Group         = I.Name_Group        ,
 											@NewID_Branch          = I.ID_Branch         ,
-											@NewDepartment_Сode    = I.Department_Сode   ,
+											@NewDepartment_Code    = I.Department_Code   ,
 											@NewDescription        = I.[Description]       	
 							            FROM inserted I									 
 							            where @ID_entity_D = I.ID_Group;
@@ -153,9 +153,9 @@ AS
                                            SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_Branch = Old ->"' +  ISNULL(CAST(@OldID_Branch AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewID_Branch AS NVARCHAR(50)),'') + '", ';
 							              end
 
-                                       IF @NewDepartment_Сode <> @OldDepartment_Сode 
+                                       IF @NewDepartment_Code <> @OldDepartment_Code 
 							              begin
-                                           SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Department_Сode = Old ->"' +  ISNULL(CAST(@OldDepartment_Сode AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewDepartment_Сode AS NVARCHAR(50)),'') + '", ';
+                                           SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Department_Code = Old ->"' +  ISNULL(CAST(@OldDepartment_Code AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewDepartment_Code AS NVARCHAR(50)),'') + '", ';
 							              end
           
                                        IF @NewDescription <> @OldDescription
@@ -222,7 +222,7 @@ AS
 							DECLARE @OldID_Department_2           bigint        ;
 							DECLARE @OldName_Group_2              nvarchar(300) ;
 							DECLARE @OldID_Branch_2               bigint        ;
-							DECLARE @OldDepartment_Сode_2         int           ;
+							DECLARE @OldDepartment_Code_2         int           ;
 							DECLARE @OldDescription_2             nvarchar(1000);
 
 
@@ -248,7 +248,7 @@ AS
 										    	@OldID_Department_2      = D.ID_Department     ,
 										    	@OldName_Group_2         = D.Name_Group        ,
 										    	@OldID_Branch_2          = D.ID_Branch         ,
-										    	@OldDepartment_Сode_2    = D.Department_Сode   ,
+										    	@OldDepartment_Code_2    = D.Department_Code   ,
 										    	@OldDescription_2        = D.[Description]       							
 							                FROM Deleted D
 										    where @ID_entity_D_2 = D.ID_Group;
@@ -260,7 +260,7 @@ AS
 											+ 'ID_Department'       +' = "'+  ISNULL(CAST(@OldID_Department_2 AS NVARCHAR(50)),'') + '", '
 											+ 'Name_Group'          +' = "'+  ISNULL(@OldName_Group_2,'')+ '", '
 											+ 'ID_Branch'           +' = "'+  ISNULL(CAST(@OldID_Branch_2 AS NVARCHAR(50)),'') + '", '
-											+ 'Department_Сode'     +' = "'+  ISNULL(CAST(@OldDepartment_Сode_2 AS NVARCHAR(50)),'') + '", '
+											+ 'Department_Code'     +' = "'+  ISNULL(CAST(@OldDepartment_Code_2 AS NVARCHAR(50)),'') + '", '
 							                + 'Description'         +' = "'+  ISNULL(@OldDescription_2  ,'') + '", '
 
                                            IF LEN(@ChangeDescription) > 0

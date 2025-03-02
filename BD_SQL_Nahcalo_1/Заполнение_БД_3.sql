@@ -372,7 +372,7 @@ go
 declare @i int  =1;
  while @i < = 1014
   begin 
-      insert into  Connection_String (Password,Login,Date_Сreated,[Description])
+      insert into  Connection_String (Password,Login,Date_Created,[Description])
 	  values 
 	  (
 	   (REPLACE(SUBSTRING(CONVERT(varchar(36), NEWID()), 1, 15), '-', '')),
@@ -1307,7 +1307,7 @@ go
 set nocount,xact_abort on
 go
 
-	  insert into  Department (Name_Department,ID_Branch,Department_Сode) 
+	  insert into  Department (Name_Department,ID_Branch,Department_Code) 
       values
         (
         'Финансовый депортамент',
@@ -1322,7 +1322,7 @@ go
 	    	   when round(rand()*4,0) = 4 then  FLOOR(round(rand()*9999999,0))
 	    else  round(rand()*9999999,0)  end) 
 	    )
-			  insert into  Department (Name_Department,ID_Branch,Department_Сode) 
+			  insert into  Department (Name_Department,ID_Branch,Department_Code) 
       values
         (
         'Депортамен HR',
@@ -1337,7 +1337,7 @@ go
 	    	   when round(rand()*4,0) = 4 then  FLOOR(round(rand()*9999999,0))
 	    else  round(rand()*9999999,0)  end) 
 	    )
-			  insert into  Department (Name_Department,ID_Branch,Department_Сode) 
+			  insert into  Department (Name_Department,ID_Branch,Department_Code) 
       values
         (
         'Депортамент продаж',
@@ -1352,7 +1352,7 @@ go
 	    	   when round(rand()*4,0) = 4 then  FLOOR(round(rand()*9999999,0))
 	    else  round(rand()*9999999,0)  end) 
 	    )
-			  insert into  Department (Name_Department,ID_Branch,Department_Сode) 
+			  insert into  Department (Name_Department,ID_Branch,Department_Code) 
       values
         (
         'Маркетинговый депортамент',
@@ -1367,7 +1367,7 @@ go
 	    	   when round(rand()*4,0) = 4 then  FLOOR(round(rand()*9999999,0))
 	    else  round(rand()*9999999,0)  end) 
 	    )
-			  insert into  Department (Name_Department,ID_Branch,Department_Сode) 
+			  insert into  Department (Name_Department,ID_Branch,Department_Code) 
       values
         (
         'Операционный депортамент',
@@ -1382,7 +1382,7 @@ go
 	    	   when round(rand()*4,0) = 4 then  FLOOR(round(rand()*9999999,0))
 	    else  round(rand()*9999999,0)  end) 
 	    )
-			  insert into  Department (Name_Department,ID_Branch,Department_Сode) 
+			  insert into  Department (Name_Department,ID_Branch,Department_Code) 
       values
         (
         'Депортамен IT (информационных технологий)',
@@ -1397,7 +1397,7 @@ go
 	    	   when round(rand()*4,0) = 4 then  FLOOR(round(rand()*9999999,0))
 	    else  round(rand()*9999999,0)  end) 
 	    )
-			  insert into  Department (Name_Department,ID_Branch,Department_Сode) 
+			  insert into  Department (Name_Department,ID_Branch,Department_Code) 
       values
         (
         'Юридический Депортамент',
@@ -1412,7 +1412,7 @@ go
 	    	   when round(rand()*4,0) = 4 then  FLOOR(round(rand()*9999999,0))
 	    else  round(rand()*9999999,0)  end) 
 	    )
-	  insert into  Department (Name_Department,ID_Branch,Department_Сode) 
+	  insert into  Department (Name_Department,ID_Branch,Department_Code) 
       values
         (
         'Депортамент службы безопастности',
@@ -1589,7 +1589,7 @@ go
 
 
 drop table if exists #t_3
-Select ID_Group,null as Department_Сode, 0 flag into #t_3 from dbo.[Group]
+Select ID_Group,null as Department_Code, 0 flag into #t_3 from dbo.[Group]
 go
 declare @i_3 int = 0;
 declare @s_1 int;
@@ -1597,14 +1597,14 @@ declare @ROWCOUNT_1 int;
 
 declare
  @ID_Group            bigint  
-,@Department_Сode     int
+,@Department_Code     int
 ,@flag                int
 declare mycur_1 cursor local fast_forward read_only for
 
 Select * from #t_3
 
 open  mycur_1
-fetch next from  mycur_1 into @ID_Group,@Department_Сode,@flag
+fetch next from  mycur_1 into @ID_Group,@Department_Code,@flag
  while @@FETCH_STATUS  = 0
     begin
         begin try
@@ -1621,12 +1621,12 @@ fetch next from  mycur_1 into @ID_Group,@Department_Сode,@flag
 				   where 1 = 1 
 				   and Gr.flag = 0 
 				   and Gr.ID_Group = @ID_Group 
-				   and Gr.Department_Сode is  null)  = 1
+				   and Gr.Department_Code is  null)  = 1
 			     begin
 	                update  Gr
-	                set Department_Сode = @s_1 
+	                set Department_Code = @s_1 
 	                from  dbo.#t_3  as Gr 
-			        where  Gr.flag = 0 and  Gr.ID_Group = @ID_Group and Gr.Department_Сode is  null					
+			        where  Gr.flag = 0 and  Gr.ID_Group = @ID_Group and Gr.Department_Code is  null					
 					set @ROWCOUNT_1 = @@ROWCOUNT
 
 			        print ' Случайное число внесено в Department_Сode в таблицу dbo.#t_3 --> ' + convert(nvarchar(10),@ID_Group)
@@ -1657,27 +1657,27 @@ fetch next from  mycur_1 into @ID_Group,@Department_Сode,@flag
              ERROR_LINE() as ErrorLine,
              ERROR_MESSAGE() as ErrorMessage;
 	    end catch
-     fetch next from  mycur_1 into @ID_Group,@Department_Сode,@flag
+     fetch next from  mycur_1 into @ID_Group,@Department_Code,@flag
    end
 close mycur_1
 deallocate mycur_1
 
 declare
  @ID_Group_2            bigint  
-,@Department_Сode_2     int
+,@Department_Code_2     int
 ,@flag_2                int;
 
  if exists (select flag from #t_3 where  not exists ( select flag from #t_3 where flag = 0))
 	   begin
 			   declare  mycur_2 cursor local fast_forward read_only for 
-			   select ID_Group,Department_Сode,flag from  #t_3 
+			   select ID_Group,Department_Code,flag from  #t_3 
 			   open  mycur_2
-			     fetch next from  mycur_2 into @ID_Group_2,@Department_Сode_2,@flag_2
+			     fetch next from  mycur_2 into @ID_Group_2,@Department_Code_2,@flag_2
 			       while @@FETCH_STATUS =  0 
 				       begin
 					       begin try
 						         update Gr_2
-								 set Department_Сode = @Department_Сode_2
+								 set Department_Code = @Department_Code_2
 								 from dbo.[Group] as Gr_2
 								 where @ID_Group_2 = ID_Group and @flag_2 = 1
 								 print ' По -->  ID_Group ' +  convert(nvarchar(10),@ID_Group_2) + ' Внесены изменения в таблице Group из таблицы #t_3' 
@@ -1693,7 +1693,7 @@ declare
 								    ERROR_LINE() as ErrorLine,
 								    ERROR_MESSAGE() as ErrorMessage;
 						   end catch
-                       fetch next from  mycur_2 into @ID_Group_2,@Department_Сode_2,@flag_2
+                       fetch next from  mycur_2 into @ID_Group_2,@Department_Code_2,@flag_2
 					   end
                close mycur_2
               deallocate mycur_2
@@ -2264,7 +2264,7 @@ values
 go
 
 drop table if exists #t_3
-Select ID_The_Subgroup,null as Department_Сode, 0 flag into #t_3 from dbo.The_Subgroup
+Select ID_The_Subgroup,null as Department_Code, 0 flag into #t_3 from dbo.The_Subgroup
 go
 declare @i_3 int = 0;
 declare @s_1 int;
@@ -2272,14 +2272,14 @@ declare @ROWCOUNT_1 int;
 
 declare
  @ID_The_Subgroup     bigint  
-,@Department_Сode     int
+,@Department_Code     int
 ,@flag                int
 declare mycur_3 cursor local fast_forward read_only for
 
 Select * from #t_3
 
 open  mycur_3
-fetch next from  mycur_3 into @ID_The_Subgroup,@Department_Сode,@flag
+fetch next from  mycur_3 into @ID_The_Subgroup,@Department_Code,@flag
  while @@FETCH_STATUS  = 0
     begin
         begin try
@@ -2296,12 +2296,12 @@ fetch next from  mycur_3 into @ID_The_Subgroup,@Department_Сode,@flag
 				   where 1 = 1 
 				   and Gr.flag = 0 
 				   and Gr.ID_The_Subgroup = @ID_The_Subgroup 
-				   and Gr.Department_Сode is  null)  = 1
+				   and Gr.Department_Code is  null)  = 1
 			     begin
 	                update  Gr
-	                set Department_Сode = @s_1 
+	                set Department_Code = @s_1 
 	                from  dbo.#t_3  as Gr 
-			        where  Gr.flag = 0 and  Gr.ID_The_Subgroup = @ID_The_Subgroup and Gr.Department_Сode is  null					
+			        where  Gr.flag = 0 and  Gr.ID_The_Subgroup = @ID_The_Subgroup and Gr.Department_Code is  null					
 					set @ROWCOUNT_1 = @@ROWCOUNT
 
 			        print ' Случайное число внесено в Department_Сode в таблицу dbo.#t_3 --> ' + convert(nvarchar(10),@ID_The_Subgroup)
@@ -2332,27 +2332,27 @@ fetch next from  mycur_3 into @ID_The_Subgroup,@Department_Сode,@flag
              ERROR_LINE() as ErrorLine,
              ERROR_MESSAGE() as ErrorMessage;
 	    end catch
-     fetch next from  mycur_3 into @ID_The_Subgroup,@Department_Сode,@flag
+     fetch next from  mycur_3 into @ID_The_Subgroup,@Department_Code,@flag
    end
 close mycur_3
 deallocate mycur_3
 
 declare
  @ID_The_Subgroup_2            bigint  
-,@Department_Сode_2     int
+,@Department_Code_2     int
 ,@flag_2                int;
 
  if exists (select flag from #t_3 where  not exists ( select flag from #t_3 where flag = 0))
 	   begin
 			   declare  mycur_4 cursor local fast_forward read_only for 
-			   select ID_The_Subgroup,Department_Сode,flag from  #t_3 
+			   select ID_The_Subgroup,Department_Code,flag from  #t_3 
 			   open  mycur_4
-			     fetch next from  mycur_4 into @ID_The_Subgroup_2,@Department_Сode_2,@flag_2
+			     fetch next from  mycur_4 into @ID_The_Subgroup_2,@Department_Code_2,@flag_2
 			       while @@FETCH_STATUS =  0 
 				       begin
 					       begin try
 						         update Gr_2
-								 set Department_Сode = @Department_Сode_2
+								 set Department_Code = @Department_Code_2
 								 from dbo.[The_Subgroup] as Gr_2
 								 where @ID_The_Subgroup_2 = ID_The_Subgroup and @flag_2 = 1
 								 print ' По -->  ID_Group ' +  convert(nvarchar(10),@ID_The_Subgroup_2) + ' Внесены изменения в таблице Group из таблицы #t_3' 
@@ -2368,7 +2368,7 @@ declare
 								    ERROR_LINE() as ErrorLine,
 								    ERROR_MESSAGE() as ErrorMessage;
 						   end catch
-                       fetch next from  mycur_4 into @ID_The_Subgroup_2,@Department_Сode_2,@flag_2
+                       fetch next from  mycur_4 into @ID_The_Subgroup_2,@Department_Code_2,@flag_2
 					   end
                close mycur_4
               deallocate mycur_4

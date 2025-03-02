@@ -1,6 +1,6 @@
-begin tran
+п»їbegin tran
      exec RandomFIO @gender = 2
 --rollback
 commit
 
---Указываем Пол 2 - Женский, 1 - Мужской
+--РЈРєР°Р·С‹РІР°РµРј РџРѕР» 2 - Р–РµРЅСЃРєРёР№, 1 - РњСѓР¶СЃРєРѕР№

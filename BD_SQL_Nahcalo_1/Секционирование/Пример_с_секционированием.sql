@@ -175,7 +175,7 @@ Name                       nvarchar(100)  null,
 SurName                    nvarchar(100)  null,
 LastName                   nvarchar(100)  null,
 Date_Of_Hiring             datetime       not null, 
-Date_Сard_Сreated_Employee datetime       not null default GetDate(),
+Date_Card_Created_Employee datetime       not null default GetDate(),
 Residential_Address        nvarchar(400)  null,
 Home_Phone                 nvarchar(30)   null,
 Cell_Phone                 nvarchar(30)   null,
@@ -201,7 +201,7 @@ ID_Head_Department          bigint         null,
 ID_Vice_Head_Department     bigint         null,
 Name_Department             nvarchar(300)  not null,
 ID_Branch                   bigint         null,
-Department_Сode             int            null,
+Department_Code             int            null,
 [Description]               nvarchar(1000) null, 
 constraint PK_ID_Department Primary key  (ID_Department),
 ) on Employee_Group
@@ -215,7 +215,7 @@ ID_Vice_Head_Group      bigint         null,
 ID_Department           bigint         not null,
 Name_Group              nvarchar(300)  not null,
 ID_Branch               bigint         null,
-Department_Сode         int            null,
+Department_Code         int            null,
 [Description]           nvarchar(1000) null, 
 constraint PK_ID_Group  Primary key  (ID_Group),
 ) on Employee_Group
@@ -229,7 +229,7 @@ ID_Vice_Head_The_Subgroup  bigint         null,
 ID_Group                   bigint         not null,
 Name_The_Subgroup          nvarchar(300)  not null,
 ID_Branch                  bigint         null,
-Department_Сode            int            null,
+Department_Code            int            null,
 [Description]              nvarchar(1000) null,
 ID_Parent_The_Subgroup     bigint         null,
 constraint PK_The_Subgroup Primary key  (ID_The_Subgroup),
@@ -277,7 +277,7 @@ create table Connection_String
 ID_Connection_String   bigint    not null identity (1,1) check(ID_Connection_String  != 0),
 Password      nvarchar(50)       null,
 Login         nvarchar(100)      null,
-Date_Сreated  datetime           null default GetDate(),
+Date_Created  datetime           null default GetDate(),
 [Description] nvarchar(1000)     null,
 constraint PK_ID_Connection_String  Primary key  (ID_Connection_String),
 ) on Employee_Group
@@ -376,7 +376,7 @@ Name                       nvarchar(100)  null,
 SurName                    nvarchar(100)  null,
 LastName                   nvarchar(100)  null,
 Date_Of_Hiring             datetime       null, 
-Date_Сard_Сreated_Employee datetime       null,
+Date_Card_Created_Employee datetime       null,
 Residential_Address        nvarchar(400)  null,
 Home_Phone                 nvarchar(30)   null,
 Cell_Phone                 nvarchar(30)   null, 
@@ -393,7 +393,7 @@ go
 
 create clustered index index_Employees_Audit_1 on Employees_Audit(AuditID) on SH_PartFuncDate_LEFT(AuditID)
 create nonclustered index index_Employees_Audit_1_n on Employees_Audit(AuditID,ID_Employee)
-create nonclustered index index_Employees_Audit_1_n2 on Employees_Audit(AuditID,Date_Сard_Сreated_Employee) 
+create nonclustered index index_Employees_Audit_1_n2 on Employees_Audit(AuditID,Date_Card_Created_Employee) 
 go
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -420,7 +420,7 @@ Name                       nvarchar(100)  null,
 SurName                    nvarchar(100)  null,
 LastName                   nvarchar(100)  null,
 Date_Of_Hiring             datetime       null, 
-Date_Сard_Сreated_Employee datetime       null,
+Date_Card_Created_Employee datetime       null,
 Residential_Address        nvarchar(400)  null,
 Home_Phone                 nvarchar(30)   null,
 Cell_Phone                 nvarchar(30)   null, 
@@ -437,7 +437,7 @@ go
 
 create clustered index index_Employees_Audit_6 on Employees_Audit_6(AuditID) on SH_PartFuncDate_LEFT(AuditID)
 create nonclustered index index_Employees_Audit_6_n on Employees_Audit_6(AuditID,ID_Employee)
-create nonclustered index index_Employees_Audit_6_n2 on Employees_Audit_6(AuditID,Date_Сard_Сreated_Employee) 
+create nonclustered index index_Employees_Audit_6_n2 on Employees_Audit_6(AuditID,Date_Card_Created_Employee) 
 go
 
 	CREATE TRIGGER TR_Employees_Audit ON dbo.Employees
@@ -470,7 +470,7 @@ AS
 							   ,SurName                   
 							   ,LastName                  
 							   ,Date_Of_Hiring            
-							   ,Date_Сard_Сreated_Employee
+							   ,Date_Card_Created_Employee
 							   ,Residential_Address       
 							   ,Home_Phone                
 							   ,Cell_Phone                
@@ -500,7 +500,7 @@ AS
 									,D.SurName                   
 									,D.LastName                  
 									,D.Date_Of_Hiring            
-									,D.Date_Сard_Сreated_Employee
+									,D.Date_Card_Created_Employee
 									,D.Residential_Address       
 									,D.Home_Phone                
 									,D.Cell_Phone                
@@ -534,7 +534,7 @@ AS
 							   ,SurName                   
 							   ,LastName                  
 							   ,Date_Of_Hiring            
-							   ,Date_Сard_Сreated_Employee
+							   ,Date_Card_Created_Employee
 							   ,Residential_Address       
 							   ,Home_Phone                
 							   ,Cell_Phone                
@@ -564,7 +564,7 @@ AS
 									,D.SurName                   
 									,D.LastName                  
 									,D.Date_Of_Hiring            
-									,D.Date_Сard_Сreated_Employee
+									,D.Date_Card_Created_Employee
 									,D.Residential_Address       
 									,D.Home_Phone                
 									,D.Cell_Phone                
@@ -599,7 +599,7 @@ AS
 							   ,SurName                   
 							   ,LastName                  
 							   ,Date_Of_Hiring            
-							   ,Date_Сard_Сreated_Employee
+							   ,Date_Card_Created_Employee
 							   ,Residential_Address       
 							   ,Home_Phone                
 							   ,Cell_Phone                
@@ -629,7 +629,7 @@ AS
 									,I.SurName                   
 									,I.LastName                  
 									,I.Date_Of_Hiring            
-									,I.Date_Сard_Сreated_Employee
+									,I.Date_Card_Created_Employee
 									,I.Residential_Address       
 									,I.Home_Phone                
 									,I.Cell_Phone                
@@ -656,7 +656,7 @@ ID_Head_Department          bigint         null,
 ID_Vice_Head_Department     bigint         null,
 Name_Department             nvarchar(300)  null,
 ID_Branch                   bigint         null,
-Department_Сode             int            null,
+Department_Code             int            null,
 [Description]               nvarchar(1000) null, 
 PRIMARY KEY CLUSTERED ( AuditID )
 ) on Employee_Group
@@ -682,7 +682,7 @@ AS
 							   ,ID_Vice_Head_Department  
 							   ,Name_Department          
 							   ,ID_Branch                
-							   ,Department_Сode          
+							   ,Department_Code          
 							   ,[Description]            
                             )
                             SELECT  
@@ -694,7 +694,7 @@ AS
 									,D.ID_Vice_Head_Department  
 									,D.Name_Department          
 									,D.ID_Branch                
-									,D.Department_Сode          
+									,D.Department_Code          
 									,D.[Description]            
                             FROM    Deleted D
                 END
@@ -710,7 +710,7 @@ AS
 							   ,ID_Vice_Head_Department  
 							   ,Name_Department          
 							   ,ID_Branch                
-							   ,Department_Сode          
+							   ,Department_Code          
 							   ,[Description]                    
                             )
                             SELECT  
@@ -722,7 +722,7 @@ AS
 									,D.ID_Vice_Head_Department  
 									,D.Name_Department          
 									,D.ID_Branch                
-									,D.Department_Сode          
+									,D.Department_Code          
 									,D.[Description]                     
                             FROM    Deleted D
                 END  
@@ -739,7 +739,7 @@ AS
 							   ,ID_Vice_Head_Department  
 							   ,Name_Department          
 							   ,ID_Branch                
-							   ,Department_Сode          
+							   ,Department_Code          
 							   ,[Description]                     
                             )
                             SELECT   
@@ -751,7 +751,7 @@ AS
 									,I.ID_Vice_Head_Department 
 									,I.Name_Department         
 									,I.ID_Branch               
-									,I.Department_Сode         
+									,I.Department_Code         
 									,I.[Description]           
                     FROM    Inserted I
         END
@@ -769,7 +769,7 @@ ID_Vice_Head_Group      bigint         null,
 ID_Department           bigint         null,
 Name_Group              nvarchar(300)  null,
 ID_Branch               bigint         null,
-Department_Сode         int            null,
+Department_Code         int            null,
 [Description]           nvarchar(1000) null, 
 PRIMARY KEY CLUSTERED ( AuditID )
 ) on Employee_Group
@@ -797,7 +797,7 @@ AS
 							   ,ID_Department      
 							   ,Name_Group         
 							   ,ID_Branch          
-							   ,Department_Сode    
+							   ,Department_Code    
 							   ,[Description]                 
                             )
                             SELECT  
@@ -810,7 +810,7 @@ AS
 									,D.ID_Department      
 									,D.Name_Group         
 									,D.ID_Branch          
-									,D.Department_Сode    
+									,D.Department_Code    
 									,D.[Description]      
                             FROM    Deleted D
                 END
@@ -827,7 +827,7 @@ AS
 							   ,ID_Department      
 							   ,Name_Group         
 							   ,ID_Branch          
-							   ,Department_Сode    
+							   ,Department_Code    
 							   ,[Description]      
                             )
                             SELECT  
@@ -840,7 +840,7 @@ AS
 									,D.ID_Department      
 									,D.Name_Group         
 									,D.ID_Branch          
-									,D.Department_Сode    
+									,D.Department_Code    
 									,D.[Description]                          
                             FROM    Deleted D
                 END  
@@ -858,7 +858,7 @@ AS
 						,ID_Department      
 						,Name_Group         
 						,ID_Branch          
-						,Department_Сode    
+						,Department_Code    
 						,[Description]                         
                             )
                             SELECT   
@@ -871,7 +871,7 @@ AS
 									,I.ID_Department      
 									,I.Name_Group         
 									,I.ID_Branch          
-									,I.Department_Сode    
+									,I.Department_Code    
 									,I.[Description]      
                     FROM    Inserted I
         END
@@ -890,7 +890,7 @@ ID_Vice_Head_The_Subgroup  bigint         null,
 ID_Group                   bigint         null,
 Name_The_Subgroup          nvarchar(300)  null,
 ID_Branch                  bigint         null,
-Department_Сode            int            null,
+Department_Code            int            null,
 [Description]              nvarchar(1000) null,
 ID_Parent_The_Subgroup     bigint         null,
 PRIMARY KEY CLUSTERED ( AuditID )
@@ -919,7 +919,7 @@ AS
 							   ,ID_Group                 
 							   ,Name_The_Subgroup        
 							   ,ID_Branch                
-							   ,Department_Сode          
+							   ,Department_Code          
 							   ,[Description]            
 							   ,ID_Parent_The_Subgroup            
                             )
@@ -933,7 +933,7 @@ AS
                                     ,D.ID_Group                 
                                     ,D.Name_The_Subgroup        
                                     ,D.ID_Branch                
-                                    ,D.Department_Сode          
+                                    ,D.Department_Code          
                                     ,D.[Description]            
                                     ,D.ID_Parent_The_Subgroup                   
                             FROM    Deleted D
@@ -951,7 +951,7 @@ AS
                                ,ID_Group                 
                                ,Name_The_Subgroup        
                                ,ID_Branch                
-                               ,Department_Сode          
+                               ,Department_Code          
                                ,[Description]            
                                ,ID_Parent_The_Subgroup                          
                             )
@@ -965,7 +965,7 @@ AS
                                     ,D.ID_Group                 
                                     ,D.Name_The_Subgroup        
                                     ,D.ID_Branch                
-                                    ,D.Department_Сode          
+                                    ,D.Department_Code          
                                     ,D.[Description]            
                                     ,D.ID_Parent_The_Subgroup                       
                             FROM    Deleted D
@@ -984,7 +984,7 @@ AS
                                 ,ID_Group                 
                                 ,Name_The_Subgroup        
                                 ,ID_Branch                
-                                ,Department_Сode          
+                                ,Department_Code          
                                 ,[Description]            
                                 ,ID_Parent_The_Subgroup                         
                             )
@@ -998,7 +998,7 @@ AS
                                     ,I.ID_Group                 
                                     ,I.Name_The_Subgroup        
                                     ,I.ID_Branch                
-                                    ,I.Department_Сode          
+                                    ,I.Department_Code          
                                     ,I.[Description]            
                                     ,I.ID_Parent_The_Subgroup               
                     FROM    Inserted I
@@ -1322,7 +1322,7 @@ Operation              CHAR(1)        null,
 ID_Connection_String   bigint         null,
 Password               nvarchar(50)   null,
 Login                  nvarchar(100)  null,
-Date_Сreated           datetime       null,
+Date_Created           datetime       null,
 [Description]          nvarchar(1000) null,
 PRIMARY KEY CLUSTERED ( AuditID )
 ) on Employee_Group
@@ -1346,7 +1346,7 @@ AS
                                ,ID_Connection_String 
                                ,Password             
                                ,Login                
-                               ,Date_Сreated         
+                               ,Date_Created         
                                ,[Description]                 
                             )
                             SELECT  
@@ -1356,7 +1356,7 @@ AS
                                     ,D.ID_Connection_String 
                                     ,D.Password             
                                     ,D.Login                
-                                    ,D.Date_Сreated         
+                                    ,D.Date_Created         
                                     ,D.[Description]                   
                             FROM    Deleted D
                 END
@@ -1370,7 +1370,7 @@ AS
                                ,ID_Connection_String 
                                ,Password             
                                ,Login                
-                               ,Date_Сreated         
+                               ,Date_Created         
                                ,[Description]                           
                             )
                             SELECT  
@@ -1380,7 +1380,7 @@ AS
                                     ,D.ID_Connection_String 
                                     ,D.Password             
                                     ,D.Login                
-                                    ,D.Date_Сreated         
+                                    ,D.Date_Created         
                                     ,D.[Description]                           
                             FROM    Deleted D
                 END  
@@ -1395,7 +1395,7 @@ AS
                                ,ID_Connection_String 
                                ,Password             
                                ,Login                
-                               ,Date_Сreated         
+                               ,Date_Created         
                                ,[Description]                            
                             )
                             SELECT   
@@ -1405,7 +1405,7 @@ AS
                                     ,I.ID_Connection_String 
                                     ,I.Password             
                                     ,I.Login                
-                                    ,I.Date_Сreated         
+                                    ,I.Date_Created         
                                     ,I.[Description]                  
                     FROM    Inserted I
         END
@@ -2008,7 +2008,7 @@ go
 declare @i int  =1;
  while @i < = 1014
   begin 
-      insert into  Connection_String (Password,Login,Date_Сreated,[Description])
+      insert into  Connection_String (Password,Login,Date_Created,[Description])
 	  values 
 	  (
 	   (REPLACE(SUBSTRING(CONVERT(varchar(36), NEWID()), 1, 15), '-', '')),
@@ -2943,7 +2943,7 @@ go
 set nocount,xact_abort on
 go
 
-	  insert into  Department (Name_Department,ID_Branch,Department_Сode) 
+	  insert into  Department (Name_Department,ID_Branch,Department_Code) 
       values
         (
         'Финансовый депортамент',
@@ -2958,7 +2958,7 @@ go
 	    	   when round(rand()*4,0) = 4 then  FLOOR(round(rand()*9999999,0))
 	    else  round(rand()*9999999,0)  end) 
 	    )
-			  insert into  Department (Name_Department,ID_Branch,Department_Сode) 
+			  insert into  Department (Name_Department,ID_Branch,Department_Code) 
       values
         (
         'Депортамен HR',
@@ -2973,7 +2973,7 @@ go
 	    	   when round(rand()*4,0) = 4 then  FLOOR(round(rand()*9999999,0))
 	    else  round(rand()*9999999,0)  end) 
 	    )
-			  insert into  Department (Name_Department,ID_Branch,Department_Сode) 
+			  insert into  Department (Name_Department,ID_Branch,Department_Code) 
       values
         (
         'Депортамент продаж',
@@ -2988,7 +2988,7 @@ go
 	    	   when round(rand()*4,0) = 4 then  FLOOR(round(rand()*9999999,0))
 	    else  round(rand()*9999999,0)  end) 
 	    )
-			  insert into  Department (Name_Department,ID_Branch,Department_Сode) 
+			  insert into  Department (Name_Department,ID_Branch,Department_Code) 
       values
         (
         'Маркетинговый депортамент',
@@ -3003,7 +3003,7 @@ go
 	    	   when round(rand()*4,0) = 4 then  FLOOR(round(rand()*9999999,0))
 	    else  round(rand()*9999999,0)  end) 
 	    )
-			  insert into  Department (Name_Department,ID_Branch,Department_Сode) 
+			  insert into  Department (Name_Department,ID_Branch,Department_Code) 
       values
         (
         'Операционный депортамент',
@@ -3018,7 +3018,7 @@ go
 	    	   when round(rand()*4,0) = 4 then  FLOOR(round(rand()*9999999,0))
 	    else  round(rand()*9999999,0)  end) 
 	    )
-			  insert into  Department (Name_Department,ID_Branch,Department_Сode) 
+			  insert into  Department (Name_Department,ID_Branch,Department_Code) 
       values
         (
         'Депортамен IT (информационных технологий)',
@@ -3033,7 +3033,7 @@ go
 	    	   when round(rand()*4,0) = 4 then  FLOOR(round(rand()*9999999,0))
 	    else  round(rand()*9999999,0)  end) 
 	    )
-			  insert into  Department (Name_Department,ID_Branch,Department_Сode) 
+			  insert into  Department (Name_Department,ID_Branch,Department_Code) 
       values
         (
         'Юридический Депортамент',
@@ -3048,7 +3048,7 @@ go
 	    	   when round(rand()*4,0) = 4 then  FLOOR(round(rand()*9999999,0))
 	    else  round(rand()*9999999,0)  end) 
 	    )
-	  insert into  Department (Name_Department,ID_Branch,Department_Сode) 
+	  insert into  Department (Name_Department,ID_Branch,Department_Code) 
       values
         (
         'Депортамент службы безопастности',
@@ -3225,7 +3225,7 @@ go
 
 
 drop table if exists #t_3
-Select ID_Group,null as Department_Сode, 0 flag into #t_3 from dbo.[Group]
+Select ID_Group,null as Department_Code, 0 flag into #t_3 from dbo.[Group]
 go
 declare @i_3 int = 0;
 declare @s_1 int;
@@ -3233,14 +3233,14 @@ declare @ROWCOUNT_1 int;
 
 declare
  @ID_Group            bigint  
-,@Department_Сode     int
+,@Department_Code     int
 ,@flag                int
 declare mycur_1 cursor local fast_forward read_only for
 
 Select * from #t_3
 
 open  mycur_1
-fetch next from  mycur_1 into @ID_Group,@Department_Сode,@flag
+fetch next from  mycur_1 into @ID_Group,@Department_Code,@flag
  while @@FETCH_STATUS  = 0
     begin
         begin try
@@ -3257,12 +3257,12 @@ fetch next from  mycur_1 into @ID_Group,@Department_Сode,@flag
 				   where 1 = 1 
 				   and Gr.flag = 0 
 				   and Gr.ID_Group = @ID_Group 
-				   and Gr.Department_Сode is  null)  = 1
+				   and Gr.Department_Code is  null)  = 1
 			     begin
 	                update  Gr
-	                set Department_Сode = @s_1 
+	                set Department_Code = @s_1 
 	                from  dbo.#t_3  as Gr 
-			        where  Gr.flag = 0 and  Gr.ID_Group = @ID_Group and Gr.Department_Сode is  null					
+			        where  Gr.flag = 0 and  Gr.ID_Group = @ID_Group and Gr.Department_Code is  null					
 					set @ROWCOUNT_1 = @@ROWCOUNT
 
 			        print ' Случайное число внесено в Department_Сode в таблицу dbo.#t_3 --> ' + convert(nvarchar(10),@ID_Group)
@@ -3293,27 +3293,27 @@ fetch next from  mycur_1 into @ID_Group,@Department_Сode,@flag
              ERROR_LINE() as ErrorLine,
              ERROR_MESSAGE() as ErrorMessage;
 	    end catch
-     fetch next from  mycur_1 into @ID_Group,@Department_Сode,@flag
+     fetch next from  mycur_1 into @ID_Group,@Department_Code,@flag
    end
 close mycur_1
 deallocate mycur_1
 
 declare
  @ID_Group_2            bigint  
-,@Department_Сode_2     int
+,@Department_Code_2     int
 ,@flag_2                int;
 
  if exists (select flag from #t_3 where  not exists ( select flag from #t_3 where flag = 0))
 	   begin
 			   declare  mycur_2 cursor local fast_forward read_only for 
-			   select ID_Group,Department_Сode,flag from  #t_3 
+			   select ID_Group,Department_Code,flag from  #t_3 
 			   open  mycur_2
-			     fetch next from  mycur_2 into @ID_Group_2,@Department_Сode_2,@flag_2
+			     fetch next from  mycur_2 into @ID_Group_2,@Department_Code_2,@flag_2
 			       while @@FETCH_STATUS =  0 
 				       begin
 					       begin try
 						         update Gr_2
-								 set Department_Сode = @Department_Сode_2
+								 set Department_Code = @Department_Code_2
 								 from dbo.[Group] as Gr_2
 								 where @ID_Group_2 = ID_Group and @flag_2 = 1
 								 print ' По -->  ID_Group ' +  convert(nvarchar(10),@ID_Group_2) + ' Внесены изменения в таблице Group из таблицы #t_3' 
@@ -3329,7 +3329,7 @@ declare
 								    ERROR_LINE() as ErrorLine,
 								    ERROR_MESSAGE() as ErrorMessage;
 						   end catch
-                       fetch next from  mycur_2 into @ID_Group_2,@Department_Сode_2,@flag_2
+                       fetch next from  mycur_2 into @ID_Group_2,@Department_Code_2,@flag_2
 					   end
                close mycur_2
               deallocate mycur_2
@@ -3900,7 +3900,7 @@ values
 go
 
 drop table if exists #t_3
-Select ID_The_Subgroup,null as Department_Сode, 0 flag into #t_3 from dbo.The_Subgroup
+Select ID_The_Subgroup,null as Department_Code, 0 flag into #t_3 from dbo.The_Subgroup
 go
 declare @i_3 int = 0;
 declare @s_1 int;
@@ -3908,14 +3908,14 @@ declare @ROWCOUNT_1 int;
 
 declare
  @ID_The_Subgroup     bigint  
-,@Department_Сode     int
+,@Department_Code     int
 ,@flag                int
 declare mycur_3 cursor local fast_forward read_only for
 
 Select * from #t_3
 
 open  mycur_3
-fetch next from  mycur_3 into @ID_The_Subgroup,@Department_Сode,@flag
+fetch next from  mycur_3 into @ID_The_Subgroup,@Department_Code,@flag
  while @@FETCH_STATUS  = 0
     begin
         begin try
@@ -3932,12 +3932,12 @@ fetch next from  mycur_3 into @ID_The_Subgroup,@Department_Сode,@flag
 				   where 1 = 1 
 				   and Gr.flag = 0 
 				   and Gr.ID_The_Subgroup = @ID_The_Subgroup 
-				   and Gr.Department_Сode is  null)  = 1
+				   and Gr.Department_Code is  null)  = 1
 			     begin
 	                update  Gr
-	                set Department_Сode = @s_1 
+	                set Department_Code = @s_1 
 	                from  dbo.#t_3  as Gr 
-			        where  Gr.flag = 0 and  Gr.ID_The_Subgroup = @ID_The_Subgroup and Gr.Department_Сode is  null					
+			        where  Gr.flag = 0 and  Gr.ID_The_Subgroup = @ID_The_Subgroup and Gr.Department_Code is  null					
 					set @ROWCOUNT_1 = @@ROWCOUNT
 
 			        print ' Случайное число внесено в Department_Сode в таблицу dbo.#t_3 --> ' + convert(nvarchar(10),@ID_The_Subgroup)
@@ -3968,27 +3968,27 @@ fetch next from  mycur_3 into @ID_The_Subgroup,@Department_Сode,@flag
              ERROR_LINE() as ErrorLine,
              ERROR_MESSAGE() as ErrorMessage;
 	    end catch
-     fetch next from  mycur_3 into @ID_The_Subgroup,@Department_Сode,@flag
+     fetch next from  mycur_3 into @ID_The_Subgroup,@Department_Code,@flag
    end
 close mycur_3
 deallocate mycur_3
 
 declare
  @ID_The_Subgroup_2            bigint  
-,@Department_Сode_2     int
+,@Department_Code_2     int
 ,@flag_2                int;
 
  if exists (select flag from #t_3 where  not exists ( select flag from #t_3 where flag = 0))
 	   begin
 			   declare  mycur_4 cursor local fast_forward read_only for 
-			   select ID_The_Subgroup,Department_Сode,flag from  #t_3 
+			   select ID_The_Subgroup,Department_Code,flag from  #t_3 
 			   open  mycur_4
-			     fetch next from  mycur_4 into @ID_The_Subgroup_2,@Department_Сode_2,@flag_2
+			     fetch next from  mycur_4 into @ID_The_Subgroup_2,@Department_Code_2,@flag_2
 			       while @@FETCH_STATUS =  0 
 				       begin
 					       begin try
 						         update Gr_2
-								 set Department_Сode = @Department_Сode_2
+								 set Department_Code = @Department_Code_2
 								 from dbo.[The_Subgroup] as Gr_2
 								 where @ID_The_Subgroup_2 = ID_The_Subgroup and @flag_2 = 1
 								 print ' По -->  ID_Group ' +  convert(nvarchar(10),@ID_The_Subgroup_2) + ' Внесены изменения в таблице Group из таблицы #t_3' 
@@ -4004,7 +4004,7 @@ declare
 								    ERROR_LINE() as ErrorLine,
 								    ERROR_MESSAGE() as ErrorMessage;
 						   end catch
-                       fetch next from  mycur_4 into @ID_The_Subgroup_2,@Department_Сode_2,@flag_2
+                       fetch next from  mycur_4 into @ID_The_Subgroup_2,@Department_Code_2,@flag_2
 					   end
                close mycur_4
               deallocate mycur_4
@@ -7771,13 +7771,13 @@ e.ID_Employee                             as 'ID_Сотрудника'
 ,ps.Name_Post							  as 'Наименование_должности'
 ,c.Password								  as 'Пароль_УЗ'
 ,c.Login								  as 'Логин_УЗ'
-,c.Date_Сreated							  as 'Дата_заведения_УЗ'
+,c.Date_Created							  as 'Дата_заведения_УЗ'
 ,e.ID_Chief								  as 'Руководитель'
 ,e.Name									  as 'Имя'
 ,e.SurName								  as 'Фамилия'
 ,e.LastName								  as 'Отчество'
 ,e.Date_Of_Hiring						  as 'Дата_создания_карты_работника'
-,e.Date_Сard_Сreated_Employee			  as 'Дата_приема_на_работу'
+,e.Date_Card_Created_Employee			  as 'Дата_приема_на_работу'
 ,e.Residential_Address					  as 'Адрес_проживания'
 ,e.Home_Phone							  as 'Домашний_телефон'
 ,e.Cell_Phone							  as 'Сотовый_телефон'

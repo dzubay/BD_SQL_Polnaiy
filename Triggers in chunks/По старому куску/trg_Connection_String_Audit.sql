@@ -71,13 +71,13 @@ AS
                             DECLARE @OldID_Connection_String   bigint        ;
 							DECLARE @OldPassword               nvarchar(50)  ;
 							DECLARE @OldLogin                  nvarchar(100) ;
-							DECLARE @OldDate_Сreated           datetime      ;
+							DECLARE @OldDate_Created           datetime      ;
 							DECLARE @OldDescription            nvarchar(1000);
 
 							DECLARE @NewID_Connection_String   bigint        ;
 							DECLARE @NewPassword               nvarchar(50)  ;
 							DECLARE @NewLogin                  nvarchar(100) ;
-							DECLARE @NewDate_Сreated           datetime      ;
+							DECLARE @NewDate_Created           datetime      ;
 							DECLARE @NewDescription            nvarchar(1000);
 
 
@@ -101,7 +101,7 @@ AS
                                                @OldID_Connection_String = D.ID_Connection_String,
 											   @OldPassword             = D.[Password]          ,  
 											   @OldLogin                = D.[Login]             ,  
-											   @OldDate_Сreated         = D.Date_Сreated        ,
+											   @OldDate_Created         = D.Date_Created        ,
 											   @OldDescription          = D.[Description]          							
 							            FROM Deleted D
 										where @ID_entity_D = D.ID_Connection_String;
@@ -110,7 +110,7 @@ AS
                                                @NewID_Connection_String = I.ID_Connection_String,
 											   @NewPassword             = I.[Password]          ,  
 											   @NewLogin                = I.[Login]             ,  
-											   @NewDate_Сreated         = I.Date_Сreated        ,
+											   @NewDate_Created         = I.Date_Created        ,
 											   @NewDescription          = I.[Description]          	
 							            FROM inserted I									 
 							            where @ID_entity_D = I.ID_Connection_String;
@@ -125,9 +125,9 @@ AS
 							               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Login = Old ->"' +  ISNULL(@OldLogin,'') + ' " NEW -> " ' + isnull(@NewLogin,'') + '", ';
 							              end
 
-							           IF @NewDate_Сreated <> @OldDate_Сreated
+							           IF @NewDate_Created <> @OldDate_Created
 							              begin
-							               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Date_Сreated = Old ->"' +  ISNULL(CAST(Format(@OldDate_Сreated,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(Format(@NewDate_Сreated,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", ';
+							               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Date_Created = Old ->"' +  ISNULL(CAST(Format(@OldDate_Created,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(Format(@NewDate_Created,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", ';
 							              end
 							           
                                        IF @NewDescription <> @OldDescription
@@ -192,7 +192,7 @@ AS
                             DECLARE @OldID_Connection_String_2   bigint        ;
 							DECLARE @OldPassword_2               nvarchar(50)  ;
 							DECLARE @OldLogin_2                  nvarchar(100) ;
-							DECLARE @OldDate_Сreated_2           datetime      ;
+							DECLARE @OldDate_Created_2           datetime      ;
 							DECLARE @OldDescription_2            nvarchar(1000);
 
 							declare cr_2 cursor local fast_forward for
@@ -214,7 +214,7 @@ AS
                                                    @OldID_Connection_String_2 = D.ID_Connection_String,
 												   @OldPassword_2             = D.[Password]          , 
 												   @OldLogin_2                = D.[Login]             , 
-												   @OldDate_Сreated_2         = D.Date_Сreated        ,
+												   @OldDate_Created_2         = D.Date_Created        ,
 												   @OldDescription_2          = D.[Description]               
 							                FROM deleted D									 
 											where @ID_entity_D_2 = D.ID_Connection_String;
@@ -223,7 +223,7 @@ AS
 							                + 'ID_Connection_String'            +' = "'+  ISNULL(CAST(@OldID_Connection_String_2     AS NVARCHAR(50)),'')     + '", '
 						                    + 'Password'                +' = "'+  ISNULL(@OldPassword_2,'')+ '", '				
 							                + 'Login'             +' = "'+  ISNULL(@OldLogin_2,'')+ '", ' 
-							                + 'Date_Сreated'       +' = "'+  ISNULL(CAST(Format(@OldDate_Сreated_2,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", '
+							                + 'Date_Created'       +' = "'+  ISNULL(CAST(Format(@OldDate_Created_2,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", '
 							                + 'Description'         +' = "'+  ISNULL(@OldDescription_2  ,'') + '", '
 
                                            IF LEN(@ChangeDescription) > 0

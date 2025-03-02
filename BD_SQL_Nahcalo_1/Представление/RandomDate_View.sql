@@ -1,4 +1,4 @@
-
+﻿
 
 create view RandomDate_View  
 as

@@ -1,4 +1,4 @@
-USE [Magaz_DB]
+ï»¿USE [Magaz_DB]
 GO
 
 create procedure InsertEmployee
@@ -308,14 +308,14 @@ Name                       nvarchar(100)  null,
 SurName                    nvarchar(100)  null,
 LastName                   nvarchar(100)  null,
 Date_Of_Hiring             datetime       not null, 
-Date_Ñard_Ñreated_Employee datetime       not null default GetDate(),
+Date_Card_Created_Employee datetime       not null default GetDate(),
 Residential_Address        nvarchar(400)  null,
 Home_Phone                 nvarchar(30)   null,
 Cell_Phone                 nvarchar(30)   null,
 Image_Employees            varbinary(max) null,    
 Work_Phone                 nvarchar(30)   null,
 Mail                       nvarchar(150)  null,
-Pol                        char(1)        not null CHECK (Pol IN ('Ì', 'Æ')),
+Pol                        char(1)        not null CHECK (Pol IN ('Ðœ', 'Ð–')),
 Date_Of_Dismissal          datetime       null,
 Date_Of_Birth              datetime       not null,
 [Description]              nvarchar(1000) null, 

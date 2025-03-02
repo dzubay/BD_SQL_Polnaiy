@@ -1,21 +1,21 @@
-
+п»ї
 
 create view All_Branch
 as
 select 
-b.ID_Branch	           as 'ID_Филиала'
-,b.Id_Country		   as 'ID_Страны'
-,c.Name_Country		   as 'Наименование_страны'
-,c.Name_English		   as 'Наименование_на_английском'
-,c.Cod_Country_Phone   as 'Телефонный_код_страны'
-,b.City				   as 'Наименование_города_где_находится_филиал'
-,b.Address			   as 'Адрес_где_находится_филиал'
-,b.Name_Branch		   as 'Наименование_филиала'
-,b.Mail				   as 'Электроная_почта_филиала'
-,b.Phone			   as 'Телефон_филиала'
-,b.Postal_Code		   as 'Почтовый_индекс'
-,b.INN				   as 'ИНН'
-,b.Description         as 'Комментарии_к_филиалу'
+b.ID_Branch	           as 'ID_Р¤РёР»РёР°Р»Р°'
+,b.Id_Country		   as 'ID_РЎС‚СЂР°РЅС‹'
+,c.Name_Country		   as 'РќР°РёРјРµРЅРѕРІР°РЅРёРµ_СЃС‚СЂР°РЅС‹'
+,c.Name_English		   as 'РќР°РёРјРµРЅРѕРІР°РЅРёРµ_РЅР°_Р°РЅРіР»РёР№СЃРєРѕРј'
+,c.Cod_Country_Phone   as 'РўРµР»РµС„РѕРЅРЅС‹Р№_РєРѕРґ_СЃС‚СЂР°РЅС‹'
+,b.City				   as 'РќР°РёРјРµРЅРѕРІР°РЅРёРµ_РіРѕСЂРѕРґР°_РіРґРµ_РЅР°С…РѕРґРёС‚СЃСЏ_С„РёР»РёР°Р»'
+,b.Address			   as 'РђРґСЂРµСЃ_РіРґРµ_РЅР°С…РѕРґРёС‚СЃСЏ_С„РёР»РёР°Р»'
+,b.Name_Branch		   as 'РќР°РёРјРµРЅРѕРІР°РЅРёРµ_С„РёР»РёР°Р»Р°'
+,b.Mail				   as 'Р­Р»РµРєС‚СЂРѕРЅР°СЏ_РїРѕС‡С‚Р°_С„РёР»РёР°Р»Р°'
+,b.Phone			   as 'РўРµР»РµС„РѕРЅ_С„РёР»РёР°Р»Р°'
+,b.Postal_Code		   as 'РџРѕС‡С‚РѕРІС‹Р№_РёРЅРґРµРєСЃ'
+,b.INN				   as 'РРќРќ'
+,b.Description         as 'РљРѕРјРјРµРЅС‚Р°СЂРёРё_Рє_С„РёР»РёР°Р»Сѓ'
 from Branch as b
 inner join Country as c on c.ID_Country = b.ID_Country
 

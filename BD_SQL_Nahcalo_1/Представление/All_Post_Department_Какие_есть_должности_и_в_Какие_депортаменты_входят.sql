@@ -1,16 +1,16 @@
-
+п»ї
 
 create view All_Post_Department
 as
 select 
- p.ID_Post                                as 'ID_Должности'
-,p.Name_Post                              as 'Наименование_должности'
-,p.ID_Department                          as 'ID_депортамента'
-,d.Name_Department 						  as 'Наименование_депортамента'
-,p.ID_Group                               as 'ID_Группы'
-,g.Name_Group							  as 'Наименование_группы'
-,p.ID_The_Subgroup                        as 'ID_ПодГруппы'   
-,eg.Name_The_Subgroup					  as 'Наименование_подгруппы'
+ p.ID_Post                                as 'ID_Р”РѕР»Р¶РЅРѕСЃС‚Рё'
+,p.Name_Post                              as 'РќР°РёРјРµРЅРѕРІР°РЅРёРµ_РґРѕР»Р¶РЅРѕСЃС‚Рё'
+,p.ID_Department                          as 'ID_РґРµРїРѕСЂС‚Р°РјРµРЅС‚Р°'
+,d.Name_Department 						  as 'РќР°РёРјРµРЅРѕРІР°РЅРёРµ_РґРµРїРѕСЂС‚Р°РјРµРЅС‚Р°'
+,p.ID_Group                               as 'ID_Р“СЂСѓРїРїС‹'
+,g.Name_Group							  as 'РќР°РёРјРµРЅРѕРІР°РЅРёРµ_РіСЂСѓРїРїС‹'
+,p.ID_The_Subgroup                        as 'ID_РџРѕРґР“СЂСѓРїРїС‹'   
+,eg.Name_The_Subgroup					  as 'РќР°РёРјРµРЅРѕРІР°РЅРёРµ_РїРѕРґРіСЂСѓРїРїС‹'
 from Post p 
 inner join All_Endpoints_Grops as eg on  eg.ID_The_Subgroup       = p.ID_The_Subgroup
 inner join Department as d           on  d.ID_Department          = p.ID_Department

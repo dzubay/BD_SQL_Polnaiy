@@ -1,4 +1,4 @@
-
+ï»¿
 begin tran
 create table dbo.Group_Audit
 (
@@ -12,7 +12,7 @@ ID_Vice_Head_Group      bigint         null,
 ID_Department           bigint         null,
 Name_Group              nvarchar(300)  null,
 ID_Branch               bigint         null,
-Department_Ñode         int            null,
+Department_Code         int            null,
 [Description]           nvarchar(1000) null, 
 PRIMARY KEY CLUSTERED ( AuditID )
 ) on Employee_Group
@@ -40,7 +40,7 @@ AS
 							   ,ID_Department      
 							   ,Name_Group         
 							   ,ID_Branch          
-							   ,Department_Ñode    
+							   ,Department_Code    
 							   ,[Description]                 
                             )
                             SELECT  
@@ -53,7 +53,7 @@ AS
 									,D.ID_Department      
 									,D.Name_Group         
 									,D.ID_Branch          
-									,D.Department_Ñode    
+									,D.Department_Code    
 									,D.[Description]      
                             FROM    Deleted D
                 END
@@ -70,7 +70,7 @@ AS
 							   ,ID_Department      
 							   ,Name_Group         
 							   ,ID_Branch          
-							   ,Department_Ñode    
+							   ,Department_Code    
 							   ,[Description]      
                             )
                             SELECT  
@@ -83,7 +83,7 @@ AS
 									,D.ID_Department      
 									,D.Name_Group         
 									,D.ID_Branch          
-									,D.Department_Ñode    
+									,D.Department_Code    
 									,D.[Description]                          
                             FROM    Deleted D
                 END  
@@ -101,7 +101,7 @@ AS
 						,ID_Department      
 						,Name_Group         
 						,ID_Branch          
-						,Department_Ñode    
+						,Department_Code    
 						,[Description]                         
                             )
                             SELECT   
@@ -114,7 +114,7 @@ AS
 									,I.ID_Department      
 									,I.Name_Group         
 									,I.ID_Branch          
-									,I.Department_Ñode    
+									,I.Department_Code    
 									,I.[Description]      
                     FROM    Inserted I
         END

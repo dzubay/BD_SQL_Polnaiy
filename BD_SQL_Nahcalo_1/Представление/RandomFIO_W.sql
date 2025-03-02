@@ -1,4 +1,4 @@
-create view RandomFIO_W   
+﻿create view RandomFIO_W   
 as
 select 
 (
