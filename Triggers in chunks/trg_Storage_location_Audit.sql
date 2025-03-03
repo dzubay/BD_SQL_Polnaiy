@@ -10,7 +10,7 @@ CREATE TABLE Storage_location_Audit
 	Operation                 CHAR(1)               null,
     ChangeDescription         nvarchar(max)         null
 --    PRIMARY KEY CLUSTERED ( AuditID ) 
-) on Products_Group_2;
+) on Products_Group;
 
 
 go
@@ -71,6 +71,7 @@ AS
                            
                            DECLARE @OldID_Storage_location        bigint         ;
 						   DECLARE @OldID_Type_Storage_location   bigint         ;
+						   DECLARE @OldId_Status                  bigint         ; 
 						   DECLARE @OldKeySource                  bigint         ;
 						   DECLARE @OldName                       nvarchar(400)  ;
 						   DECLARE @OldCountry                    nvarchar(200)  ;
@@ -83,6 +84,7 @@ AS
 
                            DECLARE @NewID_Storage_location        bigint         ;
 						   DECLARE @NewID_Type_Storage_location   bigint         ;
+						   DECLARE @NewId_Status                  bigint         ; 
 						   DECLARE @NewKeySource                  bigint         ;
 						   DECLARE @NewName                       nvarchar(400)  ;
 						   DECLARE @NewCountry                    nvarchar(200)  ;
@@ -111,6 +113,7 @@ AS
 						                SELECT 
 							                @OldID_Storage_location     	= D.ID_Storage_location     ,
 							            	@OldID_Type_Storage_location	= D.ID_Type_Storage_location,
+											@OldId_Status                   = D.Id_Status               ,
 							            	@OldKeySource               	= D.KeySource               ,
 							            	@OldName                    	= D.Name                    ,
 							            	@OldCountry                 	= D.Country                 ,
@@ -126,6 +129,7 @@ AS
 							            SELECT 
 							                @NewID_Storage_location     	= I.ID_Storage_location     ,
 							            	@NewID_Type_Storage_location	= I.ID_Type_Storage_location,
+											@NewId_Status                   = I.Id_Status               ,
 							            	@NewKeySource               	= I.KeySource               ,
 							            	@NewName                    	= I.Name                    ,
 							            	@NewCountry                 	= I.Country                 ,
@@ -144,6 +148,11 @@ AS
                                             SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_Type_Storage_location  = Old ->"' +  ISNULL(CAST(@OldID_Type_Storage_location  AS NVARCHAR(20)),'') + ' " NEW -> "' + isnull(CAST(@NewID_Type_Storage_location  AS NVARCHAR(20)),'') + '", ';
 							               end
                                         
+										IF @NewId_Status  <> @OldId_Status 
+							               begin
+                                            SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Id_Status  = Old ->"' +  ISNULL(CAST(@OldId_Status  AS NVARCHAR(20)),'') + ' " NEW -> "' + isnull(CAST(@NewId_Status  AS NVARCHAR(20)),'') + '", ';
+							               end
+
 							            IF @NewKeySource <> @OldKeySource
 							               begin
 							                SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  KeySource = Old ->"' +  ISNULL(CAST(@OldKeySource AS NVARCHAR(50)),'') + ' " NEW -> "' + isnull(CAST(@NewKeySource AS NVARCHAR(50)),'') + '", ';
@@ -245,6 +254,7 @@ AS
 
 							DECLARE @OldID_Storage_location_2        bigint         ;
 							DECLARE @OldID_Type_Storage_location_2   bigint         ;
+							DECLARE @OldId_Status_2                  bigint         ; 
 							DECLARE @OldKeySource_2                  bigint         ;
 							DECLARE @OldName_2                       nvarchar(400)  ;
 							DECLARE @OldCountry_2                    nvarchar(200)  ;
@@ -273,6 +283,7 @@ AS
                                                 SELECT 
 							                        @OldID_Storage_location_2         = D.ID_Storage_location     ,
 							                    	@OldID_Type_Storage_location_2	  = D.ID_Type_Storage_location,
+													@OldId_Status_2                   = D.Id_Status               ,
 							                    	@OldKeySource_2               	  = D.KeySource               ,
 							                    	@OldName_2                    	  = D.Name                    ,
 							                    	@OldCountry_2                 	  = D.Country                 ,
@@ -288,6 +299,7 @@ AS
                                                 SET @ChangeDescription = 'Deleted: '
 							                    + 'ID_Storage_location'      +' = "'+  ISNULL(CAST(@OldID_Storage_location_2     AS NVARCHAR(20)),'')+ '", '
 							                    + 'ID_Type_Storage_location' +' = "'+  ISNULL(CAST(@OldID_Type_Storage_location_2  AS NVARCHAR(20)),'')+ '", '
+												+ 'Id_Status'                +' = "'+  ISNULL(CAST(@OldId_Status_2  AS NVARCHAR(20)),'')+ '", '
 							                    + 'KeySource'                +' = "'+  ISNULL(CAST(@OldKeySource_2 AS NVARCHAR(50)),'') + '", '
 							                    + 'Name'                     +' = "'+  ISNULL(@OldName_2,'')+ '", '				
 							                    + 'Country'                  +' = "'+  ISNULL(@OldCountry_2,'')+ '", '
