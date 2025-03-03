@@ -241,11 +241,22 @@ constraint PK_ID_Type_Storage_location      primary key (ID_Type_Storage_locatio
 
 go  
 
+create table Storage_location_status                                           --Статус Места Хранения
+(
+Id_Status                  bigint          not null identity (1,1)  check(Id_Status !=0),   -- ID Статуса Места Хранения
+TypeStoragelocationName    nvarchar(300)   not null,                                        -- Наименование Статуса Места Хранения
+SysTypeStoragelocationName nvarchar(300)   not null,                                        -- Системное имя Статуса Места Хранения
+[Description]              nvarchar(4000)  null,                                            -- Комментарии
+constraint  PK_Id_Storage_location_status   primary key (Id_Status),
+) on Products_Group
+
+go
 
 create table Storage_location                                                    -- Место хранение
 (
 ID_Storage_location        bigint              not null identity(1,1) check(ID_Storage_location != 0),   --ID Место хранение экземпляра
 ID_Type_Storage_location   bigint              not null,                                                 --ID Типа места хранение
+Id_Status                  bigint              not null,                                                 --ID Статуса Места Хранения
 KeySource                  bigint              null,                                                     --Источник ключа с другими БД или сервисами
 Name                       nvarchar(400)       not null,                                                 --Наименование места хранения
 Country                    nvarchar(200)       null,                                                     --Страна  места хранения
@@ -256,7 +267,8 @@ Phone                      nvarchar(30)        null,                            
 Date_Created               datetime            not null  default GetDate(),                              --Дата заведения в систему места хранения
 [Description]              nvarchar(4000)      null                                                      --Комментарий
 constraint PK_ID_Storage_location          primary key (ID_Storage_location),
-constraint FK_ID_Type_Storage_location     foreign key (ID_Type_Storage_location)        references [dbo].Type_Storage_location    on delete NO ACTION
+constraint FK_ID_Type_Storage_location     foreign key (ID_Type_Storage_location)        references [dbo].Type_Storage_location    on delete NO ACTION,
+constraint FK_ID_Status_Storage_location   Foreign key (Id_Status)                       references  [dbo].Storage_location_status on delete no action 
 )  on Products_Group_2
 
 go

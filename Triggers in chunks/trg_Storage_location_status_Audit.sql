@@ -9,7 +9,7 @@ CREATE TABLE Storage_location_status_Audit
 	Operation              CHAR(1)               null,
     ChangeDescription      nvarchar(max)         null
  --   PRIMARY KEY CLUSTERED ( AuditID ) 
-) on Products_Group;
+) on Products_Group_2;
 
 
 go
