@@ -1,10 +1,11 @@
 ﻿set nocount,xact_abort on
 go
 
-CREATE PROCEDURE RandomDateTimeNew
+CREATE PROCEDURE RandomDateTimeNew  --процедура для формирования случайной даты и времени 
 (
   @StartDate DATE,
-  @EndDate DATE
+  @EndDate DATE,
+  @RandomDate datetime output
 )
 AS
 BEGIN
@@ -13,6 +14,7 @@ BEGIN
     DECLARE @DataResult DATETIME;
     DECLARE @RandomTime DATETIME;
 	Declare @DataTimeResult Datetime;
+
 
     /*Проверяем, чтобы начальная дата была меньше конечной даты*/
     IF @StartDate >= @EndDate
@@ -44,10 +46,11 @@ BEGIN
 									  DATEADD (MILLISECOND, DATEPART(MILLISECOND,@RandomTime), @DataResult))));
 	SELECT @DataResult;
     */
-    select @DataTimeResult;
+    set @RandomDate = @DataTimeResult
 
 END;
 
 
 
---exec RandomDateTimeNew '19410101','20200202'
+
+--exec RandomDateTimeNew '19410101','20200202', @RandomDate output
