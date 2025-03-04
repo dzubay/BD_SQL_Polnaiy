@@ -3,7 +3,8 @@ go
 
 create procedure RandomPhone
    (
-   @TypePhone bit 
+   @TypePhone bit,
+   @TypePhoneRandom nvarchar(20) output
    )
 as
 begin;
@@ -15,7 +16,7 @@ begin;
              + REPLACE(STR(cast(round(rand()*999,0) as nvarchar(3)),3,0),' ','0') + '-' 
              + REPLACE(STR(cast(round(rand()*99,0) as nvarchar(2)),2,0),' ','0') + '-' 
              + REPLACE(STR(cast(round(rand()*99,0) as nvarchar(2)),2,0),' ','0');
-			 select @PhoneMobil  as PhoneMobil;
+			 set  @TypePhoneRandom = @PhoneMobil;
 			 return;
          end
 	  else 
@@ -23,10 +24,11 @@ begin;
 		     set @PhoneHome =  REPLACE(cast(round(FLOOR(899*rand()+100),0) as nvarchar(3)),' ','0') + '-' 
              + REPLACE(STR(cast(round(rand()*99,0) as nvarchar(2)),2,0),' ','0') + '-' 
              + REPLACE(STR(cast(round(rand()*99,0) as nvarchar(2)),2,0),' ','0');
-			 select @PhoneHome  as PhoneHome;
+			 set  @TypePhoneRandom = @PhoneHome;
 			 return;
 		 end;  
 end;
 
 
---exec RandomPhone 0
+--exec RandomPhone 0, @TypePhoneRandom output
+--exec RandomPhone 0, @TypePhoneRandom output
