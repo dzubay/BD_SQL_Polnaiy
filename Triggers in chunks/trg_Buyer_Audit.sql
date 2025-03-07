@@ -11,7 +11,7 @@ CREATE TABLE Buyer_Audit
 	Operation              CHAR(1)               null,
     ChangeDescription      nvarchar(max)        null
 --    PRIMARY KEY CLUSTERED ( AuditID ) 
-) on Costomers_Group_2;
+) on Costomers_Group;
 
 
 go
@@ -70,28 +70,34 @@ AS
 							DECLARE @ModifiedDate_I DATETIME     ;
 							DECLARE @Name_action_I  char(1)      ;
 
-							DECLARE @OldId_buyer                    bigint       ;
-							DECLARE @OldID_Connection_Buyer         bigint       ;
-							DECLARE @OldId_Status                   bigint       ;
-							DECLARE @OldName                        nvarchar(100);
-							DECLARE @OldSurName                     nvarchar(100);
-							DECLARE @OldLastName                    nvarchar(100);
-							DECLARE @OldMail                        nvarchar(250);
-							DECLARE @OldPol                         char(1)      ;
-							DECLARE @OldPhone                       nvarchar(30) ;
-							DECLARE @OldDate_Of_Birth               datetime     ;
+							DECLARE @OldId_buyer                    bigint        ;
+							DECLARE @OldID_Connection_Buyer         bigint        ;
+							DECLARE @OldId_Status                   bigint        ;
+							DECLARE @OldId_Buyer_Type               bigint        ;
+							DECLARE @OldName                        nvarchar(100) ;
+							DECLARE @OldSurName                     nvarchar(100) ;
+							DECLARE @OldLastName                    nvarchar(100) ;
+							DECLARE @OldMail                        nvarchar(250) ;
+							DECLARE @OldPol                         char(1)       ;
+							DECLARE @OldPhone                       nvarchar(30)  ;
+							DECLARE @OldDate_Of_Birth               datetime      ;
+							DECLARE @OldPremium                     bit           ;
+							DECLARE @OldThe_resident                bit			  ;
 							DECLARE @OldDescription                 nvarchar(4000);
 							
-							DECLARE @NewId_buyer                    bigint       ;
-							DECLARE @NewID_Connection_Buyer         bigint       ;
-							DECLARE @NewId_Status                   bigint       ;
-							DECLARE @NewName                        nvarchar(100);
-							DECLARE @NewSurName                     nvarchar(100);
-							DECLARE @NewLastName                    nvarchar(100);
-							DECLARE @NewMail                        nvarchar(250);
-							DECLARE @NewPol                         char(1)      ;
-							DECLARE @NewPhone                       nvarchar(30) ;
-							DECLARE @NewDate_Of_Birth               datetime     ;
+							DECLARE @NewId_buyer                    bigint        ;
+							DECLARE @NewID_Connection_Buyer         bigint        ;
+							DECLARE @NewId_Status                   bigint        ;
+							DECLARE @NewId_Buyer_Type               bigint        ;
+							DECLARE @NewName                        nvarchar(100) ;
+							DECLARE @NewSurName                     nvarchar(100) ;
+							DECLARE @NewLastName                    nvarchar(100) ;
+							DECLARE @NewMail                        nvarchar(250) ;
+							DECLARE @NewPol                         char(1)       ;
+							DECLARE @NewPhone                       nvarchar(30)  ;
+							DECLARE @NewDate_Of_Birth               datetime      ;
+							DECLARE @NewPremium                     bit           ;
+							DECLARE @NewThe_resident                bit			  ;
 							DECLARE @NewDescription                 nvarchar(4000);
 
 
@@ -115,6 +121,7 @@ AS
 							                @OldId_buyer             = D.Id_buyer           , 
 							            	@OldID_Connection_Buyer  = D.ID_Connection_Buyer,
 							            	@OldId_Status            = D.Id_Status          ,
+											@OldId_Buyer_Type        = D.Id_Buyer_Type      ,
 							            	@OldName                 = D.Name               ,
 							            	@OldSurName              = D.SurName            ,
 							            	@OldLastName             = D.LastName           ,
@@ -122,6 +129,8 @@ AS
 							            	@OldPol                  = D.Pol                ,
 							            	@OldPhone                = D.Phone              ,
 							            	@OldDate_Of_Birth        = D.Date_Of_Birth      ,
+											@OldPremium     		 = D.Premium            ,
+											@OldThe_resident         = D.The_resident		,
 							            	@OldDescription          = D.[Description]        							
 							            FROM Deleted D
 										where @ID_entity_D = D.Id_buyer;
@@ -130,6 +139,7 @@ AS
 							                @NewId_buyer             = I.Id_buyer           , 
 							            	@NewID_Connection_Buyer  = I.ID_Connection_Buyer,
 							            	@NewId_Status            = I.Id_Status          ,
+											@NewId_Buyer_Type        = I.Id_Buyer_Type      ,
 							            	@NewName                 = I.Name               ,
 							            	@NewSurName              = I.SurName            ,
 							            	@NewLastName             = I.LastName           ,
@@ -137,6 +147,8 @@ AS
 							            	@NewPol                  = I.Pol                ,
 							            	@NewPhone                = I.Phone              ,
 							            	@NewDate_Of_Birth        = I.Date_Of_Birth      ,
+											@NewPremium     		 = I.Premium            ,
+											@NewThe_resident         = I.The_resident		,
 							            	@NewDescription          = I.[Description]        	
 							            FROM inserted I									 
 							            where @ID_entity_D = I.Id_buyer;
@@ -151,6 +163,12 @@ AS
 							              begin
 							               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Id_Status = Old ->"' +  ISNULL(CAST(@OldId_Status AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewId_Status AS NVARCHAR(50)),'') + '", ';
 							              end
+
+                                       IF @NewId_Buyer_Type <> @OldId_Buyer_Type
+							              begin
+							               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Id_Buyer_Type = Old ->"' +  ISNULL(CAST(@OldId_Buyer_Type AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewId_Buyer_Type AS NVARCHAR(50)),'') + '", ';
+							              end
+
 							           IF @NewName <> @OldName 
 							              begin
 							               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Name = Old ->"' +  ISNULL(@OldName,'') + ' " NEW -> " ' + isnull(@NewName,'') + '", ';
@@ -182,6 +200,16 @@ AS
 							              begin
 							               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Date_Of_Birth = Old ->"' +  ISNULL(CAST(Format(@OldDate_Of_Birth,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(Format(@NewDate_Of_Birth,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", ';
 							              end
+
+									   IF @NewPremium <> @OldPremium
+							                 begin
+							                  SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Premium = Old ->"' +  ISNULL(CAST(@OldPremium AS NVARCHAR(1)),'') + ' " NEW -> "' + isnull(CAST(@NewPremium AS NVARCHAR(1)),'') + '", ';
+							                 end
+
+                                       IF @NewThe_resident <> @OldThe_resident
+							                 begin
+							                  SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  The_resident = Old ->"' +  ISNULL(CAST(@OldThe_resident AS NVARCHAR(1)),'') + ' " NEW -> "' + isnull(CAST(@NewThe_resident AS NVARCHAR(1)),'') + '", ';
+							                 end
 							           
                                        IF @NewDescription <> @OldDescription
 							              begin
@@ -244,6 +272,7 @@ AS
                             DECLARE @OldId_buyer_2                    bigint         ;
 							DECLARE @OldID_Connection_Buyer_2         bigint       	 ;
 							DECLARE @OldId_Status_2                   bigint       	 ;
+							DECLARE @OldId_Buyer_Type_2               bigint         ;
 							DECLARE @OldName_2                        nvarchar(100)	 ;
 							DECLARE @OldSurName_2                     nvarchar(100)	 ;
 							DECLARE @OldLastName_2                    nvarchar(100)	 ;
@@ -251,6 +280,8 @@ AS
 							DECLARE @OldPol_2                         char(1)      	 ;
 							DECLARE @OldPhone_2                       nvarchar(30) 	 ;
 							DECLARE @OldDate_Of_Birth_2               datetime     	 ;
+							DECLARE @OldPremium_2                     bit            ;
+							DECLARE @OldThe_resident_2                bit			 ;
 							DECLARE @OldDescription_2                 nvarchar(4000) ;
 
 
@@ -274,6 +305,7 @@ AS
 							                    @OldId_buyer_2             = D.Id_buyer           , 
 							                	@OldID_Connection_Buyer_2  = D.ID_Connection_Buyer,
 							                	@OldId_Status_2            = D.Id_Status          ,
+												@OldId_Buyer_Type_2        = D.Id_Buyer_Type      ,
 							                	@OldName_2                 = D.Name               ,
 							                	@OldSurName_2              = D.SurName            ,
 							                	@OldLastName_2             = D.LastName           ,
@@ -281,6 +313,8 @@ AS
 							                	@OldPol_2                  = D.Pol                ,
 							                	@OldPhone_2                = D.Phone              ,
 							                	@OldDate_Of_Birth_2        = D.Date_Of_Birth      ,
+												@OldPremium_2              = D.Premium            ,
+												@OldThe_resident_2		   = D.The_resident		  ,
 							                	@OldDescription_2          = D.[Description]        
 							                FROM deleted D									 
 											where @ID_entity_D_2 = D.Id_buyer;
@@ -289,13 +323,16 @@ AS
 							                + 'Id_buyer'            +' = "'+  ISNULL(CAST(@OldId_buyer_2     AS NVARCHAR(50)),'')     + '", '
 							                + 'ID_Connection_Buyer' +' = "'+  ISNULL(CAST(@OldID_Connection_Buyer_2  AS NVARCHAR(50)),'') + '", '
 							                + 'Id_Status'           +' = "'+  ISNULL(CAST(@OldId_Status_2 AS NVARCHAR(50)),'') + '", '
+											+ 'Id_Buyer_Type'       +' = "'+  ISNULL(CAST(@OldId_Buyer_Type_2 AS NVARCHAR(50)),'') + '", '
 							                + 'Name'                +' = "'+  ISNULL(@OldName_2,'')+ '", '				
 							                + 'SurName'             +' = "'+  ISNULL(@OldSurName_2,'')+ '", '
 							                + 'LastName'            +' = "'+  ISNULL(@OldLastName_2,'') + '", '
 							                + 'Mail'                +' = "'+  ISNULL(@OldMail_2,'')+ '", '
-							                + 'Pol'                 +' = "'+  ISNULL(CAST(@OldPol_2 AS NVARCHAR(1)),'') 	   + '", '
+							                + 'Pol'                 +' = "'+  ISNULL(CAST(@OldPol_2 AS NVARCHAR(1)),'')+ '", '
 							                + 'Phone'               +' = "'+  ISNULL(@OldPhone_2,'')+ '", '
 							                + 'Date_Of_Birth'       +' = "'+  ISNULL(CAST(Format(@OldDate_Of_Birth_2,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", '
+											+ 'Premium'             +' = "'+  ISNULL(CAST(@OldPremium_2 AS NVARCHAR(1)),'')+ '", '
+											+ 'The_resident'        +' = "'+  ISNULL(CAST(@OldThe_resident_2 AS NVARCHAR(1)),'')+ '", '
 							                + 'Description'         +' = "'+  ISNULL(@OldDescription_2  ,'') + '", '
 
                                            IF LEN(@ChangeDescription) > 0

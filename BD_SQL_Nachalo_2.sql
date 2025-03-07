@@ -115,11 +115,23 @@ constraint  PK_Id_Buyer_status   primary key (Id_Status),
 
 go
 
+create table Buyer_Type                                              --Тип покупателя
+(
+Id_Buyer_Type              bigint          not null identity (1,1)  check(Id_Buyer_Type !=0),  -- ID Тип покупателя
+Name                       nvarchar(300)   not null,                                           -- Наименования типа покупателя
+SysTypeBuyerTypeName       nvarchar(300)   not null,                                           -- Системное имя типа покупателя
+[Description]              nvarchar(4000)  null,                                               -- Комментарий
+constraint  PK_Id_Buyer_Type   primary key (Id_Buyer_Type)
+) on Costomers_Group_2
+
+go
+
 create  table Buyer                                                     --Покупатель
 (
 Id_buyer                    bigint         not null identity (1,1)check(Id_buyer !=0),      -- ID Покупателя
 ID_Connection_Buyer         bigint         not null,                                        -- ID данных о личном аккаунте на ресурсе покупателя 
 Id_Status                   bigint         null,                                            -- ID Статуса покупателя
+Id_Buyer_Type               bigint         not null,                                        -- ID Тип покупателя
 Name                        nvarchar(100)  null,                                            -- Имя
 SurName                     nvarchar(100)  null,                                            -- Фамилия
 LastName                    nvarchar(100)  null,                                            -- Отчество
@@ -127,10 +139,13 @@ Mail                        nvarchar(250)  null,                                
 Pol                         char(1)        not null CHECK (Pol IN ('М', 'Ж')),              -- Пол
 Phone                       nvarchar(30)   null,                                            -- Действующий телефон покупателя
 Date_Of_Birth               datetime       null,                                            -- Дата роождения
+Premium                     bit            not null,                                        -- Премиум аккаунт или нет 0\1
+The_resident                bit            not null,                                        -- Резидент или не Резидент 0\1
 [Description]               nvarchar(4000) null,                                            -- Комментарий
 constraint PK_Id_buyer             primary key (Id_buyer),
 constraint FK_ID_Connection_Buyer  foreign key (ID_Connection_Buyer)   references dbo.Connection_Buyer  on delete NO ACTION,
-constraint FK_Id_Buyer_statuss     foreign key (Id_Status)             references dbo.Buyer_status      on delete NO ACTION
+constraint FK_Id_Buyer_statuss     foreign key (Id_Status)             references dbo.Buyer_status      on delete NO ACTION,
+constraint FK_Id_Buyer_Type        foreign key (Id_Buyer_Type)         references dbo.Buyer_Type        on delete NO ACTION
 ) on Costomers_Group_2
 go
 
