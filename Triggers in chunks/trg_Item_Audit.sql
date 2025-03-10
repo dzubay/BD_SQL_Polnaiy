@@ -11,7 +11,7 @@ CREATE TABLE Item_Audit
 	Operation              CHAR(1)               null,
     ChangeDescription      nvarchar(Max)         null
 --    PRIMARY KEY CLUSTERED ( AuditID ) 
-) on Products_Group_2;
+) on Products_Group;
 
 
 go
@@ -73,6 +73,8 @@ AS
                            DECLARE @OldId_Item                     bigint         	;
 						   DECLARE @OldID_product_measurement      bigint         	;
 						   DECLARE @OldID_TypeItem                 bigint         	;
+						   DECLARE @OldID_Species_Item             bigint           ;
+						   DECLARE @OldId_Item_Status              bigint           ;
 						   DECLARE @OldArticle_number              nvarchar(300)  	;
 						   DECLARE @OldName_Item                   nvarchar(500)  	;
 						   DECLARE @OldImage_Item                  varbinary(max) 	;
@@ -90,6 +92,8 @@ AS
                            DECLARE @NewId_Item                     bigint         	;
 						   DECLARE @NewID_product_measurement      bigint         	;
 						   DECLARE @NewID_TypeItem                 bigint         	;
+						   DECLARE @NewID_Species_Item             bigint           ;
+						   DECLARE @NewId_Item_Status              bigint           ;
 						   DECLARE @NewArticle_number              nvarchar(300)  	;
 						   DECLARE @NewName_Item                   nvarchar(500)  	;
 						   DECLARE @NewImage_Item                  varbinary(max) 	;
@@ -125,6 +129,8 @@ AS
 							                        @NewId_Item                    =  I.Id_Item                ,
 							                		@NewID_product_measurement	   =  I.ID_product_measurement ,
 							                		@NewID_TypeItem           	   =  I.ID_TypeItem            ,
+													@NewID_Species_Item			   =  I.ID_Species_Item        ,
+													@NewId_Item_Status             =  I.Id_Item_Status 		   ,
 							                		@NewArticle_number        	   =  I.Article_number         ,
 							                		@NewName_Item             	   =  I.Name_Item              ,
 							                		@NewImage_Item            	   =  I.Image_Item             ,
@@ -142,21 +148,23 @@ AS
 											where @ID_entity_D = I.Id_Item;
 							
 							                SELECT 
-							                        @oldId_Item                    =  D.Id_Item                ,
-							                		@oldID_product_measurement	   =  D.ID_product_measurement ,
-							                		@oldID_TypeItem           	   =  D.ID_TypeItem            ,
-							                		@oldArticle_number        	   =  D.Article_number         ,
-							                		@oldName_Item             	   =  D.Name_Item              ,
-							                		@oldImage_Item            	   =  D.Image_Item             ,
-							                		@oldManufacturer          	   =  D.Manufacturer           ,
-							                		@oldCountry               	   =  D.Country                ,
-							                		@oldCity                  	   =  D.City                   ,
-							                		@oldAdress                	   =  D.Adress                 ,
-							                		@oldMail                  	   =  D.Mail                   ,
-							                		@oldPhone                 	   =  D.Phone                  ,
-							                		@oldLogo                  	   =  D.Logo                   ,
-							                		@oldDate_Created          	   =  D.Date_Created           ,
-							                		@oldQuantity                   =  D.Quantity               ,
+							                        @OldId_Item                    =  D.Id_Item                ,
+							                		@OldID_product_measurement	   =  D.ID_product_measurement ,
+							                		@OldID_TypeItem           	   =  D.ID_TypeItem            ,
+													@OldID_Species_Item			   =  D.ID_Species_Item        ,
+													@OldId_Item_Status             =  D.Id_Item_Status 		   ,
+							                		@OldArticle_number        	   =  D.Article_number         ,
+							                		@OldName_Item             	   =  D.Name_Item              ,
+							                		@OldImage_Item            	   =  D.Image_Item             ,
+							                		@OldManufacturer          	   =  D.Manufacturer           ,
+							                		@OldCountry               	   =  D.Country                ,
+							                		@OldCity                  	   =  D.City                   ,
+							                		@OldAdress                	   =  D.Adress                 ,
+							                		@OldMail                  	   =  D.Mail                   ,
+							                		@OldPhone                 	   =  D.Phone                  ,
+							                		@OldLogo                  	   =  D.Logo                   ,
+							                		@OldDate_Created          	   =  D.Date_Created           ,
+							                		@OldQuantity                   =  D.Quantity               ,
 							                		@OldDescription                =  D.[Description]         								
 							                FROM Deleted D
 											where @ID_entity_D = D.Id_Item;
@@ -169,6 +177,16 @@ AS
 							                IF @NewID_TypeItem <> @OldID_TypeItem
 							                   begin
 							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_TypeItem = Old ->"' +  ISNULL(CAST(@OldID_TypeItem AS NVARCHAR(20)),'') + ' " NEW -> " ' + isnull(CAST(@NewID_TypeItem AS NVARCHAR(20)),'') + '", ';
+							                   end
+
+                                            IF @NewID_Species_Item <> @OldID_Species_Item
+							                   begin
+							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_Species_Item = Old ->"' +  ISNULL(CAST(@OldID_Species_Item AS NVARCHAR(20)),'') + ' " NEW -> " ' + isnull(CAST(@NewID_Species_Item AS NVARCHAR(20)),'') + '", ';
+							                   end
+
+											IF @NewId_Item_Status <> @OldId_Item_Status
+							                   begin
+							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Id_Item_Status = Old ->"' +  ISNULL(CAST(@OldId_Item_Status AS NVARCHAR(20)),'') + ' " NEW -> " ' + isnull(CAST(@NewId_Item_Status AS NVARCHAR(20)),'') + '", ';
 							                   end
 					                        
 							                IF @NewArticle_number <> @OldArticle_number
@@ -293,6 +311,8 @@ AS
 						   DECLARE @OldId_Item_2                       bigint         ;
 						   DECLARE @OldID_product_measurement_2        bigint         ;
 						   DECLARE @OldID_TypeItem_2                   bigint         ;
+						   DECLARE @OldID_Species_Item_2               bigint         ;
+						   DECLARE @OldId_Item_Status_2                bigint         ;
 						   DECLARE @OldArticle_number_2                nvarchar(300)  ;
 						   DECLARE @OldName_Item_2                     nvarchar(500)  ;
 						   DECLARE @OldImage_Item_2                    varbinary(max) ;
@@ -327,6 +347,8 @@ AS
                                                     @OldId_Item_2                   = D.Id_Item               ,
 							                    	@OldID_product_measurement_2    = D.ID_product_measurement,
 							                    	@OldID_TypeItem_2               = D.ID_TypeItem           ,
+													@OldID_Species_Item_2			= D.ID_Species_Item       ,
+													@OldId_Item_Status_2            = D.Id_Item_Status 		  ,
 							                    	@OldArticle_number_2            = D.Article_number        ,
 							                    	@OldName_Item_2                 = D.Name_Item             ,
 							                    	@OldImage_Item_2                = D.Image_Item            ,
@@ -347,6 +369,8 @@ AS
 							                    + 'Id_Item'                +' = "'+  ISNULL(CAST(@OldId_Item_2 AS NVARCHAR(20)),'')+ '", '
 							                    + 'ID_product_measurement' +' = "'+  ISNULL(CAST(@OldID_product_measurement_2 AS NVARCHAR(20)),'')+ '", '
 							                    + 'ID_TypeItem'            +' = "'+  ISNULL(CAST(@OldID_TypeItem_2 AS NVARCHAR(20)),'')+ '", '
+                                                + 'ID_Species_Item'        +' = "'+  ISNULL(CAST(@OldID_Species_Item_2 AS NVARCHAR(20)),'')+ '", '
+												+ 'Id_Item_Status'         +' = "'+  ISNULL(CAST(@OldId_Item_Status_2 AS NVARCHAR(20)),'')+ '", '
 							                    + 'Article_number'         +' = "'+  ISNULL(@OldArticle_number_2,'')+ '", '
 							                    + 'Name_Item'              +' = "'+  ISNULL(@OldName_Item_2,'')+ '", '
 							                    + 'Image_Item'             +' = "'+  ISNULL(cast(@OldImage_Item_2 as varchar(max)),'')+ '", '

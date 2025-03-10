@@ -219,11 +219,36 @@ Constraint PK_ID_product_measurement  primary key (ID_product_measurement)
 
 go
 
+create table Species_Item                                            --Вид товара
+(
+ID_Species_Item                 bigint          not null identity (1,1) check(ID_Species_Item !=0),        --ID Вида товара 
+SpeciesItemName                 nvarchar(300)   not null,                                                  --Наименование Вида товара 
+SysSpeciesItemName              nvarchar(300)   not null,                                                  --Системное Наименование Вида товара 
+[Description]                   nvarchar(4000)  null                                                       --Комментарий
+Constraint PK_ID_Species_Item  primary key (ID_Species_Item)
+) on Products_Group_2
+
+go
+
+
+create table Item_status                                              --Статус Товара
+(
+Id_Item_Status             bigint          not null identity (1,1)  check(Id_Item_Status !=0),  -- ID Статуса Товара 
+ItemStatus                 nvarchar(300)   not null,                                            -- Наименования статуса Товара
+SysItemStatusName          nvarchar(300)   not null,                                            -- Системное имя статуса Товара
+[Description]              nvarchar(4000)  null,                                                -- Комментарий
+constraint  PK_Id_Item_Status   primary key (Id_Item_Status)
+) on Products_Group_2
+
+go
+
 create table Item                                                                       --Товар
 (
 Id_Item                    bigint          not null identity (1,1) check(Id_Item !=0),              --ID Карточки товра
 ID_product_measurement     bigint          not null,                                                --ID Типа измерения товара  
 ID_TypeItem                bigint          not null,                                                --ID Типа товара
+ID_Species_Item            bigint          not null,                                                --ID Вида товара
+Id_Item_Status             bigint          not null,                                                --ID Статуса Товара
 Article_number             nvarchar(300)   null,                                                    --Артикул товара
 Name_Item                  nvarchar(500)   null,                                                    --Наименование товара
 Image_Item                 varbinary(max)  null,                                                    --Изображение товара
@@ -239,7 +264,9 @@ Quantity                   int             null,                                
 [Description]              nvarchar(4000)  null                                                     --Комментарий 
 constraint PK_Id_Item  primary key (Id_Item),
 constraint FK_ID_TypeItem                   foreign key (ID_TypeItem)              references [dbo].TypeItem                       on delete NO ACTION,
-constraint FK_ID_product_measurement        foreign key (ID_product_measurement)   references [dbo].Type_of_product_measurement    on delete NO ACTION
+constraint FK_ID_product_measurement        foreign key (ID_product_measurement)   references [dbo].Type_of_product_measurement    on delete NO ACTION,
+constraint FK_ID_Species_Item               foreign key (ID_Species_Item)          references [dbo].Species_Item                   on delete NO ACTION,
+constraint FK_Id_Item_Status                foreign key (Id_Item_Status)           references [dbo].Item_status                    on delete NO ACTION
 ) on Products_Group_2
 go
 
@@ -263,7 +290,7 @@ TypeStoragelocationName    nvarchar(300)   not null,                            
 SysTypeStoragelocationName nvarchar(300)   not null,                                        -- Системное имя Статуса Места Хранения
 [Description]              nvarchar(4000)  null,                                            -- Комментарии
 constraint  PK_Id_Storage_location_status   primary key (Id_Status),
-) on Products_Group
+) on Products_Group_2
 
 go
 
