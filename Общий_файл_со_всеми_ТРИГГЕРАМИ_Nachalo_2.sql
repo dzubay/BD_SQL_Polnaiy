@@ -542,10 +542,10 @@ AS
 							                where @ID_entity_D = I.Id_Buyer_Type;	
 
 							                SELECT 
-                                                  @NewId_Buyer_Type         = D.Id_Buyer_Type       ,
-							                	  @NewName                 	= D.Name                ,
-							                	  @NewSysTypeBuyerTypeName 	= D.SysTypeBuyerTypeName,  	
-							                	  @NewDescription      	    = D.[Description]      	
+                                                  @OldId_Buyer_Type         = D.Id_Buyer_Type       ,
+							                	  @OldName                 	= D.Name                ,
+							                	  @OldSysTypeBuyerTypeName 	= D.SysTypeBuyerTypeName,  	
+							                	  @OldDescription      	    = D.[Description]      	
 							                FROM Deleted D																		 
 											 where @ID_entity_D = D.Id_Buyer_Type; 
 

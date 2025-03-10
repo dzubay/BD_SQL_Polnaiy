@@ -1,32 +1,21 @@
-﻿create table Species_Item                                            --Вид товара
-(
-ID_Species_Item                 bigint          not null identity (1,1) check(ID_Species_Item !=0),        --ID Вида товара 
-SpeciesItemName                 nvarchar(300)   not null,                                                  --Наименование Вида товара 
-SysSpeciesItemName              nvarchar(300)   not null,                                                  --Системное Наименование Вида товара 
-[Description]                   nvarchar(4000)  null                                                       --Комментарий
-Constraint PK_ID_Species_Item  primary key (ID_Species_Item)
-) on Products_Group
-
-go
-
-
+﻿
 begin tran 
 
-CREATE TABLE Buyer_Type_Audit
+CREATE TABLE Item_status_Audit
 (
     AuditID                bigint IDENTITY(1,1)  not null,
-    Id_Buyer_Type          bigint                null,
+    Id_Item_Status         bigint                null,
  	ModifiedBy             nVARCHAR(128)         null,
     ModifiedDate           DATETIME              NOT NULL DEFAULT GETDATE(),
 	Operation              CHAR(1)               null,
     ChangeDescription      nvarchar(max)         null
  --   PRIMARY KEY CLUSTERED ( AuditID ) 
-) on Costomers_Group;
+) on Products_Group;
 
 
 go
 
-CREATE TRIGGER trg_Buyer_Type_Audit ON Buyer_Type
+CREATE TRIGGER trg_Item_status_Audit ON Item_status
 AFTER INSERT, UPDATE, DELETE
 
 AS
@@ -63,11 +52,11 @@ AS
 							);
 
 							insert into @t_U_D (ID_entity,login_name,ModifiedDate,Name_action)
-							SELECT d.Id_Buyer_Type,@login_name,GETDATE(),'U'  
+							SELECT d.Id_Item_Status,@login_name,GETDATE(),'U'  
 							FROM  Deleted D
 
 							insert into @t_U_I (ID_entity,login_name,ModifiedDate,Name_action)
-							SELECT d.Id_Buyer_Type,@login_name,GETDATE(),'U'  
+							SELECT d.Id_Item_Status,@login_name,GETDATE(),'U'  
 							FROM  inserted D
  
 							DECLARE @ID_entity_D    bigint       ;
@@ -81,16 +70,16 @@ AS
 							DECLARE @Name_action_I  char(1)      ;
                                           	                      
 
-						   DECLARE @OldId_Buyer_Type            bigint          ;
-						   DECLARE @OldName                  	nvarchar(300)  	;
-						   DECLARE @OldSysTypeBuyerTypeName  	nvarchar(300) 	;
-						   DECLARE @OldDescription      	    nvarchar(4000)	;
+						   DECLARE @OldId_Item_Status          bigint        ;
+						   DECLARE @OldItemStatus              nvarchar(300) ;
+						   DECLARE @OldSysItemStatusName       nvarchar(300) ;
+						   DECLARE @OldDescription      	   nvarchar(4000);
 
 
-						   DECLARE @NewId_Buyer_Type            bigint          ;
-						   DECLARE @NewName                  	nvarchar(300)  	;
-						   DECLARE @NewSysTypeBuyerTypeName 	nvarchar(300) 	;
-						   DECLARE @NewDescription      	    nvarchar(4000)	;
+						   DECLARE @NewId_Item_Status           bigint        ;
+						   DECLARE @NewItemStatus               nvarchar(300) ;
+						   DECLARE @NewSysItemStatusName        nvarchar(300) ;
+						   DECLARE @NewDescription      	    nvarchar(4000);
                        
 					       declare cr cursor local fast_forward for
 						   
@@ -108,30 +97,30 @@ AS
 						       begin
 							      begin try
 							                SELECT 
-                                                  @NewId_Buyer_Type         = I.Id_Buyer_Type       ,
-							                	  @NewName                 	= I.Name                ,
-							                	  @NewSysTypeBuyerTypeName 	= I.SysTypeBuyerTypeName,
+                                                  @NewId_Item_Status        = I.Id_Item_Status   ,
+							                	  @NewItemStatus       	    = I.ItemStatus       ,
+							                	  @NewSysItemStatusName  	= I.SysItemStatusName,
 							                	  @NewDescription      	    = I.[Description]      	
 							                FROM inserted I									 
-							                where @ID_entity_D = I.Id_Buyer_Type;	
+							                where @ID_entity_D = I.Id_Item_Status;	
 
 							                SELECT 
-                                                  @OldId_Buyer_Type         = D.Id_Buyer_Type       ,
-							                	  @OldName                 	= D.Name                ,
-							                	  @OldSysTypeBuyerTypeName 	= D.SysTypeBuyerTypeName,  	
+                                                  @OldId_Item_Status        = D.Id_Item_Status   ,
+							                	  @OldItemStatus        	= D.ItemStatus       ,
+							                	  @OldSysItemStatusName 	= D.SysItemStatusName,
 							                	  @OldDescription      	    = D.[Description]      	
 							                FROM Deleted D																		 
-											 where @ID_entity_D = D.Id_Buyer_Type; 
+											 where @ID_entity_D = D.Id_Item_Status; 
 
 
-                                            IF @NewName <> @OldName 
+                                            IF @NewItemStatus <> @OldItemStatus 
 							                   begin
-                                                SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Name = Old ->"' +  ISNULL(@OldName,'') + ' " NEW -> " ' + isnull(@NewName,'') + '", ';
+                                                SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ItemStatus = Old ->"' +  ISNULL(@OldItemStatus,'') + ' " NEW -> " ' + isnull(@NewItemStatus,'') + '", ';
 							                   end
                                             
-							                IF @NewSysTypeBuyerTypeName <> @OldSysTypeBuyerTypeName 
+							                IF @NewSysItemStatusName <> @OldSysItemStatusName 
 							                   begin
-							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  SysTypeBuyerTypeName = Old ->"' +  ISNULL(@OldSysTypeBuyerTypeName,'') + ' " NEW -> " ' + isnull(@NewSysTypeBuyerTypeName,'') + '", ';
+							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  SysItemStatusName = Old ->"' +  ISNULL(@OldSysItemStatusName,'') + ' " NEW -> " ' + isnull(@NewSysItemStatusName,'') + '", ';
 							                   end
                                                                                                     
                                             IF @NewDescription <> @OldDescription
@@ -139,14 +128,14 @@ AS
                                                 SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Description = Old ->"' + ISNULL(@OldDescription,'') + ' " NEW -> " ' + ISNULL(@NewDescription,'') + '", ';
                                                end
                                             
-                                            SET @ChangeDescription = 'Updated: ' + ' Id_Buyer_Type = "' +  isnull(cast(@OldId_Buyer_Type as nvarchar(20)),'')+ '" ' + @ChangeDescription
+                                            SET @ChangeDescription = 'Updated: ' + ' Id_Item_Status = "' +  isnull(cast(@OldId_Item_Status as nvarchar(20)),'')+ '" ' + @ChangeDescription
                                              --Удаляем запятую на конце
                                             IF LEN(@ChangeDescription) > 0
                                                 SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
                                             
-                                            INSERT  INTO dbo.Buyer_Type_Audit
+                                            INSERT  INTO dbo.Item_status_Audit
                                             ( 
-                                             Id_Buyer_Type,ModifiedBy,ModifiedDate,Operation,ChangeDescription                
+                                             Id_Item_Status,ModifiedBy,ModifiedDate,Operation,ChangeDescription                
                                             )
                                             SELECT  @ID_entity_D,@login_name_2_D,@ModifiedDate_D,@Name_action_D,@ChangeDescription;              
                                      
@@ -184,7 +173,7 @@ AS
 							);
 
 					        insert into @t_D_D (ID_entity,login_name,ModifiedDate,Name_action)
-							SELECT d.Id_Buyer_Type,@login_name,GETDATE(),'D'  
+							SELECT d.Id_Item_Status,@login_name,GETDATE(),'D'  
 							FROM  Deleted D
 
 
@@ -193,10 +182,10 @@ AS
 							DECLARE @ModifiedDate_D_2 DATETIME     ;
 							DECLARE @Name_action_D_2  char(1)      ;
 
-                            DECLARE @OldId_Buyer_Type_2         bigint        ;
-							DECLARE @OldName_2                  nvarchar(300) ;
-							DECLARE @OldSysTypeBuyerTypeName_2	nvarchar(300) ;
-							DECLARE @OldDescription_2      	    nvarchar(4000);
+                           DECLARE @OldId_Item_Status_2          bigint        ;
+						   DECLARE @OldItemStatus_2              nvarchar(300) ;
+						   DECLARE @OldSysItemStatusName_2       nvarchar(300) ;
+						   DECLARE @OldDescription_2      	     nvarchar(4000);
 
                             declare cr_2 cursor local fast_forward for
 						   
@@ -214,25 +203,25 @@ AS
 						        begin
 							       begin try
 							               SELECT 
-                                              @OldId_Buyer_Type_2         = D.Id_Buyer_Type       ,
-							               	  @OldName_2                  = D.Name                ,
-							               	  @OldSysTypeBuyerTypeName_2  = D.SysTypeBuyerTypeName,
+										      @OldId_Item_Status_2        = D.Id_Item_Status   ,
+											  @OldItemStatus_2        	  = D.ItemStatus       ,
+											  @OldSysItemStatusName_2 	  = D.SysItemStatusName,
 							               	  @OldDescription_2      	  = D.[Description]      		  
 							               FROM deleted D									 
-										   where @ID_entity_D_2 = D.Id_Buyer_Type;
+										   where @ID_entity_D_2 = D.Id_Item_Status;
 
                                            SET @ChangeDescription = 'Deleted: '
-							               + 'Id_Buyer_Type'         +' = "'+  ISNULL(CAST(@OldId_Buyer_Type_2  AS NVARCHAR(50)),'')+ '", '
-							               + 'Name'                  +' = "'+  ISNULL(@OldName_2,'')+ '", '
-							               + 'SysTypeBuyerTypeName'  +' = "'+  ISNULL(@OldSysTypeBuyerTypeName_2,'')+ '", '
-							               + '[Description]'         +' = "'+  ISNULL(@OldDescription_2,'')+ '", '
+							               + 'Id_Item_Status'       +' = "'+  ISNULL(CAST(@OldId_Item_Status_2  AS NVARCHAR(50)),'')+ '", '
+							               + 'ItemStatus'           +' = "'+  ISNULL(@OldItemStatus_2,'')+ '", '
+							               + 'SysItemStatusName'    +' = "'+  ISNULL(@OldSysItemStatusName_2,'')+ '", '
+							               + '[Description]'        +' = "'+  ISNULL(@OldDescription_2,'')+ '", '
 
                                            IF LEN(@ChangeDescription) > 0
                                                   SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
 
-                                           INSERT  INTO dbo.Buyer_Type_Audit
+                                           INSERT  INTO dbo.Item_status_Audit
                                            ( 
-                                            Id_Buyer_Type,ModifiedBy,ModifiedDate,Operation,ChangeDescription                
+                                            Id_Item_Status,ModifiedBy,ModifiedDate,Operation,ChangeDescription                
                                            )
                                             SELECT  @ID_entity_D_2,@login_name_2_D_2,@ModifiedDate_D_2,@Name_action_D_2,@ChangeDescription;              
                                      
@@ -274,7 +263,7 @@ AS
 
 
 				   insert into @t_I_I (ID_entity,login_name,ModifiedDate,Name_action)
-				   SELECT I.Id_Buyer_Type,@login_name,GETDATE(),'I'  
+				   SELECT I.Id_Item_Status,@login_name,GETDATE(),'I'  
 				   FROM  inserted I
 
 				   DECLARE @ID_entity_I_2    bigint       ;
@@ -298,11 +287,11 @@ AS
 						  begin
 							   begin try
                                      SET @ChangeDescription = 'Inserted: '
-                                         + 'Id_Buyer_Type = "' + CAST(@ID_entity_I_2 AS NVARCHAR(20)) + '" ';
+                                         + 'Id_Item_Status = "' + CAST(@ID_entity_I_2 AS NVARCHAR(20)) + '" ';
                     
-                                      INSERT  INTO dbo.Buyer_Type_Audit
+                                      INSERT  INTO dbo.Item_status_Audit
                                       ( 
-                                       Id_Buyer_Type,ModifiedBy,ModifiedDate,Operation,ChangeDescription                
+                                       Id_Item_Status,ModifiedBy,ModifiedDate,Operation,ChangeDescription                
                                       )
                                        SELECT  @ID_entity_I_2,@login_name_2_I_2,@ModifiedDate_I_2,@Name_action_I_2,@ChangeDescription;              
                                      
