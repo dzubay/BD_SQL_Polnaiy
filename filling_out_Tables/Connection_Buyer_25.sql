@@ -101,7 +101,7 @@ declare @GetDate datetime = GetDate();
           ELSE N'' END
 	  );
   set @i = @i +1
-  print ' Добавлено строк' +  ' - число   ' + convert(nvarchar(10),@i);
+  print ' Добавлено число ' +  ' -  строк --> ' + convert(nvarchar(10),@i) + '  В таблицу dbo.Connection_Buyer';
   end;
   --rollback
   commit
