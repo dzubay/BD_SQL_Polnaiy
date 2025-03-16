@@ -10,7 +10,7 @@ CREATE TABLE Condition_of_the_item_Audit
 	Operation                 CHAR(1)               null,
     ChangeDescription         nvarchar(max)         null
  --   PRIMARY KEY CLUSTERED ( AuditID ) 
-) on Products_Group_2;
+) on Products_Group;
 
 
 go
@@ -94,7 +94,14 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try 
-								  
+							                SELECT 
+							                    @NewID_Condition_of_the_item       = I.ID_Condition_of_the_item     ,
+							                	@NewName_Condition_of_the_item     = I.Name_Condition_of_the_item   ,
+							                	@NewSysNameConditionTypeOfTheItem  = I.SysNameConditionTypeOfTheItem,
+							                	@NewDescription                    = I.[Description]        	  
+							                FROM inserted I									 
+							                where @ID_entity_D = I.ID_Condition_of_the_item;
+											
                                            SELECT 
 							                    @OldID_Condition_of_the_item       = D.ID_Condition_of_the_item     ,
 							                	@OldName_Condition_of_the_item     = D.Name_Condition_of_the_item   ,
@@ -102,14 +109,7 @@ AS
 							                	@OldDescription                    = D.[Description]  					
 							                FROM Deleted D
 											where @ID_entity_D = D.ID_Condition_of_the_item;
-
-							                SELECT 
-							                    @NewID_Condition_of_the_item       = I.ID_Condition_of_the_item     ,
-							                	@NewName_Condition_of_the_item     = I.Name_Condition_of_the_item   ,
-							                	@NewSysNameConditionTypeOfTheItem  = I.SysNameConditionTypeOfTheItem,
-							                	@NewDescription                    = I.[Description]        	  
-							                FROM inserted I									 
-							                where @ID_entity_D = I.ID_Condition_of_the_item;																			 
+																			 
 
                                            IF @NewID_Condition_of_the_item  <> @OldID_Condition_of_the_item  
 							                  begin

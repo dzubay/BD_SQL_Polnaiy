@@ -10,7 +10,7 @@ CREATE TABLE Connection_Buyer_Audit
 	Operation              CHAR(1)               null,
     ChangeDescription      nvarchar(max)         null
 --    PRIMARY KEY CLUSTERED ( AuditID ) 
-) on Costomers_Group_2;
+) on Costomers_Group;
 
 
 go
@@ -98,15 +98,6 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
-								        SELECT 
-                                              @OldID_Connection_Buyer = D.ID_Connection_Buyer,
-							            	  @OldPassword            = D.Password           ,
-							            	  @OldLogin               = D.Login              ,
-							            	  @OldDate_Created        = D.Date_Created       ,
-							            	  @OldDescription      	  = D.[Description]      	
-							            FROM Deleted D
-										where @ID_entity_D = D.ID_Connection_Buyer 
-
 							            SELECT 
                                               @NewID_Connection_Buyer = I.ID_Connection_Buyer,
 							            	  @NewPassword            = I.Password           ,
@@ -115,6 +106,15 @@ AS
 							            	  @NewDescription      	  = I.[Description]      	
 							            FROM inserted I									 
 							            where @ID_entity_D = I.ID_Connection_Buyer
+
+								        SELECT 
+                                              @OldID_Connection_Buyer = D.ID_Connection_Buyer,
+							            	  @OldPassword            = D.Password           ,
+							            	  @OldLogin               = D.Login              ,
+							            	  @OldDate_Created        = D.Date_Created       ,
+							            	  @OldDescription      	  = D.[Description]      	
+							            FROM Deleted D
+										where @ID_entity_D = D.ID_Connection_Buyer 
 																	 
 
                                         IF @NewPassword <> @OldPassword 

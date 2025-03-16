@@ -10,7 +10,7 @@ CREATE TABLE Storage_location_Audit
 	Operation                 CHAR(1)               null,
     ChangeDescription         nvarchar(max)         null
 --    PRIMARY KEY CLUSTERED ( AuditID ) 
-) on Products_Group_2;
+) on Products_Group;
 
 
 go
@@ -110,6 +110,22 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
+							            SELECT 
+							                @NewID_Storage_location     	= I.ID_Storage_location     ,
+							            	@NewID_Type_Storage_location	= I.ID_Type_Storage_location,
+											@NewId_Status                   = I.Id_Status               ,
+							            	@NewKeySource               	= I.KeySource               ,
+							            	@NewName                    	= I.Name                    ,
+							            	@NewCountry                 	= I.Country                 ,
+							            	@NewCity                    	= I.City                    ,
+							            	@NewAdress                  	= I.Adress                  ,
+							            	@NewMail                    	= I.Mail                    ,
+							            	@NewPhone                   	= I.Phone                   ,
+							            	@NewDate_Created                = I.Date_Created            ,
+							            	@NewDescription                 = I.[Description]        	  
+							            FROM inserted I									 
+							            where @ID_entity_D = I.ID_Storage_location;
+
 						                SELECT 
 							                @OldID_Storage_location     	= D.ID_Storage_location     ,
 							            	@OldID_Type_Storage_location	= D.ID_Type_Storage_location,
@@ -126,21 +142,7 @@ AS
 							            FROM Deleted D	
 										 where @ID_entity_D = D.ID_Storage_location
 
-							            SELECT 
-							                @NewID_Storage_location     	= I.ID_Storage_location     ,
-							            	@NewID_Type_Storage_location	= I.ID_Type_Storage_location,
-											@NewId_Status                   = I.Id_Status               ,
-							            	@NewKeySource               	= I.KeySource               ,
-							            	@NewName                    	= I.Name                    ,
-							            	@NewCountry                 	= I.Country                 ,
-							            	@NewCity                    	= I.City                    ,
-							            	@NewAdress                  	= I.Adress                  ,
-							            	@NewMail                    	= I.Mail                    ,
-							            	@NewPhone                   	= I.Phone                   ,
-							            	@NewDate_Created                = I.Date_Created            ,
-							            	@NewDescription                 = I.[Description]        	  
-							            FROM inserted I									 
-							            where @ID_entity_D = I.ID_Storage_location;
+
 																	 
 
                                         IF @NewID_Type_Storage_location  <> @OldID_Type_Storage_location  

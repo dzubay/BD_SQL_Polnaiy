@@ -1,15 +1,4 @@
-﻿create table Species_Item                                            --Вид товара
-(
-ID_Species_Item                 bigint          not null identity (1,1) check(ID_Species_Item !=0),        --ID Вида товара 
-SpeciesItemName                 nvarchar(300)   not null,                                                  --Наименование Вида товара 
-SysSpeciesItemName              nvarchar(300)   not null,                                                  --Системное Наименование Вида товара 
-[Description]                   nvarchar(4000)  null                                                       --Комментарий
-Constraint PK_ID_Species_Item  primary key (ID_Species_Item)
-) on Products_Group
-
-go
-
-
+﻿
 begin tran 
 
 CREATE TABLE Buyer_Type_Audit

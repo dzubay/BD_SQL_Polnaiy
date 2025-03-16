@@ -11,7 +11,7 @@ CREATE TABLE Data_Orders_Audit
 	Operation              CHAR(1)               null,
     ChangeDescription      nvarchar(max)         null
 --    PRIMARY KEY CLUSTERED ( AuditID ) 
-) on Orders_Group_2;
+) on Orders_Group;
 
 
 go
@@ -104,6 +104,18 @@ AS
 						    while @@FETCH_STATUS  = 0
 						          begin
 							           begin try
+							             SELECT 
+                                                @NewId_Data_Orders    =  I.Id_Data_Orders  ,
+							             		@NewID_Employee       =  I.ID_Employee     ,
+							             		@NewID_Orders         =  I.ID_Orders       ,
+							             		@NewId_buyer          =  I.Id_buyer        ,
+							             		@NewID_Exemplar       =  I.ID_Exemplar     ,
+							             		@NewID_Transaction    =  I.ID_Transaction  ,
+							             		@NewDate_Data_Orders  =  I.Date_Data_Orders,
+							             		@NewDescription       =  I.[Description]         	
+							             FROM inserted I	
+										 where @ID_entity_D = I.Id_Data_Orders;
+
                                            SELECT 
                                                @OldId_Data_Orders     =  D.Id_Data_Orders  ,
 									           @OldID_Employee        =  D.ID_Employee     ,
@@ -116,17 +128,6 @@ AS
 							             FROM Deleted D	
 										 where @ID_entity_D = D.Id_Data_Orders;
 
-							             SELECT 
-                                                @NewId_Data_Orders    =  I.Id_Data_Orders  ,
-							             		@NewID_Employee       =  I.ID_Employee     ,
-							             		@NewID_Orders         =  I.ID_Orders       ,
-							             		@NewId_buyer          =  I.Id_buyer        ,
-							             		@NewID_Exemplar       =  I.ID_Exemplar     ,
-							             		@NewID_Transaction    =  I.ID_Transaction  ,
-							             		@NewDate_Data_Orders  =  I.Date_Data_Orders,
-							             		@NewDescription       =  I.[Description]         	
-							             FROM inserted I	
-										 where @ID_entity_D = I.Id_Data_Orders;
 																	 
                                          IF @NewID_Employee <> @OldID_Employee
 							                begin

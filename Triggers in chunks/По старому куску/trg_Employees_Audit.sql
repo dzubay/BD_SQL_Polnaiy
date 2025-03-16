@@ -10,7 +10,7 @@ CREATE TABLE Employees_Audit
 	Operation              CHAR(1)               null,
     ChangeDescription      nvarchar(max)         null
   --  PRIMARY KEY CLUSTERED ( AuditID ) 
-) on Employee_Group_2
+) on Employee_Group;
 
 
 go
@@ -141,6 +141,34 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
+                                     SELECT  
+									     @NewID_Employee               	  = I.ID_Employee               ,	
+										 @NewID_Department             	  = I.ID_Department             ,
+										 @NewID_Group                  	  = I.ID_Group                  ,
+										 @NewID_The_Subgroup           	  = I.ID_The_Subgroup           ,
+										 @NewID_Passport               	  = I.ID_Passport               ,
+										 @NewID_Branch                 	  = I.ID_Branch                 ,
+										 @NewID_Post                   	  = I.ID_Post                   ,
+										 @NewID_Status_Employee        	  = I.ID_Status_Employee        ,
+										 @NewID_Connection_String      	  = I.ID_Connection_String      ,
+										 @NewID_Chief                  	  = I.ID_Chief                  ,
+										 @NewName                      	  = I.Name                      ,
+										 @NewSurName                   	  = I.SurName                   ,
+										 @NewLastName                  	  = I.LastName                  ,
+										 @NewDate_Of_Hiring            	  = I.Date_Of_Hiring            ,
+										 @NewDate_Card_Created_Employee	  = I.Date_Card_Created_Employee,
+										 @NewResidential_Address       	  = I.Residential_Address       ,
+										 @NewHome_Phone                	  = I.Home_Phone                ,
+										 @NewCell_Phone                	  = I.Cell_Phone                ,
+										 @NewImage_Employees           	  = I.Image_Employees           ,
+										 @NewWork_Phone                	  = I.Work_Phone                ,
+										 @NewMail                      	  = I.Mail                      ,
+										 @NewPol                       	  = I.Pol                       ,
+										 @NewDate_Of_Dismissal         	  = I.Date_Of_Dismissal         ,
+										 @NewDate_Of_Birth             	  = I.Date_Of_Birth             ,
+										 @NewDescription                  = I.[Description]               
+									 FROM inserted I  
+									 where @ID_entity_D = I.ID_Employee;								     
 								     
 									 SELECT  
 									     @OldID_Employee               	  = D.ID_Employee               ,	
@@ -169,36 +197,7 @@ AS
 										 @OldDate_Of_Birth             	  = D.Date_Of_Birth             ,
 										 @OldDescription                  = D.[Description]               
 									 FROM   Deleted D 
-									 where @ID_entity_D = D.ID_Employee; 
-
-                                     SELECT  
-									     @NewID_Employee               	  = I.ID_Employee               ,	
-										 @NewID_Department             	  = I.ID_Department             ,
-										 @NewID_Group                  	  = I.ID_Group                  ,
-										 @NewID_The_Subgroup           	  = I.ID_The_Subgroup           ,
-										 @NewID_Passport               	  = I.ID_Passport               ,
-										 @NewID_Branch                 	  = I.ID_Branch                 ,
-										 @NewID_Post                   	  = I.ID_Post                   ,
-										 @NewID_Status_Employee        	  = I.ID_Status_Employee        ,
-										 @NewID_Connection_String      	  = I.ID_Connection_String      ,
-										 @NewID_Chief                  	  = I.ID_Chief                  ,
-										 @NewName                      	  = I.Name                      ,
-										 @NewSurName                   	  = I.SurName                   ,
-										 @NewLastName                  	  = I.LastName                  ,
-										 @NewDate_Of_Hiring            	  = I.Date_Of_Hiring            ,
-										 @NewDate_Card_Created_Employee	  = I.Date_Card_Created_Employee,
-										 @NewResidential_Address       	  = I.Residential_Address       ,
-										 @NewHome_Phone                	  = I.Home_Phone                ,
-										 @NewCell_Phone                	  = I.Cell_Phone                ,
-										 @NewImage_Employees           	  = I.Image_Employees           ,
-										 @NewWork_Phone                	  = I.Work_Phone                ,
-										 @NewMail                      	  = I.Mail                      ,
-										 @NewPol                       	  = I.Pol                       ,
-										 @NewDate_Of_Dismissal         	  = I.Date_Of_Dismissal         ,
-										 @NewDate_Of_Birth             	  = I.Date_Of_Birth             ,
-										 @NewDescription                  = I.[Description]               
-									 FROM inserted I  
-									 where @ID_entity_D = I.ID_Employee;					
+									 where @ID_entity_D = D.ID_Employee; 					
 														
                                      IF @NewID_Department <> @OldID_Department 
 							              begin

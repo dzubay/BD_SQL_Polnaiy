@@ -9,7 +9,7 @@ CREATE TABLE Transaction_status_Audit
 	Operation              CHAR(1)               null,
     ChangeDescription      nvarchar(max)        null
  --   PRIMARY KEY CLUSTERED ( AuditID ) 
-) on Products_Group_2;
+) on Products_Group;
 
 
 go
@@ -94,6 +94,14 @@ AS
 						    while @@FETCH_STATUS  = 0
 						         begin
 							         begin try
+							                SELECT  
+							                     @NewID_Transaction_status    = I.ID_Transaction_status , 
+							                	 @NewTypeTransactionName      = I.TypeTransactionName   ,
+							                	 @NewSysTypeTransactionName   = I.SysTypeTransactionName,
+							                	 @NewDescription              = I.[Description]           
+							                FROM inserted I									 
+							                where @ID_entity_D = I.ID_Transaction_status;
+
                                             SELECT  
 							                     @OldID_Transaction_status    = D.ID_Transaction_status ,
 							                	 @OldTypeTransactionName      = D.TypeTransactionName   ,
@@ -102,14 +110,6 @@ AS
 							                FROM Deleted D
 											where @ID_entity_D = D.ID_Transaction_status;
 
-
-							                SELECT  
-							                     @NewID_Transaction_status    = I.ID_Transaction_status , 
-							                	 @NewTypeTransactionName      = I.TypeTransactionName   ,
-							                	 @NewSysTypeTransactionName   = I.SysTypeTransactionName,
-							                	 @NewDescription              = I.[Description]           
-							                FROM inserted I									 
-							                where @ID_entity_D = I.ID_Transaction_status;
 
                                             IF @NewTypeTransactionName <> @OldTypeTransactionName 
 							                   begin

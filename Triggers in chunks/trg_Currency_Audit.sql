@@ -11,7 +11,7 @@ CREATE TABLE Currency_Audit
 	Operation            CHAR(1)               null,
     ChangeDescription    nvarchar(max)         null
 --    PRIMARY KEY CLUSTERED ( AuditID ) 
-)on Orders_Group_2 ;
+)on Orders_Group;
 
 go
 
@@ -99,6 +99,15 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 						         begin try
+								 SELECT 
+								     @NewID_Currency       =   ID_Currency     ,
+								 	 @NewFull_name_rus     =   Full_name_rus   ,
+								 	 @NewFull_name_eng     =   Full_name_eng   ,
+								 	 @NewAbbreviation_rus  =   Abbreviation_rus,
+								 	 @NewAbbreviation_eng  =   Abbreviation_eng,
+								 	 @NewDescription       =   [Description]    
+								 FROM   Deleted D 
+								 where @ID_entity_D = D.ID_Currency 
 
 								 SELECT 
 								     @OldID_Currency       =   ID_Currency     ,
@@ -110,15 +119,6 @@ AS
 								 FROM   Deleted D 
 								 where @ID_entity_D = D.ID_Currency 
 
-								 SELECT 
-								     @NewID_Currency       =   ID_Currency     ,
-								 	 @NewFull_name_rus     =   Full_name_rus   ,
-								 	 @NewFull_name_eng     =   Full_name_eng   ,
-								 	 @NewAbbreviation_rus  =   Abbreviation_rus,
-								 	 @NewAbbreviation_eng  =   Abbreviation_eng,
-								 	 @NewDescription       =   [Description]    
-								 FROM   Deleted D 
-								 where @ID_entity_D = D.ID_Currency 
 
 
                          

@@ -10,7 +10,7 @@ CREATE TABLE Country_Audit
 	Operation              CHAR(1)               null,
     ChangeDescription      nvarchar(max)        null
   --  PRIMARY KEY CLUSTERED ( AuditID ) 
-) on Employee_Group_2
+) on Employee_Group;
 
 
 go
@@ -97,7 +97,14 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
-								     
+									 SELECT 
+										@NewId_Country       	 = I.Id_Country       ,
+										@NewName_Country     	 = I.Name_Country     ,
+										@NewName_English     	 = I.Name_English     ,
+										@NewCod_Country_Phone    = I.Cod_Country_Phone 
+									 FROM inserted I  
+									 where @ID_entity_D = I.Id_Country;	
+									 
 									 SELECT  
 									     @OldId_Country        =   D.Id_Country       ,
 										 @OldName_Country      =   D.Name_Country     ,
@@ -105,14 +112,7 @@ AS
 										 @OldCod_Country_Phone =   D.Cod_Country_Phone
 									 FROM   Deleted D 
 									 where @ID_entity_D = D.Id_Country 
-
-									 SELECT 
-										@NewId_Country       	 = I.Id_Country       ,
-										@NewName_Country     	 = I.Name_Country     ,
-										@NewName_English     	 = I.Name_English     ,
-										@NewCod_Country_Phone    = I.Cod_Country_Phone 
-									 FROM inserted I  
-									 where @ID_entity_D = I.Id_Country;					
+				
 														
                                      
 									 IF @NewName_Country <> @OldName_Country 
