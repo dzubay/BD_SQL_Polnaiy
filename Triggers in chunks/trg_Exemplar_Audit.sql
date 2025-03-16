@@ -10,7 +10,7 @@ CREATE TABLE Exemplar_Audit
 	Operation                 CHAR(1)               null,
     ChangeDescription         nvarchar(max)         null
 --    PRIMARY KEY CLUSTERED ( AuditID ) 
-) on Products_Group_2;
+) on Products_Group;
 
 
 go
@@ -120,27 +120,6 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
-								        SELECT 
-							                @OldID_Exemplar             	= D.ID_Exemplar             ,
-							            	@OldId_Item                 	= D.Id_Item                 ,
-							            	@OldID_Currency             	= D.ID_Currency             ,
-							            	@OldID_Storage_location     	= D.ID_Storage_location     ,
-							            	@OldKeySource               	= D.KeySource               ,
-							            	@OldSerial_number           	= D.Serial_number           ,
-							            	@OldID_Condition_of_the_item	= D.ID_Condition_of_the_item,
-							            	@OldOld_Price_no_NDS        	= D.Old_Price_no_NDS        ,
-							            	@OldRefund                  	= D.Refund                  ,
-							            	@OldDate_Refund             	= D.Date_Refund             ,
-							            	@OldReturn_Note             	= D.Return_Note             ,
-							            	@OldOld_Price_NDS           	= D.Old_Price_NDS           ,
-							            	@OldJSON_Size_Volume        	= D.JSON_Size_Volume        ,
-							            	@OldNew_Price_NDS           	= D.New_Price_NDS           ,
-							            	@OldNew_Price_no_NDS        	= D.New_Price_no_NDS        ,
-							            	@OldDate_Created                = D.Date_Created            , 
-							            	@OldDescription                 = D.[Description]        	  					
-							            FROM Deleted D																		 
-										where @ID_entity_D = D.ID_Exemplar;
-								       
 							            SELECT 
 							                @NewID_Exemplar             	= I.ID_Exemplar             , 
 							            	@NewId_Item                 	= I.Id_Item                 ,
@@ -161,6 +140,27 @@ AS
 							            	@NewDescription                 = I.[Description]        	  
 							            FROM inserted I
 										where @ID_entity_D = I.ID_Exemplar;	
+
+								        SELECT 
+							                @OldID_Exemplar             	= D.ID_Exemplar             ,
+							            	@OldId_Item                 	= D.Id_Item                 ,
+							            	@OldID_Currency             	= D.ID_Currency             ,
+							            	@OldID_Storage_location     	= D.ID_Storage_location     ,
+							            	@OldKeySource               	= D.KeySource               ,
+							            	@OldSerial_number           	= D.Serial_number           ,
+							            	@OldID_Condition_of_the_item	= D.ID_Condition_of_the_item,
+							            	@OldOld_Price_no_NDS        	= D.Old_Price_no_NDS        ,
+							            	@OldRefund                  	= D.Refund                  ,
+							            	@OldDate_Refund             	= D.Date_Refund             ,
+							            	@OldReturn_Note             	= D.Return_Note             ,
+							            	@OldOld_Price_NDS           	= D.Old_Price_NDS           ,
+							            	@OldJSON_Size_Volume        	= D.JSON_Size_Volume        ,
+							            	@OldNew_Price_NDS           	= D.New_Price_NDS           ,
+							            	@OldNew_Price_no_NDS        	= D.New_Price_no_NDS        ,
+							            	@OldDate_Created                = D.Date_Created            , 
+							            	@OldDescription                 = D.[Description]        	  					
+							            FROM Deleted D																		 
+										where @ID_entity_D = D.ID_Exemplar;								       
 
 
                                           IF @NewId_Item  <> @OldId_Item  

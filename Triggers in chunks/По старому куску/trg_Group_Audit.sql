@@ -10,7 +10,7 @@ CREATE TABLE Group_Audit
 	Operation              CHAR(1)               null,
     ChangeDescription      nvarchar(max)        null
 --    PRIMARY KEY CLUSTERED ( AuditID ) 
-) on Employee_Group_2;
+) on Employee_Group;
 
 
 go
@@ -102,6 +102,17 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
+								        SELECT 
+	                                        @NewID_Group           = I.ID_Group          ,
+											@NewID_Head_Group      = I.ID_Head_Group     ,
+											@NewID_Vice_Head_Group = I.ID_Vice_Head_Group,
+											@NewID_Department      = I.ID_Department     ,
+											@NewName_Group         = I.Name_Group        ,
+											@NewID_Branch          = I.ID_Branch         ,
+											@NewDepartment_Code    = I.Department_Code   ,
+											@NewDescription        = I.[Description]       	
+							            FROM inserted I									 
+							            where @ID_entity_D = I.ID_Group;
 
                                         SELECT 
                                             @OldID_Group           = D.ID_Group          ,
@@ -114,18 +125,6 @@ AS
 											@OldDescription        = D.[Description]       							
 							            FROM Deleted D
 										where @ID_entity_D = D.ID_Group;
-
-							            SELECT 
-	                                        @NewID_Group           = I.ID_Group          ,
-											@NewID_Head_Group      = I.ID_Head_Group     ,
-											@NewID_Vice_Head_Group = I.ID_Vice_Head_Group,
-											@NewID_Department      = I.ID_Department     ,
-											@NewName_Group         = I.Name_Group        ,
-											@NewID_Branch          = I.ID_Branch         ,
-											@NewDepartment_Code    = I.Department_Code   ,
-											@NewDescription        = I.[Description]       	
-							            FROM inserted I									 
-							            where @ID_entity_D = I.ID_Group;
 
 
                                        IF @NewID_Head_Group <> @OldID_Head_Group

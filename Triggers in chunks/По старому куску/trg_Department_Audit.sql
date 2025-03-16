@@ -9,7 +9,7 @@ CREATE TABLE Department_Audit
 	Operation              CHAR(1)               null,
     ChangeDescription      nvarchar(max)        null
 --    PRIMARY KEY CLUSTERED ( AuditID ) 
-) on Employee_Group_2;
+) on Employee_Group;
 
 
 go
@@ -100,7 +100,17 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
-								       
+							            SELECT
+										    @OldID_Department            = I.ID_Department          ,
+											@OldID_Head_Department     	 = I.ID_Head_Department     ,
+											@OldID_Vice_Head_Department	 = I.ID_Vice_Head_Department,
+											@OldName_Department        	 = I.Name_Department        ,
+											@OldID_Branch              	 = I.ID_Branch              ,
+											@OldDepartment_Code        	 = I.Department_Code        ,
+											@OldDescription            	 = I.[Description]            		
+							            FROM inserted I									 
+							            where @ID_entity_D = I.ID_Department;
+										
                                         SELECT 
 										    @OldID_Department            = D.ID_Department          ,
 											@OldID_Head_Department     	 = D.ID_Head_Department     ,
@@ -112,16 +122,6 @@ AS
 							            FROM Deleted D
 										where @ID_entity_D = D.ID_Department;
 
-							            SELECT
-										    @OldID_Department            = I.ID_Department          ,
-											@OldID_Head_Department     	 = I.ID_Head_Department     ,
-											@OldID_Vice_Head_Department	 = I.ID_Vice_Head_Department,
-											@OldName_Department        	 = I.Name_Department        ,
-											@OldID_Branch              	 = I.ID_Branch              ,
-											@OldDepartment_Code        	 = I.Department_Code        ,
-											@OldDescription            	 = I.[Description]            		
-							            FROM inserted I									 
-							            where @ID_entity_D = I.ID_Department;
 
 
                                        IF @NewID_Head_Department <> @OldID_Head_Department 

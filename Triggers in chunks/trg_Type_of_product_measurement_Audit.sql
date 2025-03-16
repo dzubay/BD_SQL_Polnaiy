@@ -11,7 +11,7 @@ CREATE TABLE Type_of_product_measurement_Audit
 	Operation              CHAR(1)               null,
     ChangeDescription      nvarchar(max)        null
 --    PRIMARY KEY CLUSTERED ( AuditID ) 
-) on Products_Group_2;
+) on Products_Group;
 
 
 go
@@ -95,6 +95,14 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							        begin try
+							                SELECT 
+							                        @NewID_product_measurement     =  I.ID_product_measurement   ,
+							                		@NewProduct_measurement_Name   =  I.Product_measurement_Name ,
+							                		@NewSysProductMeasurementName  =  I.SysProductMeasurementName,
+							                		@NewDescription                =  I.[Description]         	
+							                FROM inserted I
+											where @ID_entity_D = I.ID_product_measurement
+
                                             SELECT 
                                                     @OldID_product_measurement     =  D.ID_product_measurement   ,
 							                		@OldProduct_measurement_Name   =  D.Product_measurement_Name ,
@@ -103,13 +111,7 @@ AS
 							                FROM Deleted D
 											where @ID_entity_D = D.ID_product_measurement;
 
-							                SELECT 
-							                        @NewID_product_measurement     =  I.ID_product_measurement   ,
-							                		@NewProduct_measurement_Name   =  I.Product_measurement_Name ,
-							                		@NewSysProductMeasurementName  =  I.SysProductMeasurementName,
-							                		@NewDescription                =  I.[Description]         	
-							                FROM inserted I
-											where @ID_entity_D = I.ID_product_measurement;
+;
 							                																		 
                                             IF @NewProduct_measurement_Name <> @OldProduct_measurement_Name
 							                   begin

@@ -9,7 +9,7 @@ CREATE TABLE Status_Employee_Audit
 	Operation              CHAR(1)               null,
     ChangeDescription      nvarchar(max)        null
 --    PRIMARY KEY CLUSTERED ( AuditID ) 
-) on Employee_Group_2;
+) on Employee_Group;
 
 
 go
@@ -91,6 +91,12 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
+							            SELECT 
+                                             @NewID_Status_Employee   = I.ID_Status_Employee  ,
+											 @NewName_Status_Employee = I.Name_Status_Employee,
+											 @NewDescription          = I.[Description]         	
+							            FROM inserted I									 
+							            where @ID_entity_D = I.ID_Status_Employee;
 
                                         SELECT 
  							                 @OldID_Status_Employee   = D.ID_Status_Employee  ,
@@ -99,12 +105,7 @@ AS
 							            FROM Deleted D
 										where @ID_entity_D = D.ID_Status_Employee;
 
-							            SELECT 
-                                             @OldID_Status_Employee   = I.ID_Status_Employee  ,
-											 @OldName_Status_Employee = I.Name_Status_Employee,
-											 @OldDescription          = I.[Description]         	
-							            FROM inserted I									 
-							            where @ID_entity_D = I.ID_Status_Employee;
+
 
 
 							           IF @NewName_Status_Employee <> @OldName_Status_Employee 

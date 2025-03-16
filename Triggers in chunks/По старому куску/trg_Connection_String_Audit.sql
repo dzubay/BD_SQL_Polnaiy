@@ -9,7 +9,7 @@ CREATE TABLE Connection_String_Audit
 	Operation              CHAR(1)               null,
     ChangeDescription      nvarchar(max)        null
 --    PRIMARY KEY CLUSTERED ( AuditID ) 
-) on Employee_Group_2;
+) on Employee_Group;
 
 
 go
@@ -96,6 +96,14 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
+							            SELECT 
+                                               @NewID_Connection_String = I.ID_Connection_String,
+											   @NewPassword             = I.[Password]          ,  
+											   @NewLogin                = I.[Login]             ,  
+											   @NewDate_Created         = I.Date_Created        ,
+											   @NewDescription          = I.[Description]          	
+							            FROM inserted I									 
+							            where @ID_entity_D = I.ID_Connection_String;
 
                                         SELECT 
                                                @OldID_Connection_String = D.ID_Connection_String,
@@ -106,14 +114,6 @@ AS
 							            FROM Deleted D
 										where @ID_entity_D = D.ID_Connection_String;
 
-							            SELECT 
-                                               @NewID_Connection_String = I.ID_Connection_String,
-											   @NewPassword             = I.[Password]          ,  
-											   @NewLogin                = I.[Login]             ,  
-											   @NewDate_Created         = I.Date_Created        ,
-											   @NewDescription          = I.[Description]          	
-							            FROM inserted I									 
-							            where @ID_entity_D = I.ID_Connection_String;
 
 							           IF @NewPassword <> @OldPassword 
 							              begin

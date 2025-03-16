@@ -12,7 +12,7 @@ CREATE TABLE TypeItem_Audit
 	Operation            CHAR(1)               null,
     ChangeDescription    nvarchar(max)        null
 --    PRIMARY KEY CLUSTERED ( AuditID ) 
-) on Products_Group_2;
+) on Products_Group;
 
 
 go
@@ -97,6 +97,13 @@ AS
 						    while @@FETCH_STATUS  = 0
 						         begin
 							         begin try
+									       SELECT @NewId_TypeItem     = I.Id_TypeItem    ,
+							                      @NewTypeItemName    = I.TypeItemName   , 
+							                      @NewSysTypeItemName = I.SysTypeItemName,
+							                      @NewDescription     = I.[Description]
+							               FROM inserted I
+										   where @ID_entity_D = I.Id_TypeItem;
+
 									       SELECT @OldId_TypeItem     = D.Id_TypeItem    , 
                                                   @OldTypeItemName    = D.TypeItemName   , 
                                                   @OldSysTypeItemName = D.SysTypeItemName,
@@ -104,12 +111,6 @@ AS
                                            FROM deleted D
 										   where @ID_entity_D = D.Id_TypeItem;
 
-							               SELECT @NewId_TypeItem     = I.Id_TypeItem    ,
-							                      @NewTypeItemName    = I.TypeItemName   , 
-							                      @NewSysTypeItemName = I.SysTypeItemName,
-							                      @NewDescription     = I.[Description]
-							               FROM inserted I
-										   where @ID_entity_D = I.Id_TypeItem;
 							               
                                           IF @NewTypeItemName <> @OldTypeItemName 
 							                 begin

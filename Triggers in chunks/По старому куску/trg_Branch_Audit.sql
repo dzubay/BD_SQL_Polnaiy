@@ -9,7 +9,7 @@ CREATE TABLE Branch_Audit
 	Operation              CHAR(1)               null,
     ChangeDescription      nvarchar(max)        null
 --    PRIMARY KEY CLUSTERED ( AuditID ) 
-) on Employee_Group_2;
+) on Employee_Group;
 
 
 go
@@ -78,7 +78,7 @@ AS
 							DECLARE @OldPhone         nvarchar(15)  ;
 							DECLARE @OldPostal_Code   int           ;
 							DECLARE @OldINN           int           ;
-							DECLARE @OldDescription   nvarchar(1000);
+							DECLARE @OldDescription   nvarchar(4000);
 
 						   DECLARE @NewID_Branch     bigint        ;
 						   DECLARE @NewId_Country    bigint        ;
@@ -89,7 +89,7 @@ AS
 						   DECLARE @NewPhone         nvarchar(15)  ;
 						   DECLARE @NewPostal_Code   int           ;
 						   DECLARE @NewINN           int           ;
-						   DECLARE @NewDescription   nvarchar(1000);
+						   DECLARE @NewDescription   nvarchar(4000);
 
 
 						   declare cr cursor local fast_forward for
@@ -107,6 +107,19 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
+								        SELECT 
+                                              @NewID_Branch   = I.ID_Branch     ,
+											  @NewId_Country  = I.Id_Country  	,
+											  @NewCity        = I.City        	,
+											  @NewAddress     = I.[Address]     ,
+											  @NewName_Branch = I.Name_Branch 	,
+											  @NewMail        = I.Mail        	,
+											  @NewPhone       = I.Phone       	,
+											  @NewPostal_Code = I.Postal_Code 	,
+											  @NewINN         = I.INN         	,
+											  @NewDescription = I.[Description]    	
+							            FROM inserted I									 
+							            where @ID_entity_D = I.ID_Branch;
 
                                         SELECT 
                                               @OldID_Branch   = D.ID_Branch     ,
@@ -122,19 +135,7 @@ AS
 							            FROM Deleted D
 										where @ID_entity_D = D.ID_Branch;
 
-							            SELECT 
-                                              @NewID_Branch   = I.ID_Branch     ,
-											  @NewId_Country  = I.Id_Country  	,
-											  @NewCity        = I.City        	,
-											  @NewAddress     = I.[Address]     ,
-											  @NewName_Branch = I.Name_Branch 	,
-											  @NewMail        = I.Mail        	,
-											  @NewPhone       = I.Phone       	,
-											  @NewPostal_Code = I.Postal_Code 	,
-											  @NewINN         = I.INN         	,
-											  @NewDescription = I.[Description]    	
-							            FROM inserted I									 
-							            where @ID_entity_D = I.ID_Branch;
+
 
 
                                        IF @NewId_Country <> @OldId_Country 

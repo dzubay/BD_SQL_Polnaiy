@@ -9,7 +9,7 @@ CREATE TABLE Order_category_Audit
 	Operation              CHAR(1)               null,
     ChangeDescription      nvarchar(max)         null
  --   PRIMARY KEY CLUSTERED ( AuditID ) 
-) on Orders_Group_2;
+) on Orders_Group;
 
 
 go
@@ -95,6 +95,15 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
+							                SELECT   
+											      @NewID_OrderCategory     	= D.ID_OrderCategory    ,
+												  @NewOrderCategoryName   	= D.OrderCategoryName   ,
+												  @NewAbbreviation        	= D.Abbreviation        ,
+												  @NewOrderCategorySysName	= D.OrderCategorySysName,
+												  @NewDescription      	    = D.[Description]      	  
+							                FROM Deleted D																		 
+											 where @ID_entity_D = D.ID_OrderCategory; 
+
 							                SELECT 
                                                   @OldID_OrderCategory     	= I.ID_OrderCategory    ,
 												  @OldOrderCategoryName   	= I.OrderCategoryName   ,
@@ -104,14 +113,6 @@ AS
 							                FROM inserted I									 
 							                where @ID_entity_D = I.ID_OrderCategory;	
 
-							                SELECT   
-											      @NewID_OrderCategory     	= D.ID_OrderCategory    ,
-												  @NewOrderCategoryName   	= D.OrderCategoryName   ,
-												  @NewAbbreviation        	= D.Abbreviation        ,
-												  @NewOrderCategorySysName	= D.OrderCategorySysName,
-												  @NewDescription      	    = D.[Description]      	  
-							                FROM Deleted D																		 
-											 where @ID_entity_D = D.ID_OrderCategory; 
 
 
                                             IF @NewOrderCategoryName <> @OldOrderCategoryName 

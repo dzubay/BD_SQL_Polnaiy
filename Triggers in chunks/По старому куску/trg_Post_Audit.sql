@@ -9,7 +9,7 @@ CREATE TABLE Post_Audit
 	Operation              CHAR(1)               null,
     ChangeDescription      nvarchar(max)        null
 --    PRIMARY KEY CLUSTERED ( AuditID ) 
-) on Employee_Group_2;
+) on Employee_Group;
 
 
 go
@@ -99,6 +99,15 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
+							            SELECT 
+                                              @NewID_Post         = I.ID_Post        , 
+											  @NewName_Post       = I.Name_Post      , 
+											  @NewID_Department   = I.ID_Department  , 
+											  @NewID_Group        = I.ID_Group       , 
+											  @NewID_The_Subgroup = I.ID_The_Subgroup, 
+											  @NewDescription     = I.[Description]    
+							            FROM inserted I									 
+							            where @ID_entity_D = I.ID_Post;
 
                                         SELECT 
                                               @OldID_Post         = D.ID_Post        , 
@@ -110,15 +119,7 @@ AS
 							            FROM Deleted D
 										where @ID_entity_D = D.ID_Post;
 
-							            SELECT 
-                                              @NewID_Post         = I.ID_Post        , 
-											  @NewName_Post       = I.Name_Post      , 
-											  @NewID_Department   = I.ID_Department  , 
-											  @NewID_Group        = I.ID_Group       , 
-											  @NewID_The_Subgroup = I.ID_The_Subgroup, 
-											  @NewDescription     = I.[Description]    
-							            FROM inserted I									 
-							            where @ID_entity_D = I.ID_Post;
+
 
 
                                        

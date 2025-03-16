@@ -10,7 +10,7 @@ CREATE TABLE Passport_Audit
 	Operation              CHAR(1)               null,
     ChangeDescription      nvarchar(max)        null
 --    PRIMARY KEY CLUSTERED ( AuditID ) 
-) on Employee_Group_2;
+) on Employee_Group;
 
 
 go
@@ -105,6 +105,17 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
+							            SELECT 
+                                              @NewID_Passport    = I.ID_Passport    ,
+											  @NewNumber_Series  = I.Number_Series  ,
+											  @NewDate_Of_Issue  = I.Date_Of_Issue  ,
+											  @NewDepartment_Code= I.Department_Code,
+											  @NewIssued_By_Whom = I.Issued_By_Whom ,
+											  @NewRegistration   = I.Registration   ,
+											  @NewMilitary_Duty  = I.Military_Duty  ,
+											  @NewDescription    = I.[Description]      	
+							            FROM inserted I									 
+							            where @ID_entity_D = I.ID_Passport;
 
                                         SELECT 
                                               @OldID_Passport    = D.ID_Passport    ,
@@ -117,18 +128,6 @@ AS
 											  @OldDescription    = D.[Description]     							
 							            FROM Deleted D
 										where @ID_entity_D = D.ID_Passport;
-
-							            SELECT 
-                                              @NewID_Passport    = I.ID_Passport    ,
-											  @NewNumber_Series  = I.Number_Series  ,
-											  @NewDate_Of_Issue  = I.Date_Of_Issue  ,
-											  @NewDepartment_Code= I.Department_Code,
-											  @NewIssued_By_Whom = I.Issued_By_Whom ,
-											  @NewRegistration   = I.Registration   ,
-											  @NewMilitary_Duty  = I.Military_Duty  ,
-											  @NewDescription    = I.[Description]      	
-							            FROM inserted I									 
-							            where @ID_entity_D = I.ID_Passport;
 
                                        
 							           IF @NewNumber_Series <> @OldNumber_Series 

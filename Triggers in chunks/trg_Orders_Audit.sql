@@ -11,7 +11,7 @@ CREATE TABLE Orders_Audit
 	Operation              CHAR(1)               null,
     ChangeDescription      nvarchar(max)        null
 --    PRIMARY KEY CLUSTERED ( AuditID ) 
-) on Orders_Group_2;
+) on Orders_Group;
 
 
 go
@@ -116,6 +116,23 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
+										SELECT 
+                                               @NewID_Orders           =  I.ID_Orders         ,
+							            	   @NewID_status           =  I.ID_status    	  ,
+							            	   @NewID_TypeOrders       =  I.ID_TypeOrders	  ,
+							            	   @NewID_Currency         =  I.ID_Currency  	  ,
+											   @NewID_OrderAssignment  =  I.ID_OrderAssignment,
+											   @NewID_OrderCategory	   =  I.ID_OrderCategory  ,
+							            	   @NewDate                =  I.Date              ,         --convert(datetime,Date,109),     
+							            	   @NewPayment_Date        =  I.Payment_Date      ,         --convert(datetime,Payment_Date,109),
+							            	   @NewAmount              =  I.Amount       	  ,
+							            	   @NewAmountCurr          =  I.AmountCurr   	  ,
+							            	   @NewAmountNDS           =  I.AmountNDS    	  ,
+							            	   @NewAmountCurrNDS       =  I.AmountCurrNDS	  ,
+							            	   @NewNum                 =  I.Num          	  ,
+							            	   @NewDescription         =  I.[Description]  
+							            FROM inserted I									 
+										where @ID_entity_D = I.ID_Orders
 
 							            SELECT 
 							                   @OldID_Orders           =  D.ID_Orders         ,
@@ -135,23 +152,6 @@ AS
 							            FROM Deleted D																		 
 										where @ID_entity_D = D.ID_Orders
 
-										SELECT 
-                                               @NewID_Orders           =  I.ID_Orders         ,
-							            	   @NewID_status           =  I.ID_status    	  ,
-							            	   @NewID_TypeOrders       =  I.ID_TypeOrders	  ,
-							            	   @NewID_Currency         =  I.ID_Currency  	  ,
-											   @NewID_OrderAssignment  =  I.ID_OrderAssignment,
-											   @NewID_OrderCategory	   =  I.ID_OrderCategory  ,
-							            	   @NewDate                =  I.Date              ,         --convert(datetime,Date,109),     
-							            	   @NewPayment_Date        =  I.Payment_Date      ,         --convert(datetime,Payment_Date,109),
-							            	   @NewAmount              =  I.Amount       	  ,
-							            	   @NewAmountCurr          =  I.AmountCurr   	  ,
-							            	   @NewAmountNDS           =  I.AmountNDS    	  ,
-							            	   @NewAmountCurrNDS       =  I.AmountCurrNDS	  ,
-							            	   @NewNum                 =  I.Num          	  ,
-							            	   @NewDescription         =  I.[Description]  
-							            FROM inserted I									 
-										where @ID_entity_D = I.ID_Orders
 
 
                                         IF @NewID_status <> @OldID_status 

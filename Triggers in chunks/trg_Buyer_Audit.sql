@@ -116,6 +116,23 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
+								        SELECT 
+							                @NewId_buyer             = I.Id_buyer           , 
+							            	@NewID_Connection_Buyer  = I.ID_Connection_Buyer,
+							            	@NewId_Status            = I.Id_Status          ,
+											@NewId_Buyer_Type        = I.Id_Buyer_Type      ,
+							            	@NewName                 = I.Name               ,
+							            	@NewSurName              = I.SurName            ,
+							            	@NewLastName             = I.LastName           ,
+							            	@NewMail                 = I.Mail               ,
+							            	@NewPol                  = I.Pol                ,
+							            	@NewPhone                = I.Phone              ,
+							            	@NewDate_Of_Birth        = I.Date_Of_Birth      ,
+											@NewPremium     		 = I.Premium            ,
+											@NewThe_resident         = I.The_resident		,
+							            	@NewDescription          = I.[Description]        	
+							            FROM inserted I									 
+							            where @ID_entity_D = I.Id_buyer;
 
                                         SELECT 
 							                @OldId_buyer             = D.Id_buyer           , 
@@ -134,24 +151,6 @@ AS
 							            	@OldDescription          = D.[Description]        							
 							            FROM Deleted D
 										where @ID_entity_D = D.Id_buyer;
-
-							            SELECT 
-							                @NewId_buyer             = I.Id_buyer           , 
-							            	@NewID_Connection_Buyer  = I.ID_Connection_Buyer,
-							            	@NewId_Status            = I.Id_Status          ,
-											@NewId_Buyer_Type        = I.Id_Buyer_Type      ,
-							            	@NewName                 = I.Name               ,
-							            	@NewSurName              = I.SurName            ,
-							            	@NewLastName             = I.LastName           ,
-							            	@NewMail                 = I.Mail               ,
-							            	@NewPol                  = I.Pol                ,
-							            	@NewPhone                = I.Phone              ,
-							            	@NewDate_Of_Birth        = I.Date_Of_Birth      ,
-											@NewPremium     		 = I.Premium            ,
-											@NewThe_resident         = I.The_resident		,
-							            	@NewDescription          = I.[Description]        	
-							            FROM inserted I									 
-							            where @ID_entity_D = I.Id_buyer;
 
 
                                        IF @NewID_Connection_Buyer <> @OldID_Connection_Buyer 

@@ -9,7 +9,7 @@ CREATE TABLE TRANSACTION_Audit
 	Operation              CHAR(1)               null,
     ChangeDescription      nvarchar(max)         null
  --   PRIMARY KEY CLUSTERED ( AuditID ) 
-) on Products_Group_2;
+) on Products_Group;
 
 
 go
@@ -107,7 +107,20 @@ AS
 						    @ID_entity_D,@login_name_2_D,@ModifiedDate_D,@Name_action_D 
 						    while @@FETCH_STATUS  = 0
 						          begin
-							          begin try								 
+							          begin try	
+											SELECT  
+                                                  @NewID_Transaction          = I.ID_Transaction          ,
+							                	  @NewID_Currency             = I.ID_Currency            	,
+							                	  @NewID_Transaction_status   = I.ID_Transaction_status  	,
+							                	  @NewID_Currency_Rate        = I.ID_Currency_Rate       	,
+							                	  @NewTransaction_Date        = I.Transaction_Date       	,
+							                	  @NewKeySource               = I.KeySource              	,
+							                	  @NewTransaction_name_sender = I.Transaction_name_sender	,
+							                	  @NewJSON_Transaction_sender = I.JSON_Transaction_sender	,
+							                	  @NewTransaction_Amount      = I.Transaction_Amount     	,
+							                	  @NewDescription             = I.[Description]                      
+							                FROM inserted I
+											where @ID_entity_D = I.ID_Transaction;									  
 							                
 							                SELECT  
                                                   @OldID_Transaction          = D.ID_Transaction          ,
@@ -121,21 +134,7 @@ AS
 							                	  @OldTransaction_Amount      = D.Transaction_Amount     	,
 							                	  @OldDescription             = D.[Description]                           
 							                FROM Deleted D
-											where @ID_entity_D = D.ID_Transaction; 
-
-											SELECT  
-                                                  @NewID_Transaction          = I.ID_Transaction          ,
-							                	  @NewID_Currency             = I.ID_Currency            	,
-							                	  @NewID_Transaction_status   = I.ID_Transaction_status  	,
-							                	  @NewID_Currency_Rate        = I.ID_Currency_Rate       	,
-							                	  @NewTransaction_Date        = I.Transaction_Date       	,
-							                	  @NewKeySource               = I.KeySource              	,
-							                	  @NewTransaction_name_sender = I.Transaction_name_sender	,
-							                	  @NewJSON_Transaction_sender = I.JSON_Transaction_sender	,
-							                	  @NewTransaction_Amount      = I.Transaction_Amount     	,
-							                	  @NewDescription             = I.[Description]                      
-							                FROM inserted I
-											where @ID_entity_D = I.ID_Transaction;	
+											where @ID_entity_D = D.ID_Transaction; 	
 
 
                                             IF @NewID_Currency <> @OldID_Currency 

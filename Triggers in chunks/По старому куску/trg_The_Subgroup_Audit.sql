@@ -9,7 +9,7 @@ CREATE TABLE The_Subgroup_Audit
 	Operation              CHAR(1)               null,
     ChangeDescription      nvarchar(max)        null
 --    PRIMARY KEY CLUSTERED ( AuditID ) 
-) on Employee_Group_2;
+) on Employee_Group;
 
 
 go
@@ -107,6 +107,18 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
+							            SELECT 
+										     @NewID_The_Subgroup           = I.ID_The_Subgroup          ,
+											 @NewID_Head_The_Subgroup      = I.ID_Head_The_Subgroup     ,
+											 @NewID_Vice_Head_The_Subgroup = I.ID_Vice_Head_The_Subgroup,
+											 @NewID_Group                  = I.ID_Group                 ,
+											 @NewName_The_Subgroup         = I.Name_The_Subgroup        ,
+											 @NewID_Branch                 = I.ID_Branch                ,
+											 @NewDepartment_Code           = I.Department_Code          ,
+											 @NewDescription               = I.[Description]            ,
+											 @NewID_Parent_The_Subgroup    = I.ID_Parent_The_Subgroup   
+							            FROM inserted I									 
+							            where @ID_entity_D = I.ID_The_Subgroup;								        
 
                                         SELECT 
 										     @OldID_The_Subgroup           = D.ID_The_Subgroup          ,
@@ -120,19 +132,6 @@ AS
 											 @OldID_Parent_The_Subgroup    = D.ID_Parent_The_Subgroup   
 							            FROM Deleted D
 										where @ID_entity_D = D.ID_The_Subgroup;
-
-							            SELECT 
-										     @NewID_The_Subgroup           = I.ID_The_Subgroup          ,
-											 @NewID_Head_The_Subgroup      = I.ID_Head_The_Subgroup     ,
-											 @NewID_Vice_Head_The_Subgroup = I.ID_Vice_Head_The_Subgroup,
-											 @NewID_Group                  = I.ID_Group                 ,
-											 @NewName_The_Subgroup         = I.Name_The_Subgroup        ,
-											 @NewID_Branch                 = I.ID_Branch                ,
-											 @NewDepartment_Code           = I.Department_Code          ,
-											 @NewDescription               = I.[Description]            ,
-											 @NewID_Parent_The_Subgroup    = I.ID_Parent_The_Subgroup   
-							            FROM inserted I									 
-							            where @ID_entity_D = I.ID_The_Subgroup;
 
                                        
 							           IF @NewID_Head_The_Subgroup <> @OldID_Head_The_Subgroup
