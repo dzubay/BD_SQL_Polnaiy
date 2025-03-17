@@ -95,25 +95,23 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
+							                SELECT 
+                                                  @NewID_OrderCategory     	= I.ID_OrderCategory    ,
+												  @NewOrderCategoryName   	= I.OrderCategoryName   ,
+												  @NewAbbreviation        	= I.Abbreviation        ,
+												  @NewOrderCategorySysName	= I.OrderCategorySysName,
+												  @NewDescription      	    = I.[Description]      	  
+							                FROM inserted I									 
+							                where @ID_entity_D = I.ID_OrderCategory;
+
 							                SELECT   
-											      @NewID_OrderCategory     	= D.ID_OrderCategory    ,
-												  @NewOrderCategoryName   	= D.OrderCategoryName   ,
-												  @NewAbbreviation        	= D.Abbreviation        ,
-												  @NewOrderCategorySysName	= D.OrderCategorySysName,
-												  @NewDescription      	    = D.[Description]      	  
+											      @OldID_OrderCategory     	= D.ID_OrderCategory    ,
+												  @OldOrderCategoryName   	= D.OrderCategoryName   ,
+												  @OldAbbreviation        	= D.Abbreviation        ,
+												  @OldOrderCategorySysName	= D.OrderCategorySysName,
+												  @OldDescription      	    = D.[Description]      	  
 							                FROM Deleted D																		 
 											 where @ID_entity_D = D.ID_OrderCategory; 
-
-							                SELECT 
-                                                  @OldID_OrderCategory     	= I.ID_OrderCategory    ,
-												  @OldOrderCategoryName   	= I.OrderCategoryName   ,
-												  @OldAbbreviation        	= I.Abbreviation        ,
-												  @OldOrderCategorySysName	= I.OrderCategorySysName,
-												  @OldDescription      	    = I.[Description]      	  
-							                FROM inserted I									 
-							                where @ID_entity_D = I.ID_OrderCategory;	
-
-
 
                                             IF @NewOrderCategoryName <> @OldOrderCategoryName 
 							                   begin

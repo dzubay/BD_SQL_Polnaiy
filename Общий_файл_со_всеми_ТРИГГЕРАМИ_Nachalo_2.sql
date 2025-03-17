@@ -117,6 +117,23 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
+							            SELECT 
+							                @NewId_buyer             = I.Id_buyer           , 
+							            	@NewID_Connection_Buyer  = I.ID_Connection_Buyer,
+							            	@NewId_Status            = I.Id_Status          ,
+											@NewId_Buyer_Type        = I.Id_Buyer_Type      ,
+							            	@NewName                 = I.Name               ,
+							            	@NewSurName              = I.SurName            ,
+							            	@NewLastName             = I.LastName           ,
+							            	@NewMail                 = I.Mail               ,
+							            	@NewPol                  = I.Pol                ,
+							            	@NewPhone                = I.Phone              ,
+							            	@NewDate_Of_Birth        = I.Date_Of_Birth      ,
+											@NewPremium     		 = I.Premium            ,
+											@NewThe_resident         = I.The_resident		,
+							            	@NewDescription          = I.[Description]        	
+							            FROM inserted I									 
+							            where @ID_entity_D = I.Id_buyer;
 
                                         SELECT 
 							                @OldId_buyer             = D.Id_buyer           , 
@@ -135,24 +152,6 @@ AS
 							            	@OldDescription          = D.[Description]        							
 							            FROM Deleted D
 										where @ID_entity_D = D.Id_buyer;
-
-							            SELECT 
-							                @NewId_buyer             = I.Id_buyer           , 
-							            	@NewID_Connection_Buyer  = I.ID_Connection_Buyer,
-							            	@NewId_Status            = I.Id_Status          ,
-											@NewId_Buyer_Type        = I.Id_Buyer_Type      ,
-							            	@NewName                 = I.Name               ,
-							            	@NewSurName              = I.SurName            ,
-							            	@NewLastName             = I.LastName           ,
-							            	@NewMail                 = I.Mail               ,
-							            	@NewPol                  = I.Pol                ,
-							            	@NewPhone                = I.Phone              ,
-							            	@NewDate_Of_Birth        = I.Date_Of_Birth      ,
-											@NewPremium     		 = I.Premium            ,
-											@NewThe_resident         = I.The_resident		,
-							            	@NewDescription          = I.[Description]        	
-							            FROM inserted I									 
-							            where @ID_entity_D = I.Id_buyer;
 
 
                                        IF @NewID_Connection_Buyer <> @OldID_Connection_Buyer 
@@ -436,7 +435,6 @@ AS
                     END
 
 GO
-
 
 CREATE TABLE Buyer_Type_Audit
 (
@@ -1170,7 +1168,14 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try 
-								  
+							                SELECT 
+							                    @NewID_Condition_of_the_item       = I.ID_Condition_of_the_item     ,
+							                	@NewName_Condition_of_the_item     = I.Name_Condition_of_the_item   ,
+							                	@NewSysNameConditionTypeOfTheItem  = I.SysNameConditionTypeOfTheItem,
+							                	@NewDescription                    = I.[Description]        	  
+							                FROM inserted I									 
+							                where @ID_entity_D = I.ID_Condition_of_the_item;
+											
                                            SELECT 
 							                    @OldID_Condition_of_the_item       = D.ID_Condition_of_the_item     ,
 							                	@OldName_Condition_of_the_item     = D.Name_Condition_of_the_item   ,
@@ -1178,14 +1183,7 @@ AS
 							                	@OldDescription                    = D.[Description]  					
 							                FROM Deleted D
 											where @ID_entity_D = D.ID_Condition_of_the_item;
-
-							                SELECT 
-							                    @NewID_Condition_of_the_item       = I.ID_Condition_of_the_item     ,
-							                	@NewName_Condition_of_the_item     = I.Name_Condition_of_the_item   ,
-							                	@NewSysNameConditionTypeOfTheItem  = I.SysNameConditionTypeOfTheItem,
-							                	@NewDescription                    = I.[Description]        	  
-							                FROM inserted I									 
-							                where @ID_entity_D = I.ID_Condition_of_the_item;																			 
+																			 
 
                                            IF @NewID_Condition_of_the_item  <> @OldID_Condition_of_the_item  
 							                  begin
@@ -1499,15 +1497,6 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
-								        SELECT 
-                                              @OldID_Connection_Buyer = D.ID_Connection_Buyer,
-							            	  @OldPassword            = D.Password           ,
-							            	  @OldLogin               = D.Login              ,
-							            	  @OldDate_Created        = D.Date_Created       ,
-							            	  @OldDescription      	  = D.[Description]      	
-							            FROM Deleted D
-										where @ID_entity_D = D.ID_Connection_Buyer 
-
 							            SELECT 
                                               @NewID_Connection_Buyer = I.ID_Connection_Buyer,
 							            	  @NewPassword            = I.Password           ,
@@ -1516,6 +1505,15 @@ AS
 							            	  @NewDescription      	  = I.[Description]      	
 							            FROM inserted I									 
 							            where @ID_entity_D = I.ID_Connection_Buyer
+
+								        SELECT 
+                                              @OldID_Connection_Buyer = D.ID_Connection_Buyer,
+							            	  @OldPassword            = D.Password           ,
+							            	  @OldLogin               = D.Login              ,
+							            	  @OldDate_Created        = D.Date_Created       ,
+							            	  @OldDescription      	  = D.[Description]      	
+							            FROM Deleted D
+										where @ID_entity_D = D.ID_Connection_Buyer 
 																	 
 
                                         IF @NewPassword <> @OldPassword 
@@ -1830,17 +1828,6 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 						         begin try
-
-								 SELECT 
-								     @OldID_Currency       =   ID_Currency     ,
-									 @OldFull_name_rus     =   Full_name_rus   ,
-									 @OldFull_name_eng     =   Full_name_eng   ,
-									 @OldAbbreviation_rus  =   Abbreviation_rus,
-									 @OldAbbreviation_eng  =   Abbreviation_eng,
-									 @OldDescription       =   [Description]     
-								 FROM   Deleted D 
-								 where @ID_entity_D = D.ID_Currency 
-
 								 SELECT 
 								     @NewID_Currency       =   ID_Currency     ,
 								 	 @NewFull_name_rus     =   Full_name_rus   ,
@@ -1851,7 +1838,15 @@ AS
 								 FROM   Deleted D 
 								 where @ID_entity_D = D.ID_Currency 
 
-
+								 SELECT 
+								     @OldID_Currency       =   ID_Currency     ,
+									 @OldFull_name_rus     =   Full_name_rus   ,
+									 @OldFull_name_eng     =   Full_name_eng   ,
+									 @OldAbbreviation_rus  =   Abbreviation_rus,
+									 @OldAbbreviation_eng  =   Abbreviation_eng,
+									 @OldDescription       =   [Description]     
+								 FROM   Deleted D 
+								 where @ID_entity_D = D.ID_Currency 
                          
                             IF @NewFull_name_rus <> @OldFull_name_rus 
 							   begin
@@ -2534,18 +2529,6 @@ AS
 						    while @@FETCH_STATUS  = 0
 						          begin
 							           begin try
-                                           SELECT 
-                                               @OldId_Data_Orders     =  D.Id_Data_Orders  ,
-									           @OldID_Employee        =  D.ID_Employee     ,
-									           @OldID_Orders          =  D.ID_Orders       ,
-									           @OldId_buyer           =  D.Id_buyer        ,
-									           @OldID_Exemplar        =  D.ID_Exemplar     ,
-									           @OldID_Transaction     =  D.ID_Transaction  ,
-									           @OldDate_Data_Orders   =  D.Date_Data_Orders,
-									           @OldDescription        =  D.[Description]        							
-							             FROM Deleted D	
-										 where @ID_entity_D = D.Id_Data_Orders;
-
 							             SELECT 
                                                 @NewId_Data_Orders    =  I.Id_Data_Orders  ,
 							             		@NewID_Employee       =  I.ID_Employee     ,
@@ -2557,6 +2540,18 @@ AS
 							             		@NewDescription       =  I.[Description]         	
 							             FROM inserted I	
 										 where @ID_entity_D = I.Id_Data_Orders;
+
+                                           SELECT 
+                                               @OldId_Data_Orders     =  D.Id_Data_Orders  ,
+									           @OldID_Employee        =  D.ID_Employee     ,
+									           @OldID_Orders          =  D.ID_Orders       ,
+									           @OldId_buyer           =  D.Id_buyer        ,
+									           @OldID_Exemplar        =  D.ID_Exemplar     ,
+									           @OldID_Transaction     =  D.ID_Transaction  ,
+									           @OldDate_Data_Orders   =  D.Date_Data_Orders,
+									           @OldDescription        =  D.[Description]        							
+							             FROM Deleted D	
+										 where @ID_entity_D = D.Id_Data_Orders;
 																	 
                                          IF @NewID_Employee <> @OldID_Employee
 							                begin
@@ -2913,27 +2908,6 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
-								        SELECT 
-							                @OldID_Exemplar             	= D.ID_Exemplar             ,
-							            	@OldId_Item                 	= D.Id_Item                 ,
-							            	@OldID_Currency             	= D.ID_Currency             ,
-							            	@OldID_Storage_location     	= D.ID_Storage_location     ,
-							            	@OldKeySource               	= D.KeySource               ,
-							            	@OldSerial_number           	= D.Serial_number           ,
-							            	@OldID_Condition_of_the_item	= D.ID_Condition_of_the_item,
-							            	@OldOld_Price_no_NDS        	= D.Old_Price_no_NDS        ,
-							            	@OldRefund                  	= D.Refund                  ,
-							            	@OldDate_Refund             	= D.Date_Refund             ,
-							            	@OldReturn_Note             	= D.Return_Note             ,
-							            	@OldOld_Price_NDS           	= D.Old_Price_NDS           ,
-							            	@OldJSON_Size_Volume        	= D.JSON_Size_Volume        ,
-							            	@OldNew_Price_NDS           	= D.New_Price_NDS           ,
-							            	@OldNew_Price_no_NDS        	= D.New_Price_no_NDS        ,
-							            	@OldDate_Created                = D.Date_Created            , 
-							            	@OldDescription                 = D.[Description]        	  					
-							            FROM Deleted D																		 
-										where @ID_entity_D = D.ID_Exemplar;
-								       
 							            SELECT 
 							                @NewID_Exemplar             	= I.ID_Exemplar             , 
 							            	@NewId_Item                 	= I.Id_Item                 ,
@@ -2954,6 +2928,27 @@ AS
 							            	@NewDescription                 = I.[Description]        	  
 							            FROM inserted I
 										where @ID_entity_D = I.ID_Exemplar;	
+
+								        SELECT 
+							                @OldID_Exemplar             	= D.ID_Exemplar             ,
+							            	@OldId_Item                 	= D.Id_Item                 ,
+							            	@OldID_Currency             	= D.ID_Currency             ,
+							            	@OldID_Storage_location     	= D.ID_Storage_location     ,
+							            	@OldKeySource               	= D.KeySource               ,
+							            	@OldSerial_number           	= D.Serial_number           ,
+							            	@OldID_Condition_of_the_item	= D.ID_Condition_of_the_item,
+							            	@OldOld_Price_no_NDS        	= D.Old_Price_no_NDS        ,
+							            	@OldRefund                  	= D.Refund                  ,
+							            	@OldDate_Refund             	= D.Date_Refund             ,
+							            	@OldReturn_Note             	= D.Return_Note             ,
+							            	@OldOld_Price_NDS           	= D.Old_Price_NDS           ,
+							            	@OldJSON_Size_Volume        	= D.JSON_Size_Volume        ,
+							            	@OldNew_Price_NDS           	= D.New_Price_NDS           ,
+							            	@OldNew_Price_no_NDS        	= D.New_Price_no_NDS        ,
+							            	@OldDate_Created                = D.Date_Created            , 
+							            	@OldDescription                 = D.[Description]        	  					
+							            FROM Deleted D																		 
+										where @ID_entity_D = D.ID_Exemplar;								      
 
 
                                           IF @NewId_Item  <> @OldId_Item  
@@ -3278,6 +3273,20 @@ CREATE TABLE Item_Audit
 
 go
 
+CREATE TABLE Item_Audit
+(
+    AuditID                bigint IDENTITY(1,1)  not null,
+    Id_Item                bigint                null,
+ 	ModifiedBy             nVARCHAR(128)         null,
+    ModifiedDate           DATETIME              NOT NULL DEFAULT GETDATE(),
+	Operation              CHAR(1)               null,
+    ChangeDescription      nvarchar(Max)         null
+--    PRIMARY KEY CLUSTERED ( AuditID ) 
+) on Products_Group;
+
+
+go
+
 CREATE TRIGGER trg_Item_Audit ON Item
 AFTER INSERT, UPDATE, DELETE
 
@@ -3335,6 +3344,8 @@ AS
                            DECLARE @OldId_Item                     bigint         	;
 						   DECLARE @OldID_product_measurement      bigint         	;
 						   DECLARE @OldID_TypeItem                 bigint         	;
+						   DECLARE @OldID_Species_Item             bigint           ;
+						   DECLARE @OldId_Item_Status              bigint           ;
 						   DECLARE @OldArticle_number              nvarchar(300)  	;
 						   DECLARE @OldName_Item                   nvarchar(500)  	;
 						   DECLARE @OldImage_Item                  varbinary(max) 	;
@@ -3352,6 +3363,8 @@ AS
                            DECLARE @NewId_Item                     bigint         	;
 						   DECLARE @NewID_product_measurement      bigint         	;
 						   DECLARE @NewID_TypeItem                 bigint         	;
+						   DECLARE @NewID_Species_Item             bigint           ;
+						   DECLARE @NewId_Item_Status              bigint           ;
 						   DECLARE @NewArticle_number              nvarchar(300)  	;
 						   DECLARE @NewName_Item                   nvarchar(500)  	;
 						   DECLARE @NewImage_Item                  varbinary(max) 	;
@@ -3387,6 +3400,8 @@ AS
 							                        @NewId_Item                    =  I.Id_Item                ,
 							                		@NewID_product_measurement	   =  I.ID_product_measurement ,
 							                		@NewID_TypeItem           	   =  I.ID_TypeItem            ,
+													@NewID_Species_Item			   =  I.ID_Species_Item        ,
+													@NewId_Item_Status             =  I.Id_Item_Status 		   ,
 							                		@NewArticle_number        	   =  I.Article_number         ,
 							                		@NewName_Item             	   =  I.Name_Item              ,
 							                		@NewImage_Item            	   =  I.Image_Item             ,
@@ -3404,21 +3419,23 @@ AS
 											where @ID_entity_D = I.Id_Item;
 							
 							                SELECT 
-							                        @oldId_Item                    =  D.Id_Item                ,
-							                		@oldID_product_measurement	   =  D.ID_product_measurement ,
-							                		@oldID_TypeItem           	   =  D.ID_TypeItem            ,
-							                		@oldArticle_number        	   =  D.Article_number         ,
-							                		@oldName_Item             	   =  D.Name_Item              ,
-							                		@oldImage_Item            	   =  D.Image_Item             ,
-							                		@oldManufacturer          	   =  D.Manufacturer           ,
-							                		@oldCountry               	   =  D.Country                ,
-							                		@oldCity                  	   =  D.City                   ,
-							                		@oldAdress                	   =  D.Adress                 ,
-							                		@oldMail                  	   =  D.Mail                   ,
-							                		@oldPhone                 	   =  D.Phone                  ,
-							                		@oldLogo                  	   =  D.Logo                   ,
-							                		@oldDate_Created          	   =  D.Date_Created           ,
-							                		@oldQuantity                   =  D.Quantity               ,
+							                        @OldId_Item                    =  D.Id_Item                ,
+							                		@OldID_product_measurement	   =  D.ID_product_measurement ,
+							                		@OldID_TypeItem           	   =  D.ID_TypeItem            ,
+													@OldID_Species_Item			   =  D.ID_Species_Item        ,
+													@OldId_Item_Status             =  D.Id_Item_Status 		   ,
+							                		@OldArticle_number        	   =  D.Article_number         ,
+							                		@OldName_Item             	   =  D.Name_Item              ,
+							                		@OldImage_Item            	   =  D.Image_Item             ,
+							                		@OldManufacturer          	   =  D.Manufacturer           ,
+							                		@OldCountry               	   =  D.Country                ,
+							                		@OldCity                  	   =  D.City                   ,
+							                		@OldAdress                	   =  D.Adress                 ,
+							                		@OldMail                  	   =  D.Mail                   ,
+							                		@OldPhone                 	   =  D.Phone                  ,
+							                		@OldLogo                  	   =  D.Logo                   ,
+							                		@OldDate_Created          	   =  D.Date_Created           ,
+							                		@OldQuantity                   =  D.Quantity               ,
 							                		@OldDescription                =  D.[Description]         								
 							                FROM Deleted D
 											where @ID_entity_D = D.Id_Item;
@@ -3431,6 +3448,16 @@ AS
 							                IF @NewID_TypeItem <> @OldID_TypeItem
 							                   begin
 							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_TypeItem = Old ->"' +  ISNULL(CAST(@OldID_TypeItem AS NVARCHAR(20)),'') + ' " NEW -> " ' + isnull(CAST(@NewID_TypeItem AS NVARCHAR(20)),'') + '", ';
+							                   end
+
+                                            IF @NewID_Species_Item <> @OldID_Species_Item
+							                   begin
+							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_Species_Item = Old ->"' +  ISNULL(CAST(@OldID_Species_Item AS NVARCHAR(20)),'') + ' " NEW -> " ' + isnull(CAST(@NewID_Species_Item AS NVARCHAR(20)),'') + '", ';
+							                   end
+
+											IF @NewId_Item_Status <> @OldId_Item_Status
+							                   begin
+							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Id_Item_Status = Old ->"' +  ISNULL(CAST(@OldId_Item_Status AS NVARCHAR(20)),'') + ' " NEW -> " ' + isnull(CAST(@NewId_Item_Status AS NVARCHAR(20)),'') + '", ';
 							                   end
 					                        
 							                IF @NewArticle_number <> @OldArticle_number
@@ -3555,6 +3582,8 @@ AS
 						   DECLARE @OldId_Item_2                       bigint         ;
 						   DECLARE @OldID_product_measurement_2        bigint         ;
 						   DECLARE @OldID_TypeItem_2                   bigint         ;
+						   DECLARE @OldID_Species_Item_2               bigint         ;
+						   DECLARE @OldId_Item_Status_2                bigint         ;
 						   DECLARE @OldArticle_number_2                nvarchar(300)  ;
 						   DECLARE @OldName_Item_2                     nvarchar(500)  ;
 						   DECLARE @OldImage_Item_2                    varbinary(max) ;
@@ -3589,6 +3618,8 @@ AS
                                                     @OldId_Item_2                   = D.Id_Item               ,
 							                    	@OldID_product_measurement_2    = D.ID_product_measurement,
 							                    	@OldID_TypeItem_2               = D.ID_TypeItem           ,
+													@OldID_Species_Item_2			= D.ID_Species_Item       ,
+													@OldId_Item_Status_2            = D.Id_Item_Status 		  ,
 							                    	@OldArticle_number_2            = D.Article_number        ,
 							                    	@OldName_Item_2                 = D.Name_Item             ,
 							                    	@OldImage_Item_2                = D.Image_Item            ,
@@ -3609,6 +3640,8 @@ AS
 							                    + 'Id_Item'                +' = "'+  ISNULL(CAST(@OldId_Item_2 AS NVARCHAR(20)),'')+ '", '
 							                    + 'ID_product_measurement' +' = "'+  ISNULL(CAST(@OldID_product_measurement_2 AS NVARCHAR(20)),'')+ '", '
 							                    + 'ID_TypeItem'            +' = "'+  ISNULL(CAST(@OldID_TypeItem_2 AS NVARCHAR(20)),'')+ '", '
+                                                + 'ID_Species_Item'        +' = "'+  ISNULL(CAST(@OldID_Species_Item_2 AS NVARCHAR(20)),'')+ '", '
+												+ 'Id_Item_Status'         +' = "'+  ISNULL(CAST(@OldId_Item_Status_2 AS NVARCHAR(20)),'')+ '", '
 							                    + 'Article_number'         +' = "'+  ISNULL(@OldArticle_number_2,'')+ '", '
 							                    + 'Name_Item'              +' = "'+  ISNULL(@OldName_Item_2,'')+ '", '
 							                    + 'Image_Item'             +' = "'+  ISNULL(cast(@OldImage_Item_2 as varchar(max)),'')+ '", '
@@ -3839,6 +3872,24 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
+										SELECT 
+                                               @NewID_Orders           =  I.ID_Orders         ,
+							            	   @NewID_status           =  I.ID_status    	  ,
+							            	   @NewID_TypeOrders       =  I.ID_TypeOrders	  ,
+							            	   @NewID_Currency         =  I.ID_Currency  	  ,
+											   @NewID_OrderAssignment  =  I.ID_OrderAssignment,
+											   @NewID_OrderCategory	   =  I.ID_OrderCategory  ,
+							            	   @NewDate                =  I.Date              ,         --convert(datetime,Date,109),     
+							            	   @NewPayment_Date        =  I.Payment_Date      ,         --convert(datetime,Payment_Date,109),
+							            	   @NewAmount              =  I.Amount       	  ,
+							            	   @NewAmountCurr          =  I.AmountCurr   	  ,
+							            	   @NewAmountNDS           =  I.AmountNDS    	  ,
+							            	   @NewAmountCurrNDS       =  I.AmountCurrNDS	  ,
+							            	   @NewNum                 =  I.Num          	  ,
+							            	   @NewDescription         =  I.[Description]  
+							            FROM inserted I									 
+										where @ID_entity_D = I.ID_Orders
+
 
 							            SELECT 
 							                   @OldID_Orders           =  D.ID_Orders         ,
@@ -3857,24 +3908,6 @@ AS
 							            	   @OldDescription         =  D.[Description]  
 							            FROM Deleted D																		 
 										where @ID_entity_D = D.ID_Orders
-
-										SELECT 
-                                               @NewID_Orders           =  I.ID_Orders         ,
-							            	   @NewID_status           =  I.ID_status    	  ,
-							            	   @NewID_TypeOrders       =  I.ID_TypeOrders	  ,
-							            	   @NewID_Currency         =  I.ID_Currency  	  ,
-											   @NewID_OrderAssignment  =  I.ID_OrderAssignment,
-											   @NewID_OrderCategory	   =  I.ID_OrderCategory  ,
-							            	   @NewDate                =  I.Date              ,         --convert(datetime,Date,109),     
-							            	   @NewPayment_Date        =  I.Payment_Date      ,         --convert(datetime,Payment_Date,109),
-							            	   @NewAmount              =  I.Amount       	  ,
-							            	   @NewAmountCurr          =  I.AmountCurr   	  ,
-							            	   @NewAmountNDS           =  I.AmountNDS    	  ,
-							            	   @NewAmountCurrNDS       =  I.AmountCurrNDS	  ,
-							            	   @NewNum                 =  I.Num          	  ,
-							            	   @NewDescription         =  I.[Description]  
-							            FROM inserted I									 
-										where @ID_entity_D = I.ID_Orders
 
 
                                         IF @NewID_status <> @OldID_status 
@@ -4588,6 +4621,22 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
+								        SELECT 
+							                @NewID_Storage_location     	= I.ID_Storage_location     ,
+							            	@NewID_Type_Storage_location	= I.ID_Type_Storage_location,
+											@NewId_Status                   = I.Id_Status               ,
+							            	@NewKeySource               	= I.KeySource               ,
+							            	@NewName                    	= I.Name                    ,
+							            	@NewCountry                 	= I.Country                 ,
+							            	@NewCity                    	= I.City                    ,
+							            	@NewAdress                  	= I.Adress                  ,
+							            	@NewMail                    	= I.Mail                    ,
+							            	@NewPhone                   	= I.Phone                   ,
+							            	@NewDate_Created                = I.Date_Created            ,
+							            	@NewDescription                 = I.[Description]        	  
+							            FROM inserted I									 
+							            where @ID_entity_D = I.ID_Storage_location;
+
 						                SELECT 
 							                @OldID_Storage_location     	= D.ID_Storage_location     ,
 							            	@OldID_Type_Storage_location	= D.ID_Type_Storage_location,
@@ -4603,22 +4652,6 @@ AS
 							            	@OldDescription                 = D.[Description]        	  					
 							            FROM Deleted D	
 										 where @ID_entity_D = D.ID_Storage_location
-
-							            SELECT 
-							                @NewID_Storage_location     	= I.ID_Storage_location     ,
-							            	@NewID_Type_Storage_location	= I.ID_Type_Storage_location,
-											@NewId_Status                   = I.Id_Status               ,
-							            	@NewKeySource               	= I.KeySource               ,
-							            	@NewName                    	= I.Name                    ,
-							            	@NewCountry                 	= I.Country                 ,
-							            	@NewCity                    	= I.City                    ,
-							            	@NewAdress                  	= I.Adress                  ,
-							            	@NewMail                    	= I.Mail                    ,
-							            	@NewPhone                   	= I.Phone                   ,
-							            	@NewDate_Created                = I.Date_Created            ,
-							            	@NewDescription                 = I.[Description]        	  
-							            FROM inserted I									 
-							            where @ID_entity_D = I.ID_Storage_location;
 																	 
 
                                         IF @NewID_Type_Storage_location  <> @OldID_Type_Storage_location  
@@ -4891,6 +4924,8 @@ AS
 
                     END
 
+GO
+
 
 GO
 
@@ -5002,21 +5037,6 @@ AS
 						    while @@FETCH_STATUS  = 0
 						          begin
 							          begin try								 
-							                
-							                SELECT  
-                                                  @OldID_Transaction          = D.ID_Transaction          ,
-							                	  @OldID_Currency             = D.ID_Currency            	,
-							                	  @OldID_Transaction_status   = D.ID_Transaction_status  	,
-							                	  @OldID_Currency_Rate        = D.ID_Currency_Rate       	,
-							                	  @OldTransaction_Date        = D.Transaction_Date       	,
-							                	  @OldKeySource               = D.KeySource              	,
-							                	  @OldTransaction_name_sender = D.Transaction_name_sender	,
-							                	  @OldJSON_Transaction_sender = D.JSON_Transaction_sender	,
-							                	  @OldTransaction_Amount      = D.Transaction_Amount     	,
-							                	  @OldDescription             = D.[Description]                           
-							                FROM Deleted D
-											where @ID_entity_D = D.ID_Transaction; 
-
 											SELECT  
                                                   @NewID_Transaction          = I.ID_Transaction          ,
 							                	  @NewID_Currency             = I.ID_Currency            	,
@@ -5029,7 +5049,21 @@ AS
 							                	  @NewTransaction_Amount      = I.Transaction_Amount     	,
 							                	  @NewDescription             = I.[Description]                      
 							                FROM inserted I
-											where @ID_entity_D = I.ID_Transaction;	
+											where @ID_entity_D = I.ID_Transaction;
+											
+							                SELECT  
+                                                  @OldID_Transaction          = D.ID_Transaction          ,
+							                	  @OldID_Currency             = D.ID_Currency            	,
+							                	  @OldID_Transaction_status   = D.ID_Transaction_status  	,
+							                	  @OldID_Currency_Rate        = D.ID_Currency_Rate       	,
+							                	  @OldTransaction_Date        = D.Transaction_Date       	,
+							                	  @OldKeySource               = D.KeySource              	,
+							                	  @OldTransaction_name_sender = D.Transaction_name_sender	,
+							                	  @OldJSON_Transaction_sender = D.JSON_Transaction_sender	,
+							                	  @OldTransaction_Amount      = D.Transaction_Amount     	,
+							                	  @OldDescription             = D.[Description]                           
+							                FROM Deleted D
+											where @ID_entity_D = D.ID_Transaction; 	
 
 
                                             IF @NewID_Currency <> @OldID_Currency 
@@ -5376,15 +5410,6 @@ AS
 						    while @@FETCH_STATUS  = 0
 						         begin
 							         begin try
-                                            SELECT  
-							                     @OldID_Transaction_status    = D.ID_Transaction_status ,
-							                	 @OldTypeTransactionName      = D.TypeTransactionName   ,
-							                	 @OldSysTypeTransactionName   = D.SysTypeTransactionName,
-							                	 @OldDescription              = D.[Description]          
-							                FROM Deleted D
-											where @ID_entity_D = D.ID_Transaction_status;
-
-
 							                SELECT  
 							                     @NewID_Transaction_status    = I.ID_Transaction_status , 
 							                	 @NewTypeTransactionName      = I.TypeTransactionName   ,
@@ -5392,6 +5417,14 @@ AS
 							                	 @NewDescription              = I.[Description]           
 							                FROM inserted I									 
 							                where @ID_entity_D = I.ID_Transaction_status;
+
+                                            SELECT  
+							                     @OldID_Transaction_status    = D.ID_Transaction_status ,
+							                	 @OldTypeTransactionName      = D.TypeTransactionName   ,
+							                	 @OldSysTypeTransactionName   = D.SysTypeTransactionName,
+							                	 @OldDescription              = D.[Description]          
+							                FROM Deleted D
+											where @ID_entity_D = D.ID_Transaction_status;
 
                                             IF @NewTypeTransactionName <> @OldTypeTransactionName 
 							                   begin
@@ -5691,14 +5724,6 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							        begin try
-                                            SELECT 
-                                                    @OldID_product_measurement     =  D.ID_product_measurement   ,
-							                		@OldProduct_measurement_Name   =  D.Product_measurement_Name ,
-							                		@OldSysProductMeasurementName  =  D.SysProductMeasurementName,
-							                		@OldDescription                =  D.[Description]         								
-							                FROM Deleted D
-											where @ID_entity_D = D.ID_product_measurement;
-
 							                SELECT 
 							                        @NewID_product_measurement     =  I.ID_product_measurement   ,
 							                		@NewProduct_measurement_Name   =  I.Product_measurement_Name ,
@@ -5706,6 +5731,14 @@ AS
 							                		@NewDescription                =  I.[Description]         	
 							                FROM inserted I
 											where @ID_entity_D = I.ID_product_measurement;
+
+                                            SELECT 
+                                                    @OldID_product_measurement     =  D.ID_product_measurement   ,
+							                		@OldProduct_measurement_Name   =  D.Product_measurement_Name ,
+							                		@OldSysProductMeasurementName  =  D.SysProductMeasurementName,
+							                		@OldDescription                =  D.[Description]         								
+							                FROM Deleted D
+											where @ID_entity_D = D.ID_product_measurement;
 							                																		 
                                             IF @NewProduct_measurement_Name <> @OldProduct_measurement_Name
 							                   begin
@@ -6320,19 +6353,19 @@ AS
 						    while @@FETCH_STATUS  = 0
 						         begin
 							         begin try
-									       SELECT @OldId_TypeItem     = D.Id_TypeItem    , 
-                                                  @OldTypeItemName    = D.TypeItemName   , 
-                                                  @OldSysTypeItemName = D.SysTypeItemName,
-                                                  @OldDescription     = D.[Description]
-                                           FROM deleted D
-										   where @ID_entity_D = D.Id_TypeItem;
-
 							               SELECT @NewId_TypeItem     = I.Id_TypeItem    ,
 							                      @NewTypeItemName    = I.TypeItemName   , 
 							                      @NewSysTypeItemName = I.SysTypeItemName,
 							                      @NewDescription     = I.[Description]
 							               FROM inserted I
 										   where @ID_entity_D = I.Id_TypeItem;
+
+									       SELECT @OldId_TypeItem     = D.Id_TypeItem    , 
+                                                  @OldTypeItemName    = D.TypeItemName   , 
+                                                  @OldSysTypeItemName = D.SysTypeItemName,
+                                                  @OldDescription     = D.[Description]
+                                           FROM deleted D
+										   where @ID_entity_D = D.Id_TypeItem;
 							               
                                           IF @NewTypeItemName <> @OldTypeItemName 
 							                 begin
@@ -6631,12 +6664,12 @@ AS
 
 
 							          SELECT 
-							                 @NewID_TypeOrders     = D.ID_TypeOrders     ,
-							                 @NewTypeOrdersName    = D.TypeOrdersName    ,
-							                 @NewTypeOrdersSysName = D.TypeOrdersSysName ,
-							                 @NewDescription       = D.[Description]      
-							          FROM inserted D									 
-							          where @ID_entity_D = D.ID_TypeOrders 
+							                 @NewID_TypeOrders     = I.ID_TypeOrders     ,
+							                 @NewTypeOrdersName    = I.TypeOrdersName    ,
+							                 @NewTypeOrdersSysName = I.TypeOrdersSysName ,
+							                 @NewDescription       = I.[Description]      
+							          FROM inserted I									 
+							          where @ID_entity_D = I.ID_TypeOrders 
 
 							          SELECT 
                                              @OldID_TypeOrders     = D.ID_TypeOrders     ,
@@ -6960,6 +6993,19 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
+							            SELECT 
+                                              @NewID_Branch   = I.ID_Branch     ,
+											  @NewId_Country  = I.Id_Country  	,
+											  @NewCity        = I.City        	,
+											  @NewAddress     = I.[Address]     ,
+											  @NewName_Branch = I.Name_Branch 	,
+											  @NewMail        = I.Mail        	,
+											  @NewPhone       = I.Phone       	,
+											  @NewPostal_Code = I.Postal_Code 	,
+											  @NewINN         = I.INN         	,
+											  @NewDescription = I.[Description]    	
+							            FROM inserted I									 
+							            where @ID_entity_D = I.ID_Branch;
 
                                         SELECT 
                                               @OldID_Branch   = D.ID_Branch     ,
@@ -6974,20 +7020,6 @@ AS
 											  @OldDescription = D.[Description]   							
 							            FROM Deleted D
 										where @ID_entity_D = D.ID_Branch;
-
-							            SELECT 
-                                              @NewID_Branch   = I.ID_Branch     ,
-											  @NewId_Country  = I.Id_Country  	,
-											  @NewCity        = I.City        	,
-											  @NewAddress     = I.[Address]     ,
-											  @NewName_Branch = I.Name_Branch 	,
-											  @NewMail        = I.Mail        	,
-											  @NewPhone       = I.Phone       	,
-											  @NewPostal_Code = I.Postal_Code 	,
-											  @NewINN         = I.INN         	,
-											  @NewDescription = I.[Description]    	
-							            FROM inserted I									 
-							            where @ID_entity_D = I.ID_Branch;
 
 
                                        IF @NewId_Country <> @OldId_Country 
@@ -7338,6 +7370,14 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
+							            SELECT 
+                                               @NewID_Connection_String = I.ID_Connection_String,
+											   @NewPassword             = I.[Password]          ,  
+											   @NewLogin                = I.[Login]             ,  
+											   @NewDate_Created         = I.Date_Created        ,
+											   @NewDescription          = I.[Description]          	
+							            FROM inserted I									 
+							            where @ID_entity_D = I.ID_Connection_String;
 
                                         SELECT 
                                                @OldID_Connection_String = D.ID_Connection_String,
@@ -7347,15 +7387,6 @@ AS
 											   @OldDescription          = D.[Description]          							
 							            FROM Deleted D
 										where @ID_entity_D = D.ID_Connection_String;
-
-							            SELECT 
-                                               @NewID_Connection_String = I.ID_Connection_String,
-											   @NewPassword             = I.[Password]          ,  
-											   @NewLogin                = I.[Login]             ,  
-											   @NewDate_Created         = I.Date_Created        ,
-											   @NewDescription          = I.[Description]          	
-							            FROM inserted I									 
-							            where @ID_entity_D = I.ID_Connection_String;
 
 							           IF @NewPassword <> @OldPassword 
 							              begin
@@ -7579,7 +7610,7 @@ CREATE TABLE Country_Audit
 	Operation              CHAR(1)               null,
     ChangeDescription      nvarchar(max)        null
   --  PRIMARY KEY CLUSTERED ( AuditID ) 
-) on Employee_Group_2;
+) on Employee_Group_2
 
 
 go
@@ -7666,22 +7697,21 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
-								     
-									 SELECT  
-									     @OldId_Country        =   D.Id_Country       ,
-										 @OldName_Country      =   D.Name_Country     ,
-										 @OldName_English      =   D.Name_English     ,
-										 @OldCod_Country_Phone =   D.Cod_Country_Phone
-									 FROM   Deleted D 
-									 where @ID_entity_D = D.Id_Country 
-
 									 SELECT 
 										@NewId_Country       	 = I.Id_Country       ,
 										@NewName_Country     	 = I.Name_Country     ,
 										@NewName_English     	 = I.Name_English     ,
 										@NewCod_Country_Phone    = I.Cod_Country_Phone 
 									 FROM inserted I  
-									 where @ID_entity_D = I.Id_Country;					
+									 where @ID_entity_D = I.Id_Country;	
+									 
+									 SELECT  
+									     @OldId_Country        =   D.Id_Country       ,
+										 @OldName_Country      =   D.Name_Country     ,
+										 @OldName_English      =   D.Name_English     ,
+										 @OldCod_Country_Phone =   D.Cod_Country_Phone
+									 FROM   Deleted D 
+									 where @ID_entity_D = D.Id_Country 				
 														
                                      
 									 IF @NewName_Country <> @OldName_Country 
@@ -8000,7 +8030,17 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
-								       
+							            SELECT
+										    @NewID_Department            = I.ID_Department          ,
+											@NewID_Head_Department     	 = I.ID_Head_Department     ,
+											@NewID_Vice_Head_Department	 = I.ID_Vice_Head_Department,
+											@NewName_Department        	 = I.Name_Department        ,
+											@NewID_Branch              	 = I.ID_Branch              ,
+											@NewDepartment_Code        	 = I.Department_Code        ,
+											@NewDescription            	 = I.[Description]            		
+							            FROM inserted I									 
+							            where @ID_entity_D = I.ID_Department;
+										
                                         SELECT 
 										    @OldID_Department            = D.ID_Department          ,
 											@OldID_Head_Department     	 = D.ID_Head_Department     ,
@@ -8011,17 +8051,6 @@ AS
 											@OldDescription            	 = D.[Description]            						
 							            FROM Deleted D
 										where @ID_entity_D = D.ID_Department;
-
-							            SELECT
-										    @OldID_Department            = I.ID_Department          ,
-											@OldID_Head_Department     	 = I.ID_Head_Department     ,
-											@OldID_Vice_Head_Department	 = I.ID_Vice_Head_Department,
-											@OldName_Department        	 = I.Name_Department        ,
-											@OldID_Branch              	 = I.ID_Branch              ,
-											@OldDepartment_Code        	 = I.Department_Code        ,
-											@OldDescription            	 = I.[Description]            		
-							            FROM inserted I									 
-							            where @ID_entity_D = I.ID_Department;
 
 
                                        IF @NewID_Head_Department <> @OldID_Head_Department 
@@ -8263,7 +8292,7 @@ CREATE TABLE Employees_Audit
 	Operation              CHAR(1)               null,
     ChangeDescription      nvarchar(max)         null
   --  PRIMARY KEY CLUSTERED ( AuditID ) 
-) on Employee_Group_2;
+) on Employee_Group_2
 
 
 go
@@ -8394,36 +8423,6 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
-								     
-									 SELECT  
-									     @OldID_Employee               	  = D.ID_Employee               ,	
-										 @OldID_Department             	  = D.ID_Department             ,
-										 @OldID_Group                  	  = D.ID_Group                  ,
-										 @OldID_The_Subgroup           	  = D.ID_The_Subgroup           ,
-										 @OldID_Passport               	  = D.ID_Passport               ,
-										 @OldID_Branch                 	  = D.ID_Branch                 ,
-										 @OldID_Post                   	  = D.ID_Post                   ,
-										 @OldID_Status_Employee        	  = D.ID_Status_Employee        ,
-										 @OldID_Connection_String      	  = D.ID_Connection_String      ,
-										 @OldID_Chief                  	  = D.ID_Chief                  ,
-										 @OldName                      	  = D.Name                      ,
-										 @OldSurName                   	  = D.SurName                   ,
-										 @OldLastName                  	  = D.LastName                  ,
-										 @OldDate_Of_Hiring            	  = D.Date_Of_Hiring            ,
-										 @OldDate_Card_Created_Employee	  = D.Date_Card_Created_Employee,
-										 @OldResidential_Address       	  = D.Residential_Address       ,
-										 @OldHome_Phone                	  = D.Home_Phone                ,
-										 @OldCell_Phone                	  = D.Cell_Phone                ,
-										 @OldImage_Employees           	  = D.Image_Employees           ,
-										 @OldWork_Phone                	  = D.Work_Phone                ,
-										 @OldMail                      	  = D.Mail                      ,
-										 @OldPol                       	  = D.Pol                       ,
-										 @OldDate_Of_Dismissal         	  = D.Date_Of_Dismissal         ,
-										 @OldDate_Of_Birth             	  = D.Date_Of_Birth             ,
-										 @OldDescription                  = D.[Description]               
-									 FROM   Deleted D 
-									 where @ID_entity_D = D.ID_Employee; 
-
                                      SELECT  
 									     @NewID_Employee               	  = I.ID_Employee               ,	
 										 @NewID_Department             	  = I.ID_Department             ,
@@ -8451,7 +8450,36 @@ AS
 										 @NewDate_Of_Birth             	  = I.Date_Of_Birth             ,
 										 @NewDescription                  = I.[Description]               
 									 FROM inserted I  
-									 where @ID_entity_D = I.ID_Employee;					
+									 where @ID_entity_D = I.ID_Employee;	
+									 
+									 SELECT  
+									     @OldID_Employee               	  = D.ID_Employee               ,	
+										 @OldID_Department             	  = D.ID_Department             ,
+										 @OldID_Group                  	  = D.ID_Group                  ,
+										 @OldID_The_Subgroup           	  = D.ID_The_Subgroup           ,
+										 @OldID_Passport               	  = D.ID_Passport               ,
+										 @OldID_Branch                 	  = D.ID_Branch                 ,
+										 @OldID_Post                   	  = D.ID_Post                   ,
+										 @OldID_Status_Employee        	  = D.ID_Status_Employee        ,
+										 @OldID_Connection_String      	  = D.ID_Connection_String      ,
+										 @OldID_Chief                  	  = D.ID_Chief                  ,
+										 @OldName                      	  = D.Name                      ,
+										 @OldSurName                   	  = D.SurName                   ,
+										 @OldLastName                  	  = D.LastName                  ,
+										 @OldDate_Of_Hiring            	  = D.Date_Of_Hiring            ,
+										 @OldDate_Card_Created_Employee	  = D.Date_Card_Created_Employee,
+										 @OldResidential_Address       	  = D.Residential_Address       ,
+										 @OldHome_Phone                	  = D.Home_Phone                ,
+										 @OldCell_Phone                	  = D.Cell_Phone                ,
+										 @OldImage_Employees           	  = D.Image_Employees           ,
+										 @OldWork_Phone                	  = D.Work_Phone                ,
+										 @OldMail                      	  = D.Mail                      ,
+										 @OldPol                       	  = D.Pol                       ,
+										 @OldDate_Of_Dismissal         	  = D.Date_Of_Dismissal         ,
+										 @OldDate_Of_Birth             	  = D.Date_Of_Birth             ,
+										 @OldDescription                  = D.[Description]               
+									 FROM   Deleted D 
+									 where @ID_entity_D = D.ID_Employee; 				
 														
                                      IF @NewID_Department <> @OldID_Department 
 							              begin
@@ -8937,6 +8965,17 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
+							            SELECT 
+	                                        @NewID_Group           = I.ID_Group          ,
+											@NewID_Head_Group      = I.ID_Head_Group     ,
+											@NewID_Vice_Head_Group = I.ID_Vice_Head_Group,
+											@NewID_Department      = I.ID_Department     ,
+											@NewName_Group         = I.Name_Group        ,
+											@NewID_Branch          = I.ID_Branch         ,
+											@NewDepartment_Code    = I.Department_Code   ,
+											@NewDescription        = I.[Description]       	
+							            FROM inserted I									 
+							            where @ID_entity_D = I.ID_Group;
 
                                         SELECT 
                                             @OldID_Group           = D.ID_Group          ,
@@ -8949,18 +8988,6 @@ AS
 											@OldDescription        = D.[Description]       							
 							            FROM Deleted D
 										where @ID_entity_D = D.ID_Group;
-
-							            SELECT 
-	                                        @NewID_Group           = I.ID_Group          ,
-											@NewID_Head_Group      = I.ID_Head_Group     ,
-											@NewID_Vice_Head_Group = I.ID_Vice_Head_Group,
-											@NewID_Department      = I.ID_Department     ,
-											@NewName_Group         = I.Name_Group        ,
-											@NewID_Branch          = I.ID_Branch         ,
-											@NewDepartment_Code    = I.Department_Code   ,
-											@NewDescription        = I.[Description]       	
-							            FROM inserted I									 
-							            where @ID_entity_D = I.ID_Group;
 
 
                                        IF @NewID_Head_Group <> @OldID_Head_Group
@@ -9304,6 +9331,17 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
+							            SELECT 
+                                              @NewID_Passport    = I.ID_Passport    ,
+											  @NewNumber_Series  = I.Number_Series  ,
+											  @NewDate_Of_Issue  = I.Date_Of_Issue  ,
+											  @NewDepartment_Code= I.Department_Code,
+											  @NewIssued_By_Whom = I.Issued_By_Whom ,
+											  @NewRegistration   = I.Registration   ,
+											  @NewMilitary_Duty  = I.Military_Duty  ,
+											  @NewDescription    = I.[Description]      	
+							            FROM inserted I									 
+							            where @ID_entity_D = I.ID_Passport;
 
                                         SELECT 
                                               @OldID_Passport    = D.ID_Passport    ,
@@ -9316,18 +9354,6 @@ AS
 											  @OldDescription    = D.[Description]     							
 							            FROM Deleted D
 										where @ID_entity_D = D.ID_Passport;
-
-							            SELECT 
-                                              @NewID_Passport    = I.ID_Passport    ,
-											  @NewNumber_Series  = I.Number_Series  ,
-											  @NewDate_Of_Issue  = I.Date_Of_Issue  ,
-											  @NewDepartment_Code= I.Department_Code,
-											  @NewIssued_By_Whom = I.Issued_By_Whom ,
-											  @NewRegistration   = I.Registration   ,
-											  @NewMilitary_Duty  = I.Military_Duty  ,
-											  @NewDescription    = I.[Description]      	
-							            FROM inserted I									 
-							            where @ID_entity_D = I.ID_Passport;
 
                                        
 							           IF @NewNumber_Series <> @OldNumber_Series 
@@ -9667,17 +9693,6 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
-
-                                        SELECT 
-                                              @OldID_Post         = D.ID_Post        , 
-											  @OldName_Post       = D.Name_Post      , 
-											  @OldID_Department   = D.ID_Department  , 
-											  @OldID_Group        = D.ID_Group       , 
-											  @OldID_The_Subgroup = D.ID_The_Subgroup, 
-											  @OldDescription     = D.[Description]         							
-							            FROM Deleted D
-										where @ID_entity_D = D.ID_Post;
-
 							            SELECT 
                                               @NewID_Post         = I.ID_Post        , 
 											  @NewName_Post       = I.Name_Post      , 
@@ -9688,7 +9703,15 @@ AS
 							            FROM inserted I									 
 							            where @ID_entity_D = I.ID_Post;
 
-
+                                        SELECT 
+                                              @OldID_Post         = D.ID_Post        , 
+											  @OldName_Post       = D.Name_Post      , 
+											  @OldID_Department   = D.ID_Department  , 
+											  @OldID_Group        = D.ID_Group       , 
+											  @OldID_The_Subgroup = D.ID_The_Subgroup, 
+											  @OldDescription     = D.[Description]         							
+							            FROM Deleted D
+										where @ID_entity_D = D.ID_Post;
                                        
 									   IF @NewName_Post <> @OldName_Post 
 							              begin
@@ -10003,6 +10026,13 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
+							            SELECT 
+                                             @NewID_Status_Employee   = I.ID_Status_Employee  ,
+											 @NewName_Status_Employee = I.Name_Status_Employee,
+											 @NewDescription          = I.[Description]         	
+							            FROM inserted I									 
+							            where @ID_entity_D = I.ID_Status_Employee;
+
 
                                         SELECT 
  							                 @OldID_Status_Employee   = D.ID_Status_Employee  ,
@@ -10010,13 +10040,6 @@ AS
 											 @OldDescription          = D.[Description]                  
 							            FROM Deleted D
 										where @ID_entity_D = D.ID_Status_Employee;
-
-							            SELECT 
-                                             @OldID_Status_Employee   = I.ID_Status_Employee  ,
-											 @OldName_Status_Employee = I.Name_Status_Employee,
-											 @OldDescription          = I.[Description]         	
-							            FROM inserted I									 
-							            where @ID_entity_D = I.ID_Status_Employee;
 
 
 							           IF @NewName_Status_Employee <> @OldName_Status_Employee 
@@ -10323,20 +10346,6 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
-
-                                        SELECT 
-										     @OldID_The_Subgroup           = D.ID_The_Subgroup          ,
-											 @OldID_Head_The_Subgroup      = D.ID_Head_The_Subgroup     ,
-											 @OldID_Vice_Head_The_Subgroup = D.ID_Vice_Head_The_Subgroup,
-											 @OldID_Group                  = D.ID_Group                 ,
-											 @OldName_The_Subgroup         = D.Name_The_Subgroup        ,
-											 @OldID_Branch                 = D.ID_Branch                ,
-											 @OldDepartment_Code           = D.Department_Code          ,
-											 @OldDescription               = D.[Description]            ,
-											 @OldID_Parent_The_Subgroup    = D.ID_Parent_The_Subgroup   
-							            FROM Deleted D
-										where @ID_entity_D = D.ID_The_Subgroup;
-
 							            SELECT 
 										     @NewID_The_Subgroup           = I.ID_The_Subgroup          ,
 											 @NewID_Head_The_Subgroup      = I.ID_Head_The_Subgroup     ,
@@ -10350,7 +10359,19 @@ AS
 							            FROM inserted I									 
 							            where @ID_entity_D = I.ID_The_Subgroup;
 
-                                       
+                                        SELECT 
+										     @OldID_The_Subgroup           = D.ID_The_Subgroup          ,
+											 @OldID_Head_The_Subgroup      = D.ID_Head_The_Subgroup     ,
+											 @OldID_Vice_Head_The_Subgroup = D.ID_Vice_Head_The_Subgroup,
+											 @OldID_Group                  = D.ID_Group                 ,
+											 @OldName_The_Subgroup         = D.Name_The_Subgroup        ,
+											 @OldID_Branch                 = D.ID_Branch                ,
+											 @OldDepartment_Code           = D.Department_Code          ,
+											 @OldDescription               = D.[Description]            ,
+											 @OldID_Parent_The_Subgroup    = D.ID_Parent_The_Subgroup   
+							            FROM Deleted D
+										where @ID_entity_D = D.ID_The_Subgroup;
+                                      
 							           IF @NewID_Head_The_Subgroup <> @OldID_Head_The_Subgroup
 							              begin
 							               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_Head_The_Subgroup = Old ->"' +  ISNULL(CAST(@OldID_Head_The_Subgroup AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewID_Head_The_Subgroup AS NVARCHAR(50)),'') + '", ';
@@ -11024,20 +11045,20 @@ AS
 						       begin
 							      begin try
 							                SELECT 
-                                                  @OldID_OrderCategory     	= I.ID_OrderCategory    ,
-												  @OldOrderCategoryName   	= I.OrderCategoryName   ,
-												  @OldAbbreviation        	= I.Abbreviation        ,
-												  @OldOrderCategorySysName	= I.OrderCategorySysName,
-												  @OldDescription      	    = I.[Description]      	  
+                                                  @NewID_OrderCategory     	= I.ID_OrderCategory    ,
+												  @NewOrderCategoryName   	= I.OrderCategoryName   ,
+												  @NewAbbreviation        	= I.Abbreviation        ,
+												  @NewOrderCategorySysName	= I.OrderCategorySysName,
+												  @NewDescription      	    = I.[Description]      	  
 							                FROM inserted I									 
 							                where @ID_entity_D = I.ID_OrderCategory;	
 
 							                SELECT   
-											      @NewID_OrderCategory     	= D.ID_OrderCategory    ,
-												  @NewOrderCategoryName   	= D.OrderCategoryName   ,
-												  @NewAbbreviation        	= D.Abbreviation        ,
-												  @NewOrderCategorySysName	= D.OrderCategorySysName,
-												  @NewDescription      	    = D.[Description]      	  
+											      @OldID_OrderCategory     	= D.ID_OrderCategory    ,
+												  @OldOrderCategoryName   	= D.OrderCategoryName   ,
+												  @OldAbbreviation        	= D.Abbreviation        ,
+												  @OldOrderCategorySysName	= D.OrderCategorySysName,
+												  @OldDescription      	    = D.[Description]      	  
 							                FROM Deleted D																		 
 											 where @ID_entity_D = D.ID_OrderCategory; 
 
@@ -11574,6 +11595,645 @@ AS
                     END
 
 GO
+
+CREATE TABLE Item_status_Audit
+(
+    AuditID                bigint IDENTITY(1,1)  not null,
+    Id_Item_Status         bigint                null,
+ 	ModifiedBy             nVARCHAR(128)         null,
+    ModifiedDate           DATETIME              NOT NULL DEFAULT GETDATE(),
+	Operation              CHAR(1)               null,
+    ChangeDescription      nvarchar(max)         null
+ --   PRIMARY KEY CLUSTERED ( AuditID ) 
+) on Products_Group_2;
+
+
+go
+
+CREATE TRIGGER trg_Item_status_Audit ON Item_status
+AFTER INSERT, UPDATE, DELETE
+
+AS
+    set nocount,xact_abort on;
+
+    DECLARE @login_name nVARCHAR(128) 
+	DECLARE @ChangeDescription nvarchar(max);
+
+
+    SELECT  @login_name = login_name
+    FROM    sys.dm_exec_sessions
+    WHERE   session_id = @@SPID
+
+    IF EXISTS ( SELECT 0 FROM Deleted )
+        BEGIN
+            IF EXISTS ( SELECT 0 FROM Inserted )
+                BEGIN
+				           declare @t_U_D table 
+							(
+							Id_Num         bigint        identity(1,1) not null,
+							ID_entity      bigint        null,
+							login_name     nvarchar(128) null,
+							ModifiedDate   DATETIME      null,
+							Name_action    char(1)       null
+							);
+
+							declare @t_U_I table 
+							(
+							Id_Num         bigint        identity(1,1) not null,
+							ID_entity      bigint        null,
+							login_name     nvarchar(128) null,
+							ModifiedDate   DATETIME      null,
+							Name_action    char(1)       null
+							);
+
+							insert into @t_U_D (ID_entity,login_name,ModifiedDate,Name_action)
+							SELECT d.Id_Item_Status,@login_name,GETDATE(),'U'  
+							FROM  Deleted D
+
+							insert into @t_U_I (ID_entity,login_name,ModifiedDate,Name_action)
+							SELECT d.Id_Item_Status,@login_name,GETDATE(),'U'  
+							FROM  inserted D
+ 
+							DECLARE @ID_entity_D    bigint       ;
+							DECLARE @login_name_2_D nvarchar(128);
+							DECLARE @ModifiedDate_D DATETIME     ;
+							DECLARE @Name_action_D  char(1)      ;
+ 
+							DECLARE @ID_entity_I    bigint       ;
+							DECLARE @login_name_2_I nvarchar(128);
+							DECLARE @ModifiedDate_I DATETIME     ;
+							DECLARE @Name_action_I  char(1)      ;
+                                          	                      
+
+						   DECLARE @OldId_Item_Status          bigint        ;
+						   DECLARE @OldItemStatus              nvarchar(300) ;
+						   DECLARE @OldSysItemStatusName       nvarchar(300) ;
+						   DECLARE @OldDescription      	   nvarchar(4000);
+
+
+						   DECLARE @NewId_Item_Status           bigint        ;
+						   DECLARE @NewItemStatus               nvarchar(300) ;
+						   DECLARE @NewSysItemStatusName        nvarchar(300) ;
+						   DECLARE @NewDescription      	    nvarchar(4000);
+                       
+					       declare cr cursor local fast_forward for
+						   
+						   select 
+						   ID_entity    
+						   ,login_name   
+						   ,ModifiedDate 
+						   ,Name_action  
+						   from @t_U_D 
+                           open cr       
+						   
+						   fetch next from cr into 
+						   @ID_entity_D,@login_name_2_D,@ModifiedDate_D,@Name_action_D 
+						   while @@FETCH_STATUS  = 0
+						       begin
+							      begin try
+							                SELECT 
+                                                  @NewId_Item_Status        = I.Id_Item_Status   ,
+							                	  @NewItemStatus       	    = I.ItemStatus       ,
+							                	  @NewSysItemStatusName  	= I.SysItemStatusName,
+							                	  @NewDescription      	    = I.[Description]      	
+							                FROM inserted I									 
+							                where @ID_entity_D = I.Id_Item_Status;	
+
+							                SELECT 
+                                                  @OldId_Item_Status        = D.Id_Item_Status   ,
+							                	  @OldItemStatus        	= D.ItemStatus       ,
+							                	  @OldSysItemStatusName 	= D.SysItemStatusName,
+							                	  @OldDescription      	    = D.[Description]      	
+							                FROM Deleted D																		 
+											 where @ID_entity_D = D.Id_Item_Status; 
+
+
+                                            IF @NewItemStatus <> @OldItemStatus 
+							                   begin
+                                                SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ItemStatus = Old ->"' +  ISNULL(@OldItemStatus,'') + ' " NEW -> " ' + isnull(@NewItemStatus,'') + '", ';
+							                   end
+                                            
+							                IF @NewSysItemStatusName <> @OldSysItemStatusName 
+							                   begin
+							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  SysItemStatusName = Old ->"' +  ISNULL(@OldSysItemStatusName,'') + ' " NEW -> " ' + isnull(@NewSysItemStatusName,'') + '", ';
+							                   end
+                                                                                                    
+                                            IF @NewDescription <> @OldDescription
+							                   begin
+                                                SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Description = Old ->"' + ISNULL(@OldDescription,'') + ' " NEW -> " ' + ISNULL(@NewDescription,'') + '", ';
+                                               end
+                                            
+                                            SET @ChangeDescription = 'Updated: ' + ' Id_Item_Status = "' +  isnull(cast(@OldId_Item_Status as nvarchar(20)),'')+ '" ' + @ChangeDescription
+                                             --Удаляем запятую на конце
+                                            IF LEN(@ChangeDescription) > 0
+                                                SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
+                                            
+                                            INSERT  INTO dbo.Item_status_Audit
+                                            ( 
+                                             Id_Item_Status,ModifiedBy,ModifiedDate,Operation,ChangeDescription                
+                                            )
+                                            SELECT  @ID_entity_D,@login_name_2_D,@ModifiedDate_D,@Name_action_D,@ChangeDescription;              
+                                     
+									        set @ChangeDescription = null 
+
+								   end try
+								   begin catch
+								     if xact_state() in (1, -1)
+									    begin
+									       ROLLBACK TRAN
+									    end
+								     SELECT 
+									   ERROR_NUMBER() AS ErrorNumber_U_D,
+									   ERROR_SEVERITY() AS ErrorSeverity_U_D,
+									   ERROR_STATE() as ErrorState_U_D,
+									   ERROR_PROCEDURE() as ErrorProcedure_U_D,
+									   ERROR_LINE() as ErrorLine_U_D,
+									   ERROR_MESSAGE() as ErrorMessage_U_D;
+								  end catch;
+							     fetch next from cr into 
+								 @ID_entity_D,@login_name_2_D,@ModifiedDate_D,@Name_action_D
+						         end
+						   close cr
+                           deallocate cr                               					
+                END
+            ELSE
+                BEGIN
+				            declare @t_D_D table 
+							(
+							Id_Num         bigint        identity(1,1) not null,
+							ID_entity      bigint        null,
+							login_name     nvarchar(128) null,
+							ModifiedDate   DATETIME      null,
+							Name_action    char(1)       null
+							);
+
+					        insert into @t_D_D (ID_entity,login_name,ModifiedDate,Name_action)
+							SELECT d.Id_Item_Status,@login_name,GETDATE(),'D'  
+							FROM  Deleted D
+
+
+							DECLARE @ID_entity_D_2    bigint       ;
+							DECLARE @login_name_2_D_2 nvarchar(128);
+							DECLARE @ModifiedDate_D_2 DATETIME     ;
+							DECLARE @Name_action_D_2  char(1)      ;
+
+                           DECLARE @OldId_Item_Status_2          bigint        ;
+						   DECLARE @OldItemStatus_2              nvarchar(300) ;
+						   DECLARE @OldSysItemStatusName_2       nvarchar(300) ;
+						   DECLARE @OldDescription_2      	     nvarchar(4000);
+
+                            declare cr_2 cursor local fast_forward for
+						   
+						    select 
+						    ID_entity   
+						    ,login_name  
+						    ,ModifiedDate
+						    ,Name_action 
+						    from @t_D_D 
+                            open cr_2       
+						    
+						    fetch next from cr_2 into 
+						    @ID_entity_D_2,@login_name_2_D_2,@ModifiedDate_D_2,@Name_action_D_2 
+						    while @@FETCH_STATUS  = 0
+						        begin
+							       begin try
+							               SELECT 
+										      @OldId_Item_Status_2        = D.Id_Item_Status   ,
+											  @OldItemStatus_2        	  = D.ItemStatus       ,
+											  @OldSysItemStatusName_2 	  = D.SysItemStatusName,
+							               	  @OldDescription_2      	  = D.[Description]      		  
+							               FROM deleted D									 
+										   where @ID_entity_D_2 = D.Id_Item_Status;
+
+                                           SET @ChangeDescription = 'Deleted: '
+							               + 'Id_Item_Status'       +' = "'+  ISNULL(CAST(@OldId_Item_Status_2  AS NVARCHAR(50)),'')+ '", '
+							               + 'ItemStatus'           +' = "'+  ISNULL(@OldItemStatus_2,'')+ '", '
+							               + 'SysItemStatusName'    +' = "'+  ISNULL(@OldSysItemStatusName_2,'')+ '", '
+							               + '[Description]'        +' = "'+  ISNULL(@OldDescription_2,'')+ '", '
+
+                                           IF LEN(@ChangeDescription) > 0
+                                                  SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
+
+                                           INSERT  INTO dbo.Item_status_Audit
+                                           ( 
+                                            Id_Item_Status,ModifiedBy,ModifiedDate,Operation,ChangeDescription                
+                                           )
+                                            SELECT  @ID_entity_D_2,@login_name_2_D_2,@ModifiedDate_D_2,@Name_action_D_2,@ChangeDescription;              
+                                     
+									       set @ChangeDescription = null
+
+								  end try
+								  begin catch
+								     if xact_state() in (1, -1)
+									    begin
+									       ROLLBACK TRAN
+									    end
+								     SELECT 
+									   ERROR_NUMBER() AS ErrorNumber_D_D,
+									   ERROR_SEVERITY() AS ErrorSeverity_D_D,
+									   ERROR_STATE() as ErrorState_D_D,
+									   ERROR_PROCEDURE() as ErrorProcedure_D_D,
+									   ERROR_LINE() as ErrorLine_D_D,
+									   ERROR_MESSAGE() as ErrorMessage_D_D;
+								  end catch;
+							     fetch next from cr_2 into 
+								 @ID_entity_D_2,@login_name_2_D_2,@ModifiedDate_D_2,@Name_action_D_2
+						         end
+						   close cr_2
+                           deallocate cr_2
+
+
+                END  
+        END
+    ELSE
+        BEGIN
+		           declare @t_I_I table 
+				   (
+				   Id_Num         bigint        identity(1,1) not null,
+				   ID_entity      bigint        null,
+				   login_name     nvarchar(128) null,
+				   ModifiedDate   DATETIME      null,
+				   Name_action    char(1)       null
+				   );
+
+
+				   insert into @t_I_I (ID_entity,login_name,ModifiedDate,Name_action)
+				   SELECT I.Id_Item_Status,@login_name,GETDATE(),'I'  
+				   FROM  inserted I
+
+				   DECLARE @ID_entity_I_2    bigint       ;
+				   DECLARE @login_name_2_I_2 nvarchar(128);
+				   DECLARE @ModifiedDate_I_2 DATETIME     ;
+				   DECLARE @Name_action_I_2  char(1)      ;
+		 
+		           declare cr_3 cursor local fast_forward for
+						   
+				   select 
+				   ID_entity   
+				   ,login_name  
+				   ,ModifiedDate
+				   ,Name_action 
+				   from @t_I_I 
+                      open cr_3       
+				   
+				   fetch next from cr_3 into 
+				   @ID_entity_I_2,@login_name_2_I_2,@ModifiedDate_I_2,@Name_action_I_2 
+				   while @@FETCH_STATUS  = 0
+						  begin
+							   begin try
+                                     SET @ChangeDescription = 'Inserted: '
+                                         + 'Id_Item_Status = "' + CAST(@ID_entity_I_2 AS NVARCHAR(20)) + '" ';
+                    
+                                      INSERT  INTO dbo.Item_status_Audit
+                                      ( 
+                                       Id_Item_Status,ModifiedBy,ModifiedDate,Operation,ChangeDescription                
+                                      )
+                                       SELECT  @ID_entity_I_2,@login_name_2_I_2,@ModifiedDate_I_2,@Name_action_I_2,@ChangeDescription;              
+                                     
+									 set @ChangeDescription = null              
+
+								end try
+								begin catch
+								     if xact_state() in (1, -1)
+									    begin
+									       ROLLBACK TRAN
+									    end
+								     SELECT 
+									   ERROR_NUMBER() AS ErrorNumber_I_I,
+									   ERROR_SEVERITY() AS ErrorSeverity_I_I,
+									   ERROR_STATE() as ErrorState_I_I,
+									   ERROR_PROCEDURE() as ErrorProcedure_I_I,
+									   ERROR_LINE() as ErrorLine_I_I,
+									   ERROR_MESSAGE() as ErrorMessage_I_I;
+								  end catch;
+							     fetch next from cr_3 into 
+								 @ID_entity_I_2,@login_name_2_I_2,@ModifiedDate_I_2,@Name_action_I_2
+						         end
+						   close cr_3
+                           deallocate cr_3
+                    END
+
+GO
+
+CREATE TABLE Species_Item_Audit
+(
+    AuditID                bigint IDENTITY(1,1)  not null,
+    ID_Species_Item          bigint                null,
+ 	ModifiedBy             nVARCHAR(128)         null,
+    ModifiedDate           DATETIME              NOT NULL DEFAULT GETDATE(),
+	Operation              CHAR(1)               null,
+    ChangeDescription      nvarchar(max)         null
+ --   PRIMARY KEY CLUSTERED ( AuditID ) 
+) on Products_Group_2;
+
+
+go
+
+CREATE TRIGGER trg_Species_Item_Audit ON Species_Item
+AFTER INSERT, UPDATE, DELETE
+
+AS
+    set nocount,xact_abort on;
+
+    DECLARE @login_name nVARCHAR(128) 
+	DECLARE @ChangeDescription nvarchar(max);
+
+
+    SELECT  @login_name = login_name
+    FROM    sys.dm_exec_sessions
+    WHERE   session_id = @@SPID
+
+    IF EXISTS ( SELECT 0 FROM Deleted )
+        BEGIN
+            IF EXISTS ( SELECT 0 FROM Inserted )
+                BEGIN
+				           declare @t_U_D table 
+							(
+							Id_Num         bigint        identity(1,1) not null,
+							ID_entity      bigint        null,
+							login_name     nvarchar(128) null,
+							ModifiedDate   DATETIME      null,
+							Name_action    char(1)       null
+							);
+
+							declare @t_U_I table 
+							(
+							Id_Num         bigint        identity(1,1) not null,
+							ID_entity      bigint        null,
+							login_name     nvarchar(128) null,
+							ModifiedDate   DATETIME      null,
+							Name_action    char(1)       null
+							);
+
+							insert into @t_U_D (ID_entity,login_name,ModifiedDate,Name_action)
+							SELECT d.ID_Species_Item,@login_name,GETDATE(),'U'  
+							FROM  Deleted D
+
+							insert into @t_U_I (ID_entity,login_name,ModifiedDate,Name_action)
+							SELECT d.ID_Species_Item,@login_name,GETDATE(),'U'  
+							FROM  inserted D
+ 
+							DECLARE @ID_entity_D    bigint       ;
+							DECLARE @login_name_2_D nvarchar(128);
+							DECLARE @ModifiedDate_D DATETIME     ;
+							DECLARE @Name_action_D  char(1)      ;
+ 
+							DECLARE @ID_entity_I    bigint       ;
+							DECLARE @login_name_2_I nvarchar(128);
+							DECLARE @ModifiedDate_I DATETIME     ;
+							DECLARE @Name_action_I  char(1)      ;
+                                          	                      
+
+						   DECLARE @OldID_Species_Item         bigint           ;
+						   DECLARE @OldSpeciesItemName    	   nvarchar(300)  	;
+						   DECLARE @OldSysSpeciesItemName 	   nvarchar(300) 	;
+						   DECLARE @OldDescription      	   nvarchar(4000)	;
+
+
+						   DECLARE @NewID_Species_Item          bigint          ;
+						   DECLARE @NewSpeciesItemName    	 	nvarchar(300)  	;
+						   DECLARE @NewSysSpeciesItemName 		nvarchar(300) 	;
+						   DECLARE @NewDescription      	    nvarchar(4000)	;
+                       
+					       declare cr cursor local fast_forward for
+						   
+						   select 
+						   ID_entity    
+						   ,login_name   
+						   ,ModifiedDate 
+						   ,Name_action  
+						   from @t_U_D 
+                           open cr       
+						   
+						   fetch next from cr into 
+						   @ID_entity_D,@login_name_2_D,@ModifiedDate_D,@Name_action_D 
+						   while @@FETCH_STATUS  = 0
+						       begin
+							      begin try
+							                SELECT 
+                                                  @NewID_Species_Item       = I.ID_Species_Item   ,
+							                	  @NewSpeciesItemName    	= I.SpeciesItemName   ,
+							                	  @NewSysSpeciesItemName 	= I.SysSpeciesItemName,
+							                	  @NewDescription      	    = I.[Description]      	
+							                FROM inserted I									 
+							                where @ID_entity_D = I.ID_Species_Item;	
+
+							                SELECT 
+                                                  @OldID_Species_Item       = D.ID_Species_Item   ,
+							                	  @OldSpeciesItemName    	= D.SpeciesItemName   ,
+							                	  @OldSysSpeciesItemName 	= D.SysSpeciesItemName,
+							                	  @OldDescription      	    = D.[Description]      	
+							                FROM Deleted D																		 
+											 where @ID_entity_D = D.ID_Species_Item; 
+
+
+                                            IF @NewSpeciesItemName <> @OldSpeciesItemName 
+							                   begin
+                                                SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  SpeciesItemName = Old ->"' +  ISNULL(@OldSpeciesItemName,'') + ' " NEW -> " ' + isnull(@NewSpeciesItemName,'') + '", ';
+							                   end
+                                            
+							                IF @NewSysSpeciesItemName <> @OldSysSpeciesItemName 
+							                   begin
+							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  SysSpeciesItemName = Old ->"' +  ISNULL(@OldSysSpeciesItemName,'') + ' " NEW -> " ' + isnull(@NewSysSpeciesItemName,'') + '", ';
+							                   end
+                                                                                                    
+                                            IF @NewDescription <> @OldDescription
+							                   begin
+                                                SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Description = Old ->"' + ISNULL(@OldDescription,'') + ' " NEW -> " ' + ISNULL(@NewDescription,'') + '", ';
+                                               end
+                                            
+                                            SET @ChangeDescription = 'Updated: ' + ' ID_Species_Item = "' +  isnull(cast(@OldID_Species_Item as nvarchar(20)),'')+ '" ' + @ChangeDescription
+                                             --Удаляем запятую на конце
+                                            IF LEN(@ChangeDescription) > 0
+                                                SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
+                                            
+                                            INSERT  INTO dbo.Species_Item_Audit
+                                            ( 
+                                             ID_Species_Item,ModifiedBy,ModifiedDate,Operation,ChangeDescription                
+                                            )
+                                            SELECT  @ID_entity_D,@login_name_2_D,@ModifiedDate_D,@Name_action_D,@ChangeDescription;              
+                                     
+									        set @ChangeDescription = null 
+
+								   end try
+								   begin catch
+								     if xact_state() in (1, -1)
+									    begin
+									       ROLLBACK TRAN
+									    end
+								     SELECT 
+									   ERROR_NUMBER() AS ErrorNumber_U_D,
+									   ERROR_SEVERITY() AS ErrorSeverity_U_D,
+									   ERROR_STATE() as ErrorState_U_D,
+									   ERROR_PROCEDURE() as ErrorProcedure_U_D,
+									   ERROR_LINE() as ErrorLine_U_D,
+									   ERROR_MESSAGE() as ErrorMessage_U_D;
+								  end catch;
+							     fetch next from cr into 
+								 @ID_entity_D,@login_name_2_D,@ModifiedDate_D,@Name_action_D
+						         end
+						   close cr
+                           deallocate cr                               					
+                END
+            ELSE
+                BEGIN
+				            declare @t_D_D table 
+							(
+							Id_Num         bigint        identity(1,1) not null,
+							ID_entity      bigint        null,
+							login_name     nvarchar(128) null,
+							ModifiedDate   DATETIME      null,
+							Name_action    char(1)       null
+							);
+
+					        insert into @t_D_D (ID_entity,login_name,ModifiedDate,Name_action)
+							SELECT d.ID_Species_Item,@login_name,GETDATE(),'D'  
+							FROM  Deleted D
+
+
+							DECLARE @ID_entity_D_2    bigint       ;
+							DECLARE @login_name_2_D_2 nvarchar(128);
+							DECLARE @ModifiedDate_D_2 DATETIME     ;
+							DECLARE @Name_action_D_2  char(1)      ;
+
+						   DECLARE @OldID_Species_Item_2           bigint           ;
+						   DECLARE @OldSpeciesItemName_2    	   nvarchar(300)  	;
+						   DECLARE @OldSysSpeciesItemName_2 	   nvarchar(300) 	;
+						   DECLARE @OldDescription_2      	       nvarchar(4000)	;
+
+                            declare cr_2 cursor local fast_forward for
+						   
+						    select 
+						    ID_entity   
+						    ,login_name  
+						    ,ModifiedDate
+						    ,Name_action 
+						    from @t_D_D 
+                            open cr_2       
+						    
+						    fetch next from cr_2 into 
+						    @ID_entity_D_2,@login_name_2_D_2,@ModifiedDate_D_2,@Name_action_D_2 
+						    while @@FETCH_STATUS  = 0
+						        begin
+							       begin try
+							               SELECT 
+										      @OldID_Species_Item_2       = D.ID_Species_Item   ,
+											  @OldSpeciesItemName_2    	  = D.SpeciesItemName   ,
+											  @OldSysSpeciesItemName_2 	  = D.SysSpeciesItemName,
+							               	  @OldDescription_2      	  = D.[Description]      		  
+							               FROM deleted D									 
+										   where @ID_entity_D_2 = D.ID_Species_Item;
+
+                                           SET @ChangeDescription = 'Deleted: '
+							               + 'ID_Species_Item'       +' = "'+  ISNULL(CAST(@OldID_Species_Item_2  AS NVARCHAR(50)),'')+ '", '
+							               + 'SpeciesItemName'       +' = "'+  ISNULL(@OldSpeciesItemName_2,'')+ '", '
+							               + 'SysSpeciesItemName'    +' = "'+  ISNULL(@OldSysSpeciesItemName_2,'')+ '", '
+							               + '[Description]'         +' = "'+  ISNULL(@OldDescription_2,'')+ '", '
+
+                                           IF LEN(@ChangeDescription) > 0
+                                                  SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
+
+                                           INSERT  INTO dbo.Species_Item_Audit
+                                           ( 
+                                            ID_Species_Item,ModifiedBy,ModifiedDate,Operation,ChangeDescription                
+                                           )
+                                            SELECT  @ID_entity_D_2,@login_name_2_D_2,@ModifiedDate_D_2,@Name_action_D_2,@ChangeDescription;              
+                                     
+									       set @ChangeDescription = null
+
+								  end try
+								  begin catch
+								     if xact_state() in (1, -1)
+									    begin
+									       ROLLBACK TRAN
+									    end
+								     SELECT 
+									   ERROR_NUMBER() AS ErrorNumber_D_D,
+									   ERROR_SEVERITY() AS ErrorSeverity_D_D,
+									   ERROR_STATE() as ErrorState_D_D,
+									   ERROR_PROCEDURE() as ErrorProcedure_D_D,
+									   ERROR_LINE() as ErrorLine_D_D,
+									   ERROR_MESSAGE() as ErrorMessage_D_D;
+								  end catch;
+							     fetch next from cr_2 into 
+								 @ID_entity_D_2,@login_name_2_D_2,@ModifiedDate_D_2,@Name_action_D_2
+						         end
+						   close cr_2
+                           deallocate cr_2
+
+
+                END  
+        END
+    ELSE
+        BEGIN
+		           declare @t_I_I table 
+				   (
+				   Id_Num         bigint        identity(1,1) not null,
+				   ID_entity      bigint        null,
+				   login_name     nvarchar(128) null,
+				   ModifiedDate   DATETIME      null,
+				   Name_action    char(1)       null
+				   );
+
+
+				   insert into @t_I_I (ID_entity,login_name,ModifiedDate,Name_action)
+				   SELECT I.ID_Species_Item,@login_name,GETDATE(),'I'  
+				   FROM  inserted I
+
+				   DECLARE @ID_entity_I_2    bigint       ;
+				   DECLARE @login_name_2_I_2 nvarchar(128);
+				   DECLARE @ModifiedDate_I_2 DATETIME     ;
+				   DECLARE @Name_action_I_2  char(1)      ;
+		 
+		           declare cr_3 cursor local fast_forward for
+						   
+				   select 
+				   ID_entity   
+				   ,login_name  
+				   ,ModifiedDate
+				   ,Name_action 
+				   from @t_I_I 
+                      open cr_3       
+				   
+				   fetch next from cr_3 into 
+				   @ID_entity_I_2,@login_name_2_I_2,@ModifiedDate_I_2,@Name_action_I_2 
+				   while @@FETCH_STATUS  = 0
+						  begin
+							   begin try
+                                     SET @ChangeDescription = 'Inserted: '
+                                         + 'ID_Species_Item = "' + CAST(@ID_entity_I_2 AS NVARCHAR(20)) + '" ';
+                    
+                                      INSERT  INTO dbo.Species_Item_Audit
+                                      ( 
+                                       ID_Species_Item,ModifiedBy,ModifiedDate,Operation,ChangeDescription                
+                                      )
+                                       SELECT  @ID_entity_I_2,@login_name_2_I_2,@ModifiedDate_I_2,@Name_action_I_2,@ChangeDescription;              
+                                     
+									 set @ChangeDescription = null              
+
+								end try
+								begin catch
+								     if xact_state() in (1, -1)
+									    begin
+									       ROLLBACK TRAN
+									    end
+								     SELECT 
+									   ERROR_NUMBER() AS ErrorNumber_I_I,
+									   ERROR_SEVERITY() AS ErrorSeverity_I_I,
+									   ERROR_STATE() as ErrorState_I_I,
+									   ERROR_PROCEDURE() as ErrorProcedure_I_I,
+									   ERROR_LINE() as ErrorLine_I_I,
+									   ERROR_MESSAGE() as ErrorMessage_I_I;
+								  end catch;
+							     fetch next from cr_3 into 
+								 @ID_entity_I_2,@login_name_2_I_2,@ModifiedDate_I_2,@Name_action_I_2
+						         end
+						   close cr_3
+                           deallocate cr_3
+                    END
+
+GO
+
 --rollback
 commit
 

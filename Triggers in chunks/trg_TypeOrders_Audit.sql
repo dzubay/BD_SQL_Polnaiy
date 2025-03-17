@@ -11,7 +11,7 @@ CREATE TABLE TypeOrders_Audit
 	Operation              CHAR(1)               null,
     ChangeDescription      nvarchar(max)        null
  --   PRIMARY KEY CLUSTERED ( AuditID ) 
-) on Orders_Group_2;
+) on Orders_Group;
 
 
 go
@@ -98,12 +98,12 @@ AS
 
 
 							          SELECT 
-							                 @NewID_TypeOrders     = D.ID_TypeOrders     ,
-							                 @NewTypeOrdersName    = D.TypeOrdersName    ,
-							                 @NewTypeOrdersSysName = D.TypeOrdersSysName ,
-							                 @NewDescription       = D.[Description]      
-							          FROM inserted D									 
-							          where @ID_entity_D = D.ID_TypeOrders 
+							                 @NewID_TypeOrders     = I.ID_TypeOrders     ,
+							                 @NewTypeOrdersName    = I.TypeOrdersName    ,
+							                 @NewTypeOrdersSysName = I.TypeOrdersSysName ,
+							                 @NewDescription       = I.[Description]      
+							          FROM inserted I									 
+							          where @ID_entity_D = I.ID_TypeOrders 
 
 							          SELECT 
                                              @OldID_TypeOrders     = D.ID_TypeOrders     ,
