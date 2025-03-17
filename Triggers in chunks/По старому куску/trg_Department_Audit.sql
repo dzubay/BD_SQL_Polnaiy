@@ -101,13 +101,13 @@ AS
 						       begin
 							      begin try
 							            SELECT
-										    @OldID_Department            = I.ID_Department          ,
-											@OldID_Head_Department     	 = I.ID_Head_Department     ,
-											@OldID_Vice_Head_Department	 = I.ID_Vice_Head_Department,
-											@OldName_Department        	 = I.Name_Department        ,
-											@OldID_Branch              	 = I.ID_Branch              ,
-											@OldDepartment_Code        	 = I.Department_Code        ,
-											@OldDescription            	 = I.[Description]            		
+										    @NewID_Department            = I.ID_Department          ,
+											@NewID_Head_Department     	 = I.ID_Head_Department     ,
+											@NewID_Vice_Head_Department	 = I.ID_Vice_Head_Department,
+											@NewName_Department        	 = I.Name_Department        ,
+											@NewID_Branch              	 = I.ID_Branch              ,
+											@NewDepartment_Code        	 = I.Department_Code        ,
+											@NewDescription            	 = I.[Description]            		
 							            FROM inserted I									 
 							            where @ID_entity_D = I.ID_Department;
 										
