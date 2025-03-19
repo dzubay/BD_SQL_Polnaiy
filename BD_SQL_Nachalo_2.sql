@@ -299,9 +299,9 @@ create table Storage_location                                                   
 ID_Storage_location        bigint              not null identity(1,1) check(ID_Storage_location != 0),   --ID Место хранение экземпляра
 ID_Type_Storage_location   bigint              not null,                                                 --ID Типа места хранение
 Id_Status                  bigint              not null,                                                 --ID Статуса Места Хранения
+Id_Country                 bigint              not null,                                                 --ID Страны
 KeySource                  bigint              null,                                                     --Источник ключа с другими БД или сервисами
 Name                       nvarchar(400)       not null,                                                 --Наименование места хранения
-Country                    nvarchar(200)       null,                                                     --Страна  места хранения
 City                       nvarchar(200)       null,                                                     --Город  места хранения
 Adress                     nvarchar(800)       not null,                                                 --Адрес места хранения
 Mail                       nvarchar(250)       null,                                                     --Электронная почта хранение экземпляра
@@ -310,7 +310,8 @@ Date_Created               datetime            not null  default GetDate(),     
 [Description]              nvarchar(4000)      null                                                      --Комментарий
 constraint PK_ID_Storage_location          primary key (ID_Storage_location),
 constraint FK_ID_Type_Storage_location     foreign key (ID_Type_Storage_location)        references [dbo].Type_Storage_location    on delete NO ACTION,
-constraint FK_ID_Status_Storage_location   Foreign key (Id_Status)                       references  [dbo].Storage_location_status on delete no action 
+constraint FK_ID_Status_Storage_location   Foreign key (Id_Status)                       references [dbo].Storage_location_status  on delete no action,
+constraint  FK_Id_Country_Storage_location foreign key (Id_Country)                      references [dbo].Country                  on delete no action
 )  on Products_Group_2
 
 go
