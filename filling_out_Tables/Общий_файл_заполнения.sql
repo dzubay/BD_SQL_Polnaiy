@@ -1702,9 +1702,8 @@ drop table if exists #t
 create table #t (ID_Branch bigint null,Mail nvarchar(300) null,Phone nvarchar(15) null,Postal_Code int null,[Description] nvarchar(1000) null, flag int null)
 
 go
-
-declare @q int  =0;
-    while @q < = 579
+declare @q int  = 1;
+    while @q <  580
 	    begin
             insert into #t  (ID_Branch,Mail,Phone,Postal_Code,[Description],flag) 
 			values 
@@ -1857,9 +1856,9 @@ declare
 ,@Phone          nvarchar(15)
 ,@Postal_Code    int
 ,@INN            int	
-,@Description    nvarchar(1000)
+,@Description    nvarchar(max)
 ,@flag           int
-declare mycur cursor local fast_forward read_only for
+declare mycur cursor local fast_forward for
 
 select 
  b.ID_Branch    
@@ -1899,32 +1898,14 @@ while @@FETCH_STATUS  = 0
 	  begin try
 	      begin tran
 			   update   b
-			   set Id_Country = @Id_Country from  Branch as b
+			   set 
+			    Mail = @Mail
+			   ,Phone = @Phone
+			   ,Postal_Code = @Postal_Code
+			   ,[Description] = @Description
+			   from  Branch as b
 			   where  Id_Branch = @Id_Branch
-			   update   c
-			   set City = @City from  Branch as c
-			   where  Id_Branch = @Id_Branch
-			   update   d
-			   set [Address] = @Address from  Branch as d
-			   where  Id_Branch = @Id_Branch
-			   update   e
-			   set Name_Branch = @Name_Branch from  Branch as e
-			   where  Id_Branch = @Id_Branch
-			   update   f
-			   set Mail = @Mail from  Branch as f
-			   where  Id_Branch = @Id_Branch
-			   update   g
-			   set Phone = @Phone from  Branch as g
-			   where  Id_Branch = @Id_Branch
-			   update   h
-			   set Postal_Code = @Postal_Code from  Branch as h
-			   where  Id_Branch = @Id_Branch
-			   update   j
-			   set INN = @INN from  Branch as j
-			   where  Id_Branch = @Id_Branch
-			   update   k
-			   set [Description] = @Description from  Branch as k
-			   where  Id_Branch = @Id_Branch
+
 			  set @i =  @i + 1
 			  if exists (select * 
 			             from Branch 
@@ -1933,7 +1914,10 @@ while @@FETCH_STATUS  = 0
 						 and  Phone = @Phone
 						 and  Postal_Code = @Postal_Code
 						 and  [Description] = @Description
-						 )  begin update m set flag = 1 from #t  as m where ID_Branch = @ID_Branch and flag = 0 end
+						 )  
+				   begin 
+				        update m set flag = 1 from #t  as m where ID_Branch = @ID_Branch and flag = 0
+				   end
           --rollback
 		  commit
 			  select @s = count(0) from #t where flag = 0
@@ -1972,7 +1956,14 @@ while @@FETCH_STATUS  = 0
 close mycur
 deallocate mycur
 
+declare @Branch int;
+set @Branch = (select count(ID_Branch) as ID_Branch from Branch)
+print 'Заполнена таблица dbo.Branch. Общее количество заполненных строк --> ' +  cast(@Branch as nvarchar(5))
+
+
 go
+
+
 
 insert into  Department (Name_Department,ID_Branch,Department_Code) 
       values
@@ -4482,7 +4473,7 @@ VALUES
 (47, 'Голуэй', 'Eyre Square 67, Galway'),
 -- Исландия
 (48, 'Рейкьявик', 'Laugavegur 123, Reykjavik'),
-(48, 'Акурейри', 'Hafnarstræti 45, Akureyri'),
+(48, 'Акурейри', 'Hafnarstr?ti 45, Akureyri'),
 (48, 'Кеблавик', 'Vatnsnesvegur 67, Keflavik'),
 -- Испания
 (49, 'Мадрид', 'Gran Via 123, Madrid'),
@@ -4537,7 +4528,7 @@ VALUES
 (61, 'Лимон', 'Calle Principal 45, Limon'),
 (61, 'Алахуэла', 'Calle 2 67, Alajuela'),
 -- Кот-д’Ивуар (Id_Country = 62)
-(62, 'Абиджан', 'Boulevard de la République 123, Abidjan'),
+(62, 'Абиджан', 'Boulevard de la R?publique 123, Abidjan'),
 (62, 'Буаке', 'Avenue de la Paix 45, Bouake'),
 (62, 'Ямусукро', 'Rue des Jardins 67, Yamoussoukro'),
 -- Куба (Id_Country = 63)
@@ -4555,7 +4546,7 @@ VALUES
 -- Латвия (Id_Country = 66)
 (66, 'Рига', 'Brivibas iela 123, Riga'),
 (66, 'Даугавпилс', 'Rigas iela 45, Daugavpils'),
-(66, 'Лиепая', 'Kuršu iela 67, Liepaja'),
+(66, 'Лиепая', 'Kur?u iela 67, Liepaja'),
 -- Лесото (Id_Country = 67)
 (67, 'Масеру', 'Kingsway 123, Maseru'),
 (67, 'Мэфетенг', 'Main Road 45, Mafeteng'),
@@ -4565,17 +4556,17 @@ VALUES
 (68, 'Каунас', 'Laisves aleja 45, Kaunas'),
 (68, 'Клайпеда', 'Tiltu gatve 67, Klaipeda'),
 -- Люксембург (Id_Country = 69)
-(69, 'Люксембург', 'Rue du Fossé 123, Luxembourg'),
+(69, 'Люксембург', 'Rue du Foss? 123, Luxembourg'),
 (69, 'Эш-сюр-Альзетт', 'Rue de l’Alzette 45, Esch-sur-Alzette'),
-(69, 'Дюделанж', 'Rue de la Libération 67, Dudelange'),
+(69, 'Дюделанж', 'Rue de la Lib?ration 67, Dudelange'),
 -- Маврикий (Id_Country = 70)
 (70, 'Порт-Луи', 'Sir Seewoosagur Ramgoolam Street 123, Port Louis'),
 (70, 'Кьюрпайп', 'Royal Road 45, Curepipe'),
-(70, 'Маэбург', 'Rue des Pêcheurs 67, Mahebourg'),
+(70, 'Маэбург', 'Rue des P?cheurs 67, Mahebourg'),
 -- Мавритания (Id_Country = 71)
 (71, 'Нуакшот', 'Avenue Gamal Abdel Nasser 123, Nouakchott'),
-(71, 'Нуадибу', 'Avenue de l’Indépendance 45, Nouadhibou'),
-(71, 'Росо', 'Rue de la République 67, Rosso'),
+(71, 'Нуадибу', 'Avenue de l’Ind?pendance 45, Nouadhibou'),
+(71, 'Росо', 'Rue de la R?publique 67, Rosso'),
 -- Мадейра (Id_Country = 72)
 (72, 'Фуншал', 'Rua da Carreira 123, Funchal'),
 (72, 'Камара-де-Лобуш', 'Rua da Praia 45, Camara de Lobos'),
@@ -4585,9 +4576,9 @@ VALUES
 (73, 'Джорджтаун', 'Lebuh Pantai 45, George Town'),
 (73, 'Ипох', 'Jalan Sultan Idris Shah 67, Ipoh'),
 -- Мали (Id_Country = 74)
-(74, 'Бамако', 'Avenue de l’Indépendance 123, Bamako'),
-(74, 'Сикассо', 'Rue de la Liberté 45, Sikasso'),
-(74, 'Мопти', 'Rue du Marché 67, Mopti'),
+(74, 'Бамако', 'Avenue de l’Ind?pendance 123, Bamako'),
+(74, 'Сикассо', 'Rue de la Libert? 45, Sikasso'),
+(74, 'Мопти', 'Rue du March? 67, Mopti'),
 -- Мальдивы (Id_Country = 75)
 (75, 'Мале', 'Boduthakurufaanu Magu 123, Male'),
 (75, 'Адду', 'Hithadhoo Main Road 45, Addu City'),
@@ -4599,7 +4590,7 @@ VALUES
 -- Мексика (Id_Country = 77)
 (77, 'Мехико', 'Paseo de la Reforma 123, Mexico City'),
 (77, 'Гвадалахара', 'Avenida Vallarta 45, Guadalajara'),
-(77, 'Монтеррей', 'Avenida Constitución 67, Monterrey'),
+(77, 'Монтеррей', 'Avenida Constituci?n 67, Monterrey'),
 -- Молдова (Id_Country = 78)
 (78, 'Кишинев', 'Bulevardul Stefan cel Mare 123, Chisinau'),
 (78, 'Тирасполь', 'Ulitsa 25 Oktyabrya 45, Tiraspol'),
@@ -4625,9 +4616,9 @@ VALUES
 (83, 'Покхара', 'Lakeside Road 45, Pokhara'),
 (83, 'Лалитпур', 'Pulchowk Road 67, Lalitpur'),
 -- Нигер (Id_Country = 84)
-(84, 'Ниамей', 'Avenue de la République 123, Niamey'),
-(84, 'Зиндер', 'Rue du Marché 45, Zinder'),
-(84, 'Маради', 'Avenue de l’Indépendance 67, Maradi'),
+(84, 'Ниамей', 'Avenue de la R?publique 123, Niamey'),
+(84, 'Зиндер', 'Rue du March? 45, Zinder'),
+(84, 'Маради', 'Avenue de l’Ind?pendance 67, Maradi'),
 -- Нигерия (Id_Country = 85)
 (85, 'Абуджа', 'Shehu Shagari Way 123, Abuja'),
 (85, 'Лагос', 'Marina Road 45, Lagos'),
@@ -4693,11 +4684,11 @@ VALUES
 (100, 'Марина-Бэй', 'Marina Bay Sands 45, Marina Bay'),
 (100, 'Чанги', 'Airport Boulevard 67, Changi'),
 -- Словакия (Id_Country = 101)
-(101, 'Братислава', 'Hlavné námestie 123, Bratislava'),
-(101, 'Кошице', 'Hlavná ulica 45, Kosice'),
-(101, 'Прешов', 'Hlavná ulica 67, Presov'),
+(101, 'Братислава', 'Hlavn? n?mestie 123, Bratislava'),
+(101, 'Кошице', 'Hlavn? ulica 45, Kosice'),
+(101, 'Прешов', 'Hlavn? ulica 67, Presov'),
 -- Словения (Id_Country = 102)
-(102, 'Любляна', 'Prešernov trg 123, Ljubljana'),
+(102, 'Любляна', 'Pre?ernov trg 123, Ljubljana'),
 (102, 'Марибор', 'Gosposka ulica 45, Maribor'),
 (102, 'Целе', 'Glavni trg 67, Celje'),
 -- Сомали (Id_Country = 103)
@@ -4733,8 +4724,8 @@ VALUES
 (110, 'Туркменабад', 'Gurbanguly Hajji Street 45, Turkmenabat'),
 (110, 'Дашогуз', 'Shavat Street 67, Dashoguz'),
 -- Турция (Id_Country = 111)
-(111, 'Анкара', 'Atatürk Bulvarı 123, Ankara'),
-(111, 'Стамбул', 'İstiklal Caddesi 45, Istanbul'),
+(111, 'Анкара', 'Atat?rk Bulvar? 123, Ankara'),
+(111, 'Стамбул', '?stiklal Caddesi 45, Istanbul'),
 (111, 'Измир', 'Kordon Boyu 67, Izmir'),
 -- Уганда (Id_Country = 112)
 (112, 'Кампала', 'Kampala Road 123, Kampala'),
@@ -4754,16 +4745,16 @@ VALUES
 (115, 'Пайсанду', 'Calle 19 de Abril 67, Paysandu'),
 -- Филиппины (Id_Country = 116)
 (116, 'Манила', 'Roxas Boulevard 123, Manila'),
-(116, 'Себу', 'Osmeña Boulevard 45, Cebu'),
+(116, 'Себу', 'Osme?a Boulevard 45, Cebu'),
 (116, 'Давао', 'Roxas Avenue 67, Davao'),
 -- Финляндия (Id_Country = 117)
 (117, 'Хельсинки', 'Mannerheimintie 123, Helsinki'),
-(117, 'Эспоо', 'Leppävaarankatu 45, Espoo'),
-(117, 'Тампере', 'Hämeenkatu 67, Tampere'),
+(117, 'Эспоо', 'Lepp?vaarankatu 45, Espoo'),
+(117, 'Тампере', 'H?meenkatu 67, Tampere'),
 -- Франция (Id_Country = 118)
-(118, 'Париж', 'Champs-Élysées 123, Paris'),
-(118, 'Марсель', 'La Canebière 45, Marseille'),
-(118, 'Лион', 'Rue de la République 67, Lyon'),
+(118, 'Париж', 'Champs-?lys?es 123, Paris'),
+(118, 'Марсель', 'La Canebi?re 45, Marseille'),
+(118, 'Лион', 'Rue de la R?publique 67, Lyon'),
 -- Хорватия (Id_Country = 119)
 (119, 'Загреб', 'Ilica 123, Zagreb'),
 (119, 'Сплит', 'Riva 45, Split'),
@@ -4771,11 +4762,11 @@ VALUES
 -- Центральноафриканская Республика (Id_Country = 120)
 (120, 'Банги', 'Avenue des Martyrs 123, Bangui'),
 (120, 'Бимбо', 'Rue de la Paix 45, Bimbo'),
-(120, 'Берберати', 'Avenue de l’Indépendance 67, Berberati'),
+(120, 'Берберати', 'Avenue de l’Ind?pendance 67, Berberati'),
 -- Чад (Id_Country = 121)
 (121, 'Нджамена', 'Avenue Charles de Gaulle 123, N’Djamena'),
-(121, 'Мунду', 'Rue du Marché 45, Moundou'),
-(121, 'Сарх', 'Avenue de l’Indépendance 67, Sarh'),
+(121, 'Мунду', 'Rue du March? 45, Moundou'),
+(121, 'Сарх', 'Avenue de l’Ind?pendance 67, Sarh'),
 -- Чехия (Id_Country = 122)
 (122, 'Прага', 'Wenceslas Square 123, Prague'),
 (122, 'Брно', 'Masarykova Street 45, Brno'),
@@ -4786,12 +4777,12 @@ VALUES
 (123, 'Консепсьон', 'Barros Arana Avenue 67, Concepcion'),
 -- Швейцария (Id_Country = 124)
 (124, 'Цюрих', 'Bahnhofstrasse 123, Zurich'),
-(124, 'Женева', 'Rue du Rhône 45, Geneva'),
+(124, 'Женева', 'Rue du Rh?ne 45, Geneva'),
 (124, 'Базель', 'Freie Strasse 67, Basel'),
 -- Швеция (Id_Country = 125)
 (125, 'Стокгольм', 'Drottninggatan 123, Stockholm'),
 (125, 'Гётеборг', 'Avenyn 45, Gothenburg'),
-(125, 'Мальмё', 'Södergatan 67, Malmo'),
+(125, 'Мальмё', 'S?dergatan 67, Malmo'),
 -- Эквадор (Id_Country = 126)
 (126, 'Кито', 'Avenida Amazonas 123, Quito'),
 (126, 'Гуаякиль', '9 de Octubre Avenue 45, Guayaquil'),
