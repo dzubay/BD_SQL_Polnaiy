@@ -21,8 +21,7 @@ AS
     set nocount,xact_abort on;
 
     DECLARE @login_name nVARCHAR(128) 
-	DECLARE @ChangeDescription nvarchar(max);
-
+	DECLARE @ChangeDescription nvarchar(max) = '';
 
     SELECT  @login_name = login_name
     FROM    sys.dm_exec_sessions
@@ -107,6 +106,8 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
+								        set @ChangeDescription = ''
+
 								        SELECT 
                                               @NewID_Branch   = I.ID_Branch     ,
 											  @NewId_Country  = I.Id_Country  	,
@@ -135,51 +136,52 @@ AS
 							            FROM Deleted D
 										where @ID_entity_D = D.ID_Branch;
 
-
-
-
-                                       IF @NewId_Country <> @OldId_Country 
+                                       IF isnull(cast(@NewId_Country AS NVARCHAR(50)),'null')  <> isnull(cast(@OldId_Country AS NVARCHAR(50)),'null') 
 							              begin
                                            SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Id_Country = Old ->"' +  ISNULL(CAST(@OldId_Country AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewId_Country AS NVARCHAR(50)),'') + '", ';
 							              end
-                                       
-							           IF @NewCity <> @OldCity 
+
+							           IF isnull(@NewCity,'null') <> isnull(@OldCity,'null') 
 							              begin
 							               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  City = Old ->"' +  ISNULL(@OldCity,'') + ' " NEW -> " ' + isnull(@NewCity,'') + '", ';
 							              end
                                                                                                
-							           IF @NewAddress <> @OldAddress 
+							           IF isnull(@NewAddress,'null') <> isnull(@OldAddress,'null') 
 							              begin
 							               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Address = Old ->"' +  ISNULL(@OldAddress,'') + ' " NEW -> " ' + isnull(@NewAddress,'') + '", ';
 							              end
-							           IF @NewName_Branch <> @OldName_Branch 
+
+							           IF isnull(@NewName_Branch,'null') <> isnull(@OldName_Branch,'null') 
 							              begin
 							               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Name_Branch = Old ->"' +  ISNULL(@OldName_Branch,'') + ' " NEW -> " ' + isnull(@NewName_Branch,'') + '", ';
 							              end
-							           IF @NewMail <> @OldMail 
+
+							           IF isnull(@NewMail,'null') <> isnull(@OldMail,'null') 
 							              begin
 							               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Mail = Old ->"' +  ISNULL(@OldMail,'') + ' " NEW -> " ' + isnull(@NewMail,'') + '", ';
-							              end
-							           
-							           IF @NewPhone <> @OldPhone 
+							              end							          
+
+							           IF isnull(@NewPhone,'null') <> isnull(@OldPhone,'null') 
 							              begin
 							               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Phone = Old ->"' +  ISNULL(@OldPhone,'') + ' " NEW -> " ' + isnull(@NewPhone,'') + '", ';
 							              end
-                           	          IF @NewPostal_Code <> @OldPostal_Code
+
+                           	          IF isnull(cast(@NewPostal_Code AS NVARCHAR(50)),'null') <> isnull(cast(@OldPostal_Code AS NVARCHAR(50)),'null')
 							              begin
                                            SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Postal_Code = Old ->"' +  ISNULL(CAST(@OldPostal_Code AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewPostal_Code AS NVARCHAR(50)),'') + '", ';
 							              end
 										  
-									  IF @NewINN <> @OldINN 
+									  IF isnull(cast(@NewINN AS NVARCHAR(50)),'null') <> isnull(cast(@OldINN AS NVARCHAR(50)),'null')
 							              begin
                                            SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  INN = Old ->"' +  ISNULL(CAST(@OldINN AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewINN AS NVARCHAR(50)),'') + '", ';
 							              end
 
-                                       IF @NewDescription <> @OldDescription
+                                       IF isnull(@NewDescription,'null') <> isnull(@OldDescription,'null')
 							              begin
                                            SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Description = Old ->"' + ISNULL(@OldDescription,'') + ' " NEW -> " ' + ISNULL(@NewDescription,'') + '", ';
                                           end
-                                       SET @ChangeDescription = 'Updated: ' + ' ID_Branch = "' +  isnull(cast(@OldID_Branch as nvarchar(20)),'')+ '" ' + @ChangeDescription
+
+                                       SET @ChangeDescription = 'Updated: ' + ' ID_Branch = "' +  isnull(cast(@OldID_Branch as nvarchar(20)),'')+ '", ' + isnull(@ChangeDescription,'')
                                         --Удаляем запятую на конце
                                        IF LEN(@ChangeDescription) > 0
                                            SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
@@ -190,7 +192,7 @@ AS
                                         )
                                        SELECT  @ID_entity_D,@login_name_2_D,@ModifiedDate_D,@Name_action_D,@ChangeDescription;              
                                      
-									   set @ChangeDescription = null 
+									   set @ChangeDescription = ''
 								end try
 								begin catch
 								     if xact_state() in (1, -1)
@@ -261,6 +263,8 @@ AS
 						    while @@FETCH_STATUS  = 0
 						         begin
 							         begin try
+									        set @ChangeDescription = ''
+
                                             SELECT 
 											     @OldID_Branch_2   = D.ID_Branch     ,
 												 @OldId_Country_2  = D.Id_Country  	,
@@ -296,7 +300,7 @@ AS
                                            )
                                             SELECT  @ID_entity_D_2,@login_name_2_D_2,@ModifiedDate_D_2,@Name_action_D_2,@ChangeDescription;              
                                      
-									       set @ChangeDescription = null
+									       set @ChangeDescription = ''
 								end try
 								begin catch
 								     if xact_state() in (1, -1)
@@ -354,6 +358,8 @@ AS
 					while @@FETCH_STATUS  = 0
 						  begin
 							   begin try
+							           set @ChangeDescription = ''
+
                                        SET @ChangeDescription = 'Inserted: '
                                          + 'ID_Branch = "' + CAST(@ID_entity_I_2 AS NVARCHAR(20)) + '" ';
                                        
@@ -363,7 +369,7 @@ AS
                                        )
                                         SELECT  @ID_entity_I_2,@login_name_2_I_2,@ModifiedDate_I_2,@Name_action_I_2,@ChangeDescription;              
                                      
-									   set @ChangeDescription = null
+									   set @ChangeDescription = ''
            
 		                       end try
 							   begin catch

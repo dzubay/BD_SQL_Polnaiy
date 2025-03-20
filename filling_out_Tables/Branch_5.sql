@@ -24,6 +24,8 @@ go
 -- select * from Branch
 -- delete from  Branch where id_Branch is not null
 
+-- select * from Branch_audit
+-- delete from  Branch_audit where AuditID is not null
 
 /*
 Требуется Построчно, по указанным странам и идентификаторам к ним, указать списком по 10 случайных городов каждой страны. 
@@ -41,7 +43,7 @@ go
 
 
 --Добавил в конце (round(rand()*999999999,0)) формирование рандомного инн
-use  Magaz_DB_Poln
+use  Magaz_DB_Poln_test
 go
 set nocount,xact_abort on;
 go
@@ -53,9 +55,9 @@ insert into Branch  (Id_Country,City,[Address],Name_Branch,INN) values
 (2, 'Инсбрук', 'Тирольская ул., 1', 'Alpenzoo Innsbruck'									,(round(rand()*999999999,0))),
 (2, 'Линц', 'Ул. Нернсдорфер, 12', 'Ars Electronica Center'									,(round(rand()*999999999,0))),
 (2, 'Зальцбург', 'Мирбельгasse, 5', 'Mozart’s Birthplace'									,(round(rand()*999999999,0))),
-(2, 'Клагенфурт', 'Ул. Кайзеров, 7', 'Wörthersee Stadion'									,(round(rand()*999999999,0))),
+(2, 'Клагенфурт', 'Ул. Кайзеров, 7', 'W?rthersee Stadion'									,(round(rand()*999999999,0))),
 (2, 'Вельс', 'Плошад Битца, 6', 'Heldendenkmal'												,(round(rand()*999999999,0))),
-(2, 'Швехат', 'Ул. Слотицких, 8', 'Shopping City Süd'										,(round(rand()*999999999,0))),
+(2, 'Швехат', 'Ул. Слотицких, 8', 'Shopping City S?d'										,(round(rand()*999999999,0))),
 (2, 'Бургленд', 'Ул. Мададея, 14', 'Therme Linsberg Asia'									,(round(rand()*999999999,0))),
 (2, 'Ландек', 'Ул. Польгейтакер, 9', 'Heiliggeistkirche'									,(round(rand()*999999999,0))),
 (7, 'Кросдейл', 'Старый Район, 32', 'Tropical Breeze Resort'								,(round(rand()*999999999,0))),
@@ -117,7 +119,7 @@ insert into Branch  (Id_Country,City,[Address],Name_Branch,INN) values
 (28, 'Капошвар', 'ул. Сечет, 3', 'Район Хаус'												,(round(rand()*999999999,0))),
 (28, 'Ньиредьхаз', 'ул. Тинкера, 20', 'Космическая площадь'									,(round(rand()*999999999,0))),
 (28, 'Залакарош', 'ул. Зала, 1', 'Парусные гонки'											,(round(rand()*999999999,0))),
-(28, 'Сомбате́й', 'ул. Великого, 5', 'Фейерверк джи'											,(round(rand()*999999999,0))),
+(28, 'Сомбате?й', 'ул. Великого, 5', 'Фейерверк джи'										,(round(rand()*999999999,0))),
 (30, 'Ханой', 'ул. Лун, 16', 'Cafe Viet'													,(round(rand()*999999999,0))),
 (30, 'Хошимин', 'ул. Малайзийская, 4', 'Турагенство'										,(round(rand()*999999999,0))),
 (30, 'Дананг', 'ул. Да Ка, 17', 'Тибетская кухня'											,(round(rand()*999999999,0))),
@@ -207,7 +209,7 @@ insert into Branch  (Id_Country,City,[Address],Name_Branch,INN) values
 (42, 'Чипата', 'ул. Ферейнта, 12', 'Загадка'												,(round(rand()*999999999,0))),
 (42, 'Чарди', 'ул. Лемур, 19', 'Поездка в Льва'												,(round(rand()*999999999,0))),
 (42, 'Паула', 'ул. Хана, 8', 'Супер-маркет'													,(round(rand()*999999999,0))),
-(42, 'Соломо', 'ул. Кубларова, 13', 'Школа सजरेशन'											,(round(rand()*999999999,0))),
+(42, 'Соломо', 'ул. Кубларова, 13', 'Школа ??????'											,(round(rand()*999999999,0))),
 (44, 'Нью-Дели', 'ул. Конгресс, 40', 'Cafe Coffee Day'										,(round(rand()*999999999,0))),
 (44, 'Мумбаи', 'ул. Чаттри, 24', 'Flavors Cafe'												,(round(rand()*999999999,0))),
 (44, 'Бангалор', 'ул. Мадохбх, 15', 'Art Gallery'											,(round(rand()*999999999,0))),
@@ -238,10 +240,10 @@ insert into Branch  (Id_Country,City,[Address],Name_Branch,INN) values
 (48, 'Дейпивогюр' , 'ул. Маяка, 2', 'Книга Рекордов'										,(round(rand()*999999999,0))),
 (48, 'Эгильстадир' , 'ул. Жемчуг, 4', 'Творческие пути'										,(round(rand()*999999999,0))),
 (48, 'Фладесвагур' , 'ул. Фьельд, 13', 'Пустынные огни'										,(round(rand()*999999999,0))),
-(49, 'Мадрид', 'ул. Гранде, 43', 'El Corte Inglés'											,(round(rand()*999999999,0))),
+(49, 'Мадрид', 'ул. Гранде, 43', 'El Corte Ingl?s'											,(round(rand()*999999999,0))),
 (49, 'Барселона', 'ул. Лампа, 8', 'La Boqueria'												,(round(rand()*999999999,0))),
 (49, 'Валенсия', 'ул. Сьерра, 15', 'Mercado Central'										,(round(rand()*999999999,0))),
-(49, 'Севилья', 'ул. Марифко, 21', 'Real Alcázar'											,(round(rand()*999999999,0))),
+(49, 'Севилья', 'ул. Марифко, 21', 'Real Alc?zar'											,(round(rand()*999999999,0))),
 (49, 'Малага', 'ул. Лас-Каланки, 20', 'Picasso Museum'										,(round(rand()*999999999,0))),
 (49, 'Сарагоса', 'ул. Ибсена, 25', 'Площадь Пьедад'											,(round(rand()*999999999,0))),
 (49, 'Вик', 'ул. Сервантес, 11', 'Кафе Сервантес'											,(round(rand()*999999999,0))),
@@ -557,7 +559,7 @@ insert into Branch  (Id_Country,City,[Address],Name_Branch,INN) values
 (111, 'Адана', 'ул. Мысва, 8', 'Рынок Адана'												,(round(rand()*999999999,0))),
 (111, 'Газипаша', 'ул. Тени, 9', 'Забавы'													,(round(rand()*999999999,0))),
 (111, 'Диярбакыр', 'ул. Бильмес, 11', 'Центр Мира'											,(round(rand()*999999999,0))),
-(111, 'Самсун', 'ул. Ней әпере, 4', 'Оценивающее'											,(round(rand()*999999999,0))),
+(111, 'Самсун', 'ул. Ней ?пере, 4', 'Оценивающее'											,(round(rand()*999999999,0))),
 (112, 'Кампала', 'ул. Солнечная, 11', 'Подходы'												,(round(rand()*999999999,0))),
 (112, 'Нараоби', 'ул. Блийз, 32', 'граница'													,(round(rand()*999999999,0))),
 (112, 'Мпиги', 'ул. Эндере, 3', 'Наследия'													,(round(rand()*999999999,0))),
@@ -631,12 +633,12 @@ insert into Branch  (Id_Country,City,[Address],Name_Branch,INN) values
 go
 --select * from #t 
 drop table if exists #t
-create table #t (ID_Branch bigint null,Mail nvarchar(300) null,Phone nvarchar(15) null,Postal_Code int null,[Description] nvarchar(1000) null, flag int null)
+create table #t (ID_Branch bigint null,Mail nvarchar(300) null,Phone nvarchar(15) null,Postal_Code int null,[Description] nvarchar(max) null, flag int null)
 
 go
 
-declare @q int  =0;
-    while @q < = 579
+declare @q int  = 1;
+    while @q <  580
 	    begin
             insert into #t  (ID_Branch,Mail,Phone,Postal_Code,[Description],flag) 
 			values 
@@ -789,9 +791,9 @@ declare
 ,@Phone          nvarchar(15)
 ,@Postal_Code    int
 ,@INN            int	
-,@Description    nvarchar(1000)
+,@Description    nvarchar(max)
 ,@flag           int
-declare mycur cursor local fast_forward read_only for
+declare mycur cursor local fast_forward for
 
 select 
  b.ID_Branch    
@@ -831,32 +833,14 @@ while @@FETCH_STATUS  = 0
 	  begin try
 	      begin tran
 			   update   b
-			   set Id_Country = @Id_Country from  Branch as b
+			   set 
+			    Mail = @Mail
+			   ,Phone = @Phone
+			   ,Postal_Code = @Postal_Code
+			   ,[Description] = @Description
+			   from  Branch as b
 			   where  Id_Branch = @Id_Branch
-			   update   c
-			   set City = @City from  Branch as c
-			   where  Id_Branch = @Id_Branch
-			   update   d
-			   set [Address] = @Address from  Branch as d
-			   where  Id_Branch = @Id_Branch
-			   update   e
-			   set Name_Branch = @Name_Branch from  Branch as e
-			   where  Id_Branch = @Id_Branch
-			   update   f
-			   set Mail = @Mail from  Branch as f
-			   where  Id_Branch = @Id_Branch
-			   update   g
-			   set Phone = @Phone from  Branch as g
-			   where  Id_Branch = @Id_Branch
-			   update   h
-			   set Postal_Code = @Postal_Code from  Branch as h
-			   where  Id_Branch = @Id_Branch
-			   update   j
-			   set INN = @INN from  Branch as j
-			   where  Id_Branch = @Id_Branch
-			   update   k
-			   set [Description] = @Description from  Branch as k
-			   where  Id_Branch = @Id_Branch
+
 			  set @i =  @i + 1
 			  if exists (select * 
 			             from Branch 
@@ -865,7 +849,10 @@ while @@FETCH_STATUS  = 0
 						 and  Phone = @Phone
 						 and  Postal_Code = @Postal_Code
 						 and  [Description] = @Description
-						 )  begin update m set flag = 1 from #t  as m where ID_Branch = @ID_Branch and flag = 0 end
+						 )  
+				   begin 
+				        update m set flag = 1 from #t  as m where ID_Branch = @ID_Branch and flag = 0
+				   end
           --rollback
 		  commit
 			  select @s = count(0) from #t where flag = 0
@@ -904,6 +891,9 @@ while @@FETCH_STATUS  = 0
 close mycur
 deallocate mycur
 
+declare @Branch int;
+set @Branch = (select count(ID_Branch) as ID_Branch from Branch)
+print 'Заполнена таблица dbo.Branch. Общее количество заполненных строк --> ' +  cast(@Branch as nvarchar(5))
+go
 --rollback
 commit
-
