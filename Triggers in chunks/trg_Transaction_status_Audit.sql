@@ -21,7 +21,7 @@ AS
     set nocount,xact_abort on;
 
     DECLARE @login_name nVARCHAR(128) 
-	DECLARE @ChangeDescription nvarchar(max);
+	DECLARE @ChangeDescription nvarchar(max)='';
 
 
     SELECT  @login_name = login_name
@@ -94,6 +94,8 @@ AS
 						    while @@FETCH_STATUS  = 0
 						         begin
 							         begin try
+									        set @ChangeDescription = ''
+
 							                SELECT  
 							                     @NewID_Transaction_status    = I.ID_Transaction_status , 
 							                	 @NewTypeTransactionName      = I.TypeTransactionName   ,
@@ -111,21 +113,21 @@ AS
 											where @ID_entity_D = D.ID_Transaction_status;
 
 
-                                            IF @NewTypeTransactionName <> @OldTypeTransactionName 
+                                            IF ISNULL(@NewTypeTransactionName,'null') <> ISNULL(@OldTypeTransactionName,'null') 
 							                   begin
                                                 SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  TypeTransactionName = Old ->"' +  ISNULL(@OldTypeTransactionName,'') + ' " NEW -> " ' + isnull(@NewTypeTransactionName,'') + '", ';
 							                   end
                                             
-							                IF @NewSysTypeTransactionName <> @OldSysTypeTransactionName
+							                IF ISNULL(@NewSysTypeTransactionName,'null') <> ISNULL(@OldSysTypeTransactionName,'null')
 							                   begin
 							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  SysTypeTransactionName = Old ->"' +  ISNULL(@OldTypeTransactionName,'') + ' " NEW -> " ' + isnull(@NewTypeTransactionName,'') + '", ';
 							                   end
 							                
-                                            IF @NewDescription <> @OldDescription
+                                            IF ISNULL(@NewDescription,'null') <> ISNULL(@OldDescription,'null')
 							                   begin
                                                 SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Description = Old ->"' + ISNULL(@OldDescription,'') + ' " NEW -> " ' + ISNULL(@NewDescription,'') + '", ';
                                                end
-                                            SET @ChangeDescription = 'Updated: ' + ' ID_Transaction_status = "' +  isnull(cast(@OldID_Transaction_status as nvarchar(20)),'')+ '" ' + @ChangeDescription
+                                            SET @ChangeDescription = 'Updated: ' + ' ID_Transaction_status = "' +  isnull(cast(@OldID_Transaction_status as nvarchar(50)),'')+ '" ' + ISNULL(@ChangeDescription,'')
                                              --Удаляем запятую на конце
                                             IF LEN(@ChangeDescription) > 0
                                                 SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
@@ -136,7 +138,7 @@ AS
                                             )
                                               SELECT  @ID_entity_D,@login_name_2_D,@ModifiedDate_D,@Name_action_D,@ChangeDescription;              
                                      
-									        set @ChangeDescription = null 
+									        set @ChangeDescription = '' 
                             		end try
 								    begin catch
 								       if xact_state() in (1, -1)
@@ -199,6 +201,7 @@ AS
 						    while @@FETCH_STATUS  = 0
 						         begin
 							         begin try
+									        set @ChangeDescription = ''
 
                                             SELECT 
 							                    @OldID_Transaction_status_2   = D.ID_Transaction_status  ,
@@ -223,7 +226,7 @@ AS
                                            )
                                             SELECT  @ID_entity_D_2,@login_name_2_D_2,@ModifiedDate_D_2,@Name_action_D_2,@ChangeDescription;              
                                      
-									       set @ChangeDescription = null
+									       set @ChangeDescription = ''
 								  end try
 								  begin catch
 								     if xact_state() in (1, -1)
@@ -281,8 +284,10 @@ AS
 					while @@FETCH_STATUS  = 0
 						   begin
 							      begin try
+								            set @ChangeDescription = ''
+
                                             SET @ChangeDescription = 'Inserted: '
-                                                    + 'ID_Transaction_status = "' + CAST(@ID_entity_I_2 AS NVARCHAR(20)) + '" ';
+                                                    + 'ID_Transaction_status = "' + CAST(@ID_entity_I_2 AS NVARCHAR(50)) + '" ';
                     
                                             INSERT  INTO dbo.Transaction_status_Audit
                                             ( 
@@ -290,7 +295,7 @@ AS
                                             )
                                              SELECT  @ID_entity_I_2,@login_name_2_I_2,@ModifiedDate_I_2,@Name_action_I_2,@ChangeDescription;              
                                      
-									        set @ChangeDescription = null
+									        set @ChangeDescription = ''
 
 								  end try
 								  begin catch

@@ -23,7 +23,7 @@ AS
     set nocount,xact_abort on;
 
     DECLARE @login_name nVARCHAR(128) 
-	DECLARE @ChangeDescription nvarchar(max);
+	DECLARE @ChangeDescription nvarchar(max)='';
 
 
     SELECT  @login_name = login_name
@@ -95,6 +95,8 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							        begin try
+									        set @ChangeDescription = ''
+
 							                SELECT 
 							                        @NewID_product_measurement     =  I.ID_product_measurement   ,
 							                		@NewProduct_measurement_Name   =  I.Product_measurement_Name ,
@@ -113,21 +115,21 @@ AS
 
 ;
 							                																		 
-                                            IF @NewProduct_measurement_Name <> @OldProduct_measurement_Name
+                                            IF ISNULL(CAST(@NewProduct_measurement_Name AS NVARCHAR(300)),'null') <> ISNULL(CAST(@OldProduct_measurement_Name AS NVARCHAR(300)),'null')
 							                   begin
                                                 SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Product_measurement_Name = Old ->"' +  ISNULL(CAST(@OldProduct_measurement_Name AS NVARCHAR(300)),'') + ' " NEW -> " ' + isnull(CAST(@NewProduct_measurement_Name AS NVARCHAR(300)),'') + '", ';
 							                   end
                                             
-							                IF @NewSysProductMeasurementName <> @OldSysProductMeasurementName
+							                IF ISNULL(CAST(@NewSysProductMeasurementName AS NVARCHAR(300)),'null') <> ISNULL(CAST(@OldSysProductMeasurementName AS NVARCHAR(300)),'null')
 							                   begin
 							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  SysProductMeasurementName = Old ->"' +  ISNULL(CAST(@OldSysProductMeasurementName AS NVARCHAR(300)),'') + ' " NEW -> " ' + isnull(CAST(@NewSysProductMeasurementName AS NVARCHAR(300)),'') + '", ';
 							                   end
 							                
-                                            IF @NewDescription <> @OldDescription
+                                            IF isnull(@NewDescription,'null') <> isnull(@OldDescription,'null')
 							                   begin
                                                 SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Description = Old ->"' + ISNULL(@OldDescription,'') + ' " NEW -> " ' + ISNULL(@NewDescription,'') + '", ';
                                                end
-                                            SET @ChangeDescription = 'Updated: ' + ' ID_product_measurement = "' +  isnull(cast(@OldID_product_measurement as nvarchar(20)),'')+ '" ' + @ChangeDescription + '"'
+                                            SET @ChangeDescription = 'Updated: ' + ' ID_product_measurement = "' +  isnull(cast(@OldID_product_measurement as nvarchar(50)),'')+ '" ' + isnull(@ChangeDescription,'') + '"'
                                              --Удаляем запятую на конце
                                             IF LEN(@ChangeDescription) > 0
                                                 SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
@@ -138,7 +140,7 @@ AS
                                             )
                                               SELECT  @ID_entity_D,@login_name_2_D,@ModifiedDate_D,@Name_action_D,@ChangeDescription;              
                                      
-									        set @ChangeDescription = null 
+									        set @ChangeDescription = ''
 								 end try
 								 begin catch
 								     if xact_state() in (1, -1)
@@ -201,6 +203,8 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
+								        set @ChangeDescription = ''
+
                                         SELECT 
 							                @OldID_product_measurement_2   	= D.ID_product_measurement    ,
 							            	@OldProduct_measurement_Name_2 	= D.Product_measurement_Name  ,
@@ -210,7 +214,7 @@ AS
 										where @ID_entity_D_2 = D.ID_product_measurement;
 
                                         SET @ChangeDescription = 'Deleted: '
-							            + 'ID_product_measurement'     +' = "'+  ISNULL(CAST(@OldID_product_measurement_2 AS NVARCHAR(20)),'')+ '", '
+							            + 'ID_product_measurement'     +' = "'+  ISNULL(CAST(@OldID_product_measurement_2 AS NVARCHAR(50)),'')+ '", '
 							            + 'Product_measurement_Name'   +' = "'+  ISNULL(@OldProduct_measurement_Name_2,'')+ '", '
 							            + 'SysProductMeasurementName'  +' = "'+  ISNULL(@OldSysProductMeasurementName_2,'')+ '", '
 							            + 'Description'                +' = "'+  ISNULL(@OldDescription_2  ,'')+ '"'
@@ -224,7 +228,7 @@ AS
                                         )
                                          SELECT  @ID_entity_D_2,@login_name_2_D_2,@ModifiedDate_D_2,@Name_action_D_2,@ChangeDescription;              
                                      
-									    set @ChangeDescription = null 
+									    set @ChangeDescription = '' 
 								end try
 								begin catch
 								     if xact_state() in (1, -1)
@@ -281,8 +285,10 @@ AS
 					while @@FETCH_STATUS  = 0
 						   begin
 							      begin try
+								          set @ChangeDescription = ''
+
                                           SET @ChangeDescription = 'Inserted: '
-                                                  + 'ID_product_measurement = "' + CAST(@ID_entity_I_2 AS NVARCHAR(20)) + '" ';
+                                                  + 'ID_product_measurement = "' + CAST(@ID_entity_I_2 AS NVARCHAR(50)) + '" ';
                     
                                           INSERT  INTO dbo.Type_of_product_measurement_Audit
                                           ( 
@@ -290,7 +296,7 @@ AS
                                           )
                                            SELECT  @ID_entity_I_2,@login_name_2_I_2,@ModifiedDate_I_2,@Name_action_I_2,@ChangeDescription;              
                                      
-									      set @ChangeDescription = null     
+									      set @ChangeDescription = ''     
 								  
 								  end try
 								  begin catch

@@ -23,7 +23,7 @@ AS
     set nocount,xact_abort on;
 
     DECLARE @login_name nVARCHAR(128) 
-	DECLARE @ChangeDescription nvarchar(max);
+	DECLARE @ChangeDescription nvarchar(max)='';
 
 
     SELECT  @login_name = login_name
@@ -123,7 +123,7 @@ AS
 						   while @@FETCH_STATUS  = 0
 						         begin
 							          begin try
-						   
+						                    set @ChangeDescription = ''
                          
 							                SELECT  
 							                        @NewId_Item                    =  I.Id_Item                ,
@@ -169,92 +169,92 @@ AS
 							                FROM Deleted D
 											where @ID_entity_D = D.Id_Item;
 
-                                            IF @NewID_product_measurement <> @OldID_product_measurement
+                                            IF ISNULL(CAST(@NewID_product_measurement AS NVARCHAR(50)),'null') <> ISNULL(CAST(@OldID_product_measurement AS NVARCHAR(50)),'null')
 							                   begin
-                                                SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_product_measurement = Old ->"' +  ISNULL(CAST(@OldID_product_measurement AS NVARCHAR(20)),'') + ' " NEW -> " ' + isnull(CAST(@NewID_product_measurement AS NVARCHAR(20)),'') + '", ';
+                                                SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_product_measurement = Old ->"' +  ISNULL(CAST(@OldID_product_measurement AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewID_product_measurement AS NVARCHAR(50)),'') + '", ';
 							                   end
                                             
-							                IF @NewID_TypeItem <> @OldID_TypeItem
+							                IF ISNULL(CAST(@NewID_TypeItem AS NVARCHAR(50)),'null') <> ISNULL(CAST(@OldID_TypeItem AS NVARCHAR(50)),'null')
 							                   begin
-							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_TypeItem = Old ->"' +  ISNULL(CAST(@OldID_TypeItem AS NVARCHAR(20)),'') + ' " NEW -> " ' + isnull(CAST(@NewID_TypeItem AS NVARCHAR(20)),'') + '", ';
+							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_TypeItem = Old ->"' +  ISNULL(CAST(@OldID_TypeItem AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewID_TypeItem AS NVARCHAR(50)),'') + '", ';
 							                   end
 
-                                            IF @NewID_Species_Item <> @OldID_Species_Item
+                                            IF ISNULL(CAST(@NewID_Species_Item AS NVARCHAR(50)),'null') <> ISNULL(CAST(@OldID_Species_Item AS NVARCHAR(50)),'null')
 							                   begin
-							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_Species_Item = Old ->"' +  ISNULL(CAST(@OldID_Species_Item AS NVARCHAR(20)),'') + ' " NEW -> " ' + isnull(CAST(@NewID_Species_Item AS NVARCHAR(20)),'') + '", ';
+							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_Species_Item = Old ->"' +  ISNULL(CAST(@OldID_Species_Item AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewID_Species_Item AS NVARCHAR(50)),'') + '", ';
 							                   end
 
-											IF @NewId_Item_Status <> @OldId_Item_Status
+											IF ISNULL(CAST(@NewId_Item_Status AS NVARCHAR(50)),'null') <> ISNULL(CAST(@OldId_Item_Status AS NVARCHAR(50)),'null')
 							                   begin
-							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Id_Item_Status = Old ->"' +  ISNULL(CAST(@OldId_Item_Status AS NVARCHAR(20)),'') + ' " NEW -> " ' + isnull(CAST(@NewId_Item_Status AS NVARCHAR(20)),'') + '", ';
+							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Id_Item_Status = Old ->"' +  ISNULL(CAST(@OldId_Item_Status AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewId_Item_Status AS NVARCHAR(50)),'') + '", ';
 							                   end
 					                        
-							                IF @NewArticle_number <> @OldArticle_number
+							                IF ISNULL(@NewArticle_number,'null') <> ISNULL(@OldArticle_number,'null')
 							                   begin
 							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Article_number = Old ->"' +  ISNULL(@OldArticle_number,'') + ' " NEW -> " ' + isnull(@NewArticle_number,'') + '", ';
 							                   end
 					                        
-							                IF @NewName_Item <> @OldName_Item
+							                IF ISNULL(@NewName_Item,'null') <> ISNULL(@OldName_Item,'null')
 							                   begin
 							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Name_Item = Old ->"' +  ISNULL(@OldName_Item,'') + ' " NEW -> " ' + isnull(@NewName_Item,'') + '", ';
 							                   end
 					                        
-							                IF @NewImage_Item <> @OldImage_Item
+							                IF ISNULL(@NewImage_Item,'null') <> ISNULL(@OldImage_Item,'null')
 							                   begin
 							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Image_Item = '  +  '"Изображение было изменено или удалено", ';
 							                   end
 					                        
-							                IF @NewManufacturer <> @OldManufacturer
+							                IF ISNULL(@NewManufacturer,'null') <> ISNULL(@OldManufacturer,'null')
 							                   begin
 							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Manufacturer = Old ->"' +  ISNULL(@OldManufacturer,'') + ' " NEW -> " ' + isnull(@NewManufacturer,'') + '", ';
 							                   end
 					                        
-							                IF @NewCountry <> @OldCountry
+							                IF ISNULL(@NewCountry,'null') <> ISNULL(@OldCountry,'null')
 							                   begin
 							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Country = Old ->"' +  ISNULL(@OldCountry,'') + ' " NEW -> " ' + isnull(@NewCountry,'') + '", ';
 							                   end
 					                        
-							                IF @NewCity <> @OldCity
+							                IF ISNULL(@NewCity,'null') <> ISNULL(@OldCity,'null')
 							                   begin
 							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  City = Old ->"' +  ISNULL(@OldCity,'') + ' " NEW -> " ' + isnull(@NewCity,'') + '", ';
 							                   end
 					                        
-							                IF @NewAdress <> @OldAdress
+							                IF ISNULL(@NewAdress,'null') <> ISNULL(@OldAdress,'null')
 							                   begin
 							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Adress = Old ->"' +  ISNULL(@OldAdress,'') + ' " NEW -> " ' + isnull(@NewAdress,'') + '", ';
 							                   end
 					                        
-							                IF @NewMail <> @OldMail
+							                IF ISNULL(@NewMail,'null') <> ISNULL(@OldMail,'null')
 							                   begin
 							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Mail = Old ->"' +  ISNULL(@OldMail,'') + ' " NEW -> " ' + isnull(@NewMail,'') + '", ';
 							                   end
 					                        
-							                IF @NewPhone <> @OldPhone
+							                IF ISNULL(@NewPhone,'null') <> ISNULL(@OldPhone,'null')
 							                   begin
 							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Phone = Old ->"' +  ISNULL(@OldPhone,'') + ' " NEW -> " ' + isnull(@NewPhone,'') + '", ';
 							                   end
 					                        
-							                IF @NewLogo <> @OldLogo
+							                IF ISNULL(@NewLogo,'null') <> ISNULL(@OldLogo,'null')
 							                   begin
 							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Logo = ' +  '"Изображение было изменено или удалено", ';
 							                   end
 							                
-							                IF @NewDate_Created <> @OldDate_Created
+							                IF ISNULL(CAST(Format(@NewDate_Created,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'null') <> ISNULL(CAST(Format(@OldDate_Created,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'null')
 							                   begin
 							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Date_Created = Old ->"' +  ISNULL(CAST(Format(@OldDate_Created,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(Format(@NewDate_Created,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", ';
 							                   end
 							                
-					                        IF @NewQuantity <> @OldQuantity
+					                        IF ISNULL(CAST(@NewQuantity AS NVARCHAR(50)),'null') <> ISNULL(CAST(@OldQuantity AS NVARCHAR(50)),'null')
 							                   begin
-                                                SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Quantity = Old ->"' +  ISNULL(CAST(@OldQuantity AS NVARCHAR(20)),'') + ' " NEW -> " ' + isnull(CAST(@NewQuantity AS NVARCHAR(20)),'') + '", ';
+                                                SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Quantity = Old ->"' +  ISNULL(CAST(@OldQuantity AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewQuantity AS NVARCHAR(50)),'') + '", ';
 							                   end
                                             
 							                
-                                            IF @NewDescription <> @OldDescription
+                                            IF ISNULL(@NewDescription,'null') <> ISNULL(@OldDescription,'null')
 							                   begin
                                                 SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Description = Old ->"' + ISNULL(@OldDescription,'') + ' " NEW -> " ' + ISNULL(@NewDescription,'') + '", ';
                                                end
-                                            SET @ChangeDescription = 'Updated: ' + ' Id_Item = "' +  isnull(cast(@OldId_Item as nvarchar(20)),'')+ '" ' + @ChangeDescription + '"'
+                                            SET @ChangeDescription = 'Updated: ' + ' Id_Item = "' +  isnull(cast(@OldId_Item as nvarchar(50)),'')+ '" ' + ISNULL(@ChangeDescription,'') + '"'
                                              --Удаляем запятую на конце
                                             IF LEN(@ChangeDescription) > 0
                                                 SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
@@ -265,7 +265,7 @@ AS
                                              )
                                                SELECT  @ID_entity_D,@login_name_2_D,@ModifiedDate_D,@Name_action_D,@ChangeDescription;              
                                              
-									         set @ChangeDescription = null 
+									         set @ChangeDescription = '' 
  					              end try
 								  begin catch
 								     if xact_state() in (1, -1)
@@ -343,6 +343,8 @@ AS
 						   while @@FETCH_STATUS  = 0
 						        begin
 							         begin try
+									            set @ChangeDescription = ''
+
                                                 SELECT 
                                                     @OldId_Item_2                   = D.Id_Item               ,
 							                    	@OldID_product_measurement_2    = D.ID_product_measurement,
@@ -366,11 +368,11 @@ AS
 												where @ID_entity_D_2 = D.Id_Item;
 
                                                 SET @ChangeDescription = 'Deleted: '
-							                    + 'Id_Item'                +' = "'+  ISNULL(CAST(@OldId_Item_2 AS NVARCHAR(20)),'')+ '", '
-							                    + 'ID_product_measurement' +' = "'+  ISNULL(CAST(@OldID_product_measurement_2 AS NVARCHAR(20)),'')+ '", '
-							                    + 'ID_TypeItem'            +' = "'+  ISNULL(CAST(@OldID_TypeItem_2 AS NVARCHAR(20)),'')+ '", '
-                                                + 'ID_Species_Item'        +' = "'+  ISNULL(CAST(@OldID_Species_Item_2 AS NVARCHAR(20)),'')+ '", '
-												+ 'Id_Item_Status'         +' = "'+  ISNULL(CAST(@OldId_Item_Status_2 AS NVARCHAR(20)),'')+ '", '
+							                    + 'Id_Item'                +' = "'+  ISNULL(CAST(@OldId_Item_2 AS NVARCHAR(50)),'')+ '", '
+							                    + 'ID_product_measurement' +' = "'+  ISNULL(CAST(@OldID_product_measurement_2 AS NVARCHAR(50)),'')+ '", '
+							                    + 'ID_TypeItem'            +' = "'+  ISNULL(CAST(@OldID_TypeItem_2 AS NVARCHAR(50)),'')+ '", '
+                                                + 'ID_Species_Item'        +' = "'+  ISNULL(CAST(@OldID_Species_Item_2 AS NVARCHAR(50)),'')+ '", '
+												+ 'Id_Item_Status'         +' = "'+  ISNULL(CAST(@OldId_Item_Status_2 AS NVARCHAR(50)),'')+ '", '
 							                    + 'Article_number'         +' = "'+  ISNULL(@OldArticle_number_2,'')+ '", '
 							                    + 'Name_Item'              +' = "'+  ISNULL(@OldName_Item_2,'')+ '", '
 							                    + 'Image_Item'             +' = "'+  ISNULL(cast(@OldImage_Item_2 as varchar(max)),'')+ '", '
@@ -382,7 +384,7 @@ AS
 							                    + 'Phone'                  +' = "'+  ISNULL(@OldPhone_2,'')+ '", '
 							                    + 'Logo'                   +' = "'+  ISNULL(cast(@OldLogo_2 as varchar(max)),'')+ '", '
 							                    + 'Date_Created'           +' = "'+  ISNULL(CAST(Format(@OldDate_Created_2,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'')+ '", '
-							                    + 'Quantity'               +' = "'+  ISNULL(CAST(@OldQuantity_2 AS NVARCHAR(20)),'')+ '", '
+							                    + 'Quantity'               +' = "'+  ISNULL(CAST(@OldQuantity_2 AS NVARCHAR(50)),'')+ '", '
 							                    + 'Description'            +' = "'+  ISNULL(@OldDescription_2  ,'')+ '"'
 
                                                 IF LEN(@ChangeDescription) > 0
@@ -394,7 +396,7 @@ AS
                                                 )
                                                  SELECT  @ID_entity_D_2,@login_name_2_D_2,@ModifiedDate_D_2,@Name_action_D_2,@ChangeDescription;              
                                      
-									             set @ChangeDescription = null
+									             set @ChangeDescription = ''
                                  end try
 								 begin catch
 								     if xact_state() in (1, -1)
@@ -451,9 +453,10 @@ AS
 					while @@FETCH_STATUS  = 0
 						   begin
 							      begin try
-		            
+		                                 set @ChangeDescription = ''
+
                                          SET @ChangeDescription = 'Inserted: '
-                                                    + 'Id_Item = "' + CAST(@ID_entity_I_2 AS NVARCHAR(20)) + '" ';
+                                                    + 'Id_Item = "' + CAST(@ID_entity_I_2 AS NVARCHAR(50)) + '" ';
                     
                                          INSERT  INTO dbo.Item_Audit
                                          ( 
@@ -461,7 +464,7 @@ AS
                                          )
                                           SELECT  @ID_entity_I_2,@login_name_2_I_2,@ModifiedDate_I_2,@Name_action_I_2,@ChangeDescription;              
                                      
-									     set @ChangeDescription = null    
+									     set @ChangeDescription = ''    
 								  end try
 								  begin catch
 								     if xact_state() in (1, -1)

@@ -9,7 +9,7 @@ CREATE TABLE Currency_Rate_Audit
 	Operation              CHAR(1)               null,
     ChangeDescription      nvarchar(max)         null
  --   PRIMARY KEY CLUSTERED ( AuditID ) 
-) on Products_Group_2;
+) on Products_Group;
 
 
 go
@@ -21,7 +21,7 @@ AS
     set nocount,xact_abort on;
 
     DECLARE @login_name nVARCHAR(128) 
-	DECLARE @ChangeDescription nvarchar(max);
+	DECLARE @ChangeDescription nvarchar(max) = '';
 
 
     SELECT  @login_name = login_name
@@ -99,6 +99,8 @@ AS
 						    while @@FETCH_STATUS  = 0
 						         begin
 							         begin try
+									        set @ChangeDescription = ''
+
 							                SELECT  
                                                   @NewID_Currency_Rate         =  I.ID_Currency_Rate         ,
 							                	  @NewID_Currency              =  I.ID_Currency              ,
@@ -122,38 +124,39 @@ AS
 											where @ID_entity_D = D.ID_Currency_Rate;
 
 
-                                            IF @NewID_Currency <> @OldID_Currency 
+                                            IF ISNULL(cast(@NewID_Currency as nvarchar(50)),'null') <> ISNULL(cast(@OldID_Currency as nvarchar(50)),'null') 
 							                   begin
-                                                SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_Currency = Old ->"' +  ISNULL(cast(@OldID_Currency as nvarchar(20)),'') + ' " NEW -> " ' + isnull(cast(@NewID_Currency as nvarchar(20)),'') + '", ';
+                                                SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_Currency = Old ->"' +  ISNULL(cast(@OldID_Currency as nvarchar(50)),'') + ' " NEW -> " ' + isnull(cast(@NewID_Currency as nvarchar(50)),'') + '", ';
 							                   end
                                             
-							                IF @NewAmount_Rate <> @OldAmount_Rate
+							                IF ISNULL(cast(@NewAmount_Rate as nvarchar(50)),'null') <> ISNULL(cast(@OldAmount_Rate as nvarchar(50)),'null')
 							                   begin
-							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Amount_Rate = Old ->"' +  ISNULL(cast(@OldAmount_Rate as nvarchar(20)),'') + ' " NEW -> " ' + isnull(cast(@NewAmount_Rate as nvarchar(20)),'') + '", ';
+							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Amount_Rate = Old ->"' +  ISNULL(cast(@OldAmount_Rate as nvarchar(50)),'') + ' " NEW -> " ' + isnull(cast(@NewAmount_Rate as nvarchar(50)),'') + '", ';
 							                   end
 							                
 							                   				
-							                IF @NewValid_from <> @OldValid_from
+							                IF ISNULL(CAST(Format(@NewValid_from,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'null') <> ISNULL(CAST(Format(@OldValid_from,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'null')
 							                   begin
 							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Valid_from = Old ->"' +  ISNULL(CAST(Format(@OldValid_from,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(Format(@NewValid_from,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", ';
 							                   end
 							                
 							                						   				
-							                IF @NewValid_to <> @OldValid_to
+							                IF ISNULL(CAST(Format(@NewValid_to,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'null') <> ISNULL(CAST(Format(@OldValid_to,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'null')
 							                   begin
 							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Valid_to = Old ->"' +  ISNULL(CAST(Format(@OldValid_to,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(Format(@NewValid_to,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", ';
 							                   end
 							                
-							                IF @NewJSON_Currency_Rate_Data <> @OldJSON_Currency_Rate_Data
+							                IF ISNULL(CAST(@NewJSON_Currency_Rate_Data AS NVARCHAR(max)),'null') <> ISNULL(CAST(@OldJSON_Currency_Rate_Data AS NVARCHAR(max)),'null')
 							                   begin
 							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  JSON_Currency_Rate_Data = Old ->"' +  ISNULL(CAST(@OldAmount_Rate AS NVARCHAR(max)),'') + ' " NEW -> " ' + isnull(CAST(@NewAmount_Rate AS NVARCHAR(max)),'') + '", ';
 							                   end
 							                
-                                            IF @NewDescription <> @OldDescription
+                                            IF isnull(@NewDescription,'null') <> isnull(@OldDescription,'null')
 							                   begin
                                                 SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Description = Old ->"' + ISNULL(@OldDescription,'') + ' " NEW -> " ' + ISNULL(@NewDescription,'') + '", ';
                                                end
-                                            SET @ChangeDescription = 'Updated: ' + ' ID_Currency_Rate = "' +  isnull(cast(@OldID_Currency_Rate as nvarchar(20)),'')+ '" ' + @ChangeDescription
+
+                                            SET @ChangeDescription = 'Updated: ' + ' ID_Currency_Rate = "' +  isnull(cast(@OldID_Currency_Rate as nvarchar(50)),'')+ '" ' + isnull(@ChangeDescription,'')
                                              --Удаляем запятую на конце
                                             IF LEN(@ChangeDescription) > 0
                                                 SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
@@ -164,7 +167,7 @@ AS
                                              )
                                                SELECT  @ID_entity_D,@login_name_2_D,@ModifiedDate_D,@Name_action_D,@ChangeDescription;              
                                      
-									         set @ChangeDescription = null
+									         set @ChangeDescription = ''
 					              end try
 								  begin catch
 								     if xact_state() in (1, -1)
@@ -230,6 +233,7 @@ AS
 						    while @@FETCH_STATUS  = 0
 						          begin
 							          begin try
+									        set @ChangeDescription = ''
 
                                             SELECT
 							                    @OldID_Currency_Rate_2        = D.ID_Currency_Rate       	 ,
@@ -260,7 +264,7 @@ AS
                                            )
                                             SELECT  @ID_entity_D_2,@login_name_2_D_2,@ModifiedDate_D_2,@Name_action_D_2,@ChangeDescription;              
                                      
-									       set @ChangeDescription = null
+									       set @ChangeDescription = ''
 
 								  end try
 								  begin catch
@@ -318,8 +322,10 @@ AS
 					while @@FETCH_STATUS  = 0
 						  begin
 							    begin try
+								       set @ChangeDescription = ''
+
                                        SET @ChangeDescription = 'Inserted: '
-                                              + 'ID_Currency_Rate = "' + CAST(@ID_entity_I_2 AS NVARCHAR(20)) + '" ';
+                                              + 'ID_Currency_Rate = "' + CAST(@ID_entity_I_2 AS NVARCHAR(50)) + '" ';
 
 									   INSERT  INTO dbo.Currency_Rate_Audit
                                         ( 
@@ -327,7 +333,7 @@ AS
                                         )
                                          SELECT  @ID_entity_I_2,@login_name_2_I_2,@ModifiedDate_I_2,@Name_action_I_2,@ChangeDescription;              
                                      
-									    set @ChangeDescription = null
+									    set @ChangeDescription = ''
                                         
 								end try
 								begin catch

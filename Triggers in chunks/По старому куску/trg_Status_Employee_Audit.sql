@@ -21,7 +21,7 @@ AS
     set nocount,xact_abort on;
 
     DECLARE @login_name nVARCHAR(128) 
-	DECLARE @ChangeDescription nvarchar(max);
+	DECLARE @ChangeDescription nvarchar(max)='';
 
 
     SELECT  @login_name = login_name
@@ -91,6 +91,8 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
+								        set @ChangeDescription = ''
+
 							            SELECT 
                                              @NewID_Status_Employee   = I.ID_Status_Employee  ,
 											 @NewName_Status_Employee = I.Name_Status_Employee,
@@ -108,16 +110,17 @@ AS
 
 
 
-							           IF @NewName_Status_Employee <> @OldName_Status_Employee 
+							           IF ISNULL(@NewName_Status_Employee,'null') <> ISNULL(@OldName_Status_Employee,'null') 
 							              begin
 							               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Name_Status_Employee = Old ->"' +  ISNULL(@OldName_Status_Employee,'') + ' " NEW -> " ' + isnull(@NewName_Status_Employee,'') + '", ';
 							              end
                                                                                                
-                                       IF @NewDescription <> @OldDescription
+                                       IF ISNULL(@NewDescription,'null') <> ISNULL(@OldDescription,'null')
 							              begin
                                            SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Description = Old ->"' + ISNULL(@OldDescription,'') + ' " NEW -> " ' + ISNULL(@NewDescription,'') + '", ';
                                           end
-                                       SET @ChangeDescription = 'Updated: ' + ' ID_Status_Employee = "' +  isnull(cast(@OldID_Status_Employee as nvarchar(20)),'')+ '" ' + @ChangeDescription
+
+                                       SET @ChangeDescription = 'Updated: ' + ' ID_Status_Employee = "' +  isnull(cast(@OldID_Status_Employee as nvarchar(20)),'')+ '" ' + ISNULL(@ChangeDescription,'')
                                         --Удаляем запятую на конце
                                        IF LEN(@ChangeDescription) > 0
                                            SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
@@ -128,7 +131,7 @@ AS
                                         )
                                        SELECT  @ID_entity_D,@login_name_2_D,@ModifiedDate_D,@Name_action_D,@ChangeDescription;              
                                      
-									   set @ChangeDescription = null 
+									   set @ChangeDescription = '' 
 								end try
 								begin catch
 								     if xact_state() in (1, -1)
@@ -191,10 +194,12 @@ AS
 						    while @@FETCH_STATUS  = 0
 						         begin
 							         begin try
+									        set @ChangeDescription = ''
+
                                             SELECT 
-                                                    @OldID_Status_Employee_2   = ID_Status_Employee  ,
-													@OldName_Status_Employee_2 = Name_Status_Employee,
-													@OldDescription_2          = Description        
+                                                    @OldID_Status_Employee_2   = D.ID_Status_Employee  ,
+													@OldName_Status_Employee_2 = D.Name_Status_Employee,
+													@OldDescription_2          = D.[Description]        
 							                FROM deleted D									 
 											where @ID_entity_D_2 = D.ID_Status_Employee;
 
@@ -212,7 +217,7 @@ AS
                                            )
                                             SELECT  @ID_entity_D_2,@login_name_2_D_2,@ModifiedDate_D_2,@Name_action_D_2,@ChangeDescription;              
                                      
-									       set @ChangeDescription = null
+									       set @ChangeDescription = ''
 								end try
 								begin catch
 								     if xact_state() in (1, -1)
@@ -270,8 +275,10 @@ AS
 					while @@FETCH_STATUS  = 0
 						  begin
 							   begin try
+							           set @ChangeDescription = ''
+
                                        SET @ChangeDescription = 'Inserted: '
-                                         + 'ID_Status_Employee = "' + CAST(@ID_entity_I_2 AS NVARCHAR(20)) + '" ';
+                                         + 'ID_Status_Employee = "' + CAST(@ID_entity_I_2 AS NVARCHAR(50)) + '" ';
                                        
 									   INSERT  INTO dbo.Status_Employee_Audit
                                        ( 
@@ -279,7 +286,7 @@ AS
                                        )
                                         SELECT  @ID_entity_I_2,@login_name_2_I_2,@ModifiedDate_I_2,@Name_action_I_2,@ChangeDescription;              
                                      
-									   set @ChangeDescription = null
+									   set @ChangeDescription = ''
            
 		                       end try
 							   begin catch

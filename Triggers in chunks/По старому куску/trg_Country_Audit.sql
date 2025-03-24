@@ -22,7 +22,7 @@ AS
     set nocount,xact_abort on;
 	
     DECLARE @login_name nVARCHAR(128) 
-	DECLARE @ChangeDescription nvarchar(max);
+	DECLARE @ChangeDescription nvarchar(max)= '';
 
 
     SELECT  @login_name = login_name
@@ -97,6 +97,8 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
+								     set @ChangeDescription = ''
+
 									 SELECT 
 										@NewId_Country       	 = I.Id_Country       ,
 										@NewName_Country     	 = I.Name_Country     ,
@@ -115,22 +117,22 @@ AS
 				
 														
                                      
-									 IF @NewName_Country <> @OldName_Country 
+									 IF isnull(@NewName_Country,'null') <> isnull(@OldName_Country,'null') 
 							            begin
                                          SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Name_Country = Old ->"' +  ISNULL(@OldName_Country,'') + ' " NEW -> " ' + isnull(@NewName_Country,'') + '", ';
 							            end
                             
-							        IF @NewName_English <> @OldName_English
+							        IF isnull(@NewName_English,'null') <> isnull(@OldName_English,'null')
 							           begin
 							             SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Name_English = Old ->"' +  ISNULL(@OldName_English,'') + ' " NEW -> " ' + isnull(@NewName_English,'') + '", ';
 							           end
 
-							        IF @NewCod_Country_Phone <> @OldCod_Country_Phone 
+							        IF isnull(@NewCod_Country_Phone,'null') <> isnull(@OldCod_Country_Phone,'null') 
 							           begin
 							             SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Cod_Country_Phone = Old ->"' +  ISNULL(@OldCod_Country_Phone,'') + ' " NEW -> " ' + isnull(@NewCod_Country_Phone,'') + '", ';
 							           end
                                     
-									SET @ChangeDescription = 'Updated: ' + ' Id_Country = "' +  isnull(cast(@OldId_Country as nvarchar(20)),'')+ '" ' + @ChangeDescription
+									SET @ChangeDescription = 'Updated: ' + ' Id_Country = "' +  isnull(cast(@OldId_Country as nvarchar(50)),'')+ '" ' + isnull(@ChangeDescription,'')
 
 									IF LEN(@ChangeDescription) > 0
                                                  SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
@@ -142,7 +144,7 @@ AS
                                      )
                                        SELECT  @ID_entity_D,@login_name_2_D,@ModifiedDate_D,@Name_action_D,@ChangeDescription;              
                                      
-									set @ChangeDescription = null 
+									set @ChangeDescription = '' 
 
 								  end try
 								  begin catch
@@ -207,7 +209,8 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
-								     
+								     set @ChangeDescription = ''
+
 									 SELECT  
 									     @OldId_Country_2        =   D.Id_Country       ,
 										 @OldName_Country_2      =   D.Name_Country     ,
@@ -232,7 +235,7 @@ AS
                                      )
                                       SELECT  @ID_entity_D_2,@login_name_2_D_2,@ModifiedDate_D_2,@Name_action_D_2,@ChangeDescription;              
                                      
-									set @ChangeDescription = null
+									set @ChangeDescription = ''
 
 								  end try
 								  begin catch
@@ -292,10 +295,10 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
-								     				 
+								     set @ChangeDescription = ''				 
 					
 					                 SET @ChangeDescription = 'Inserted: '
-                                         + 'Id_Country = "' + CAST(@ID_entity_I_2 AS NVARCHAR(20)) + '" ';
+                                         + 'Id_Country = "' + CAST(@ID_entity_I_2 AS NVARCHAR(50)) + '" ';
   
                                     INSERT  INTO dbo.Country_Audit
                                      ( 
@@ -303,7 +306,7 @@ AS
                                      )
                                       SELECT  @ID_entity_I_2,@login_name_2_I_2,@ModifiedDate_I_2,@Name_action_I_2,@ChangeDescription;              
                                      
-									set @ChangeDescription = null
+									set @ChangeDescription = ''
 
 								  end try
 								  begin catch

@@ -21,7 +21,7 @@ AS
     set nocount,xact_abort on;
 
     DECLARE @login_name nVARCHAR(128) 
-	DECLARE @ChangeDescription nvarchar(max);
+	DECLARE @ChangeDescription nvarchar(max)='';
 
 
     SELECT  @login_name = login_name
@@ -109,6 +109,8 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
+								        set @ChangeDescription = ''
+
 								        SELECT 
 							                @NewID_Storage_location     	= I.ID_Storage_location     ,
 							            	@NewID_Type_Storage_location	= I.ID_Type_Storage_location,
@@ -142,61 +144,61 @@ AS
 										 where @ID_entity_D = D.ID_Storage_location
 																	 
 
-                                        IF @NewID_Type_Storage_location  <> @OldID_Type_Storage_location  
+                                        IF ISNULL(CAST(@NewID_Type_Storage_location  AS NVARCHAR(50)),'null')  <> ISNULL(CAST(@OldID_Type_Storage_location  AS NVARCHAR(50)),'null')  
 							               begin
-                                            SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_Type_Storage_location  = Old ->"' +  ISNULL(CAST(@OldID_Type_Storage_location  AS NVARCHAR(20)),'') + ' " NEW -> "' + isnull(CAST(@NewID_Type_Storage_location  AS NVARCHAR(20)),'') + '", ';
+                                            SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_Type_Storage_location  = Old ->"' +  ISNULL(CAST(@OldID_Type_Storage_location  AS NVARCHAR(50)),'') + ' " NEW -> "' + isnull(CAST(@NewID_Type_Storage_location  AS NVARCHAR(50)),'') + '", ';
 							               end
                                         
-										IF @NewId_Status  <> @OldId_Status 
+										IF ISNULL(CAST(@NewId_Status  AS NVARCHAR(50)),'null')  <> ISNULL(CAST(@OldId_Status  AS NVARCHAR(50)),'null') 
 							               begin
-                                            SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Id_Status  = Old ->"' +  ISNULL(CAST(@OldId_Status  AS NVARCHAR(20)),'') + ' " NEW -> "' + isnull(CAST(@NewId_Status  AS NVARCHAR(20)),'') + '", ';
+                                            SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Id_Status  = Old ->"' +  ISNULL(CAST(@OldId_Status  AS NVARCHAR(50)),'') + ' " NEW -> "' + isnull(CAST(@NewId_Status  AS NVARCHAR(50)),'') + '", ';
 							               end
 
-										IF @NewId_Country  <> @OldId_Country 
+										IF ISNULL(CAST(@NewId_Country  AS NVARCHAR(50)),'null')  <> ISNULL(CAST(@OldId_Country  AS NVARCHAR(50)),'null') 
 							               begin
-                                            SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Id_Country  = Old ->"' +  ISNULL(CAST(@OldId_Country  AS NVARCHAR(20)),'') + ' " NEW -> "' + isnull(CAST(@NewId_Country  AS NVARCHAR(20)),'') + '", ';
+                                            SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Id_Country  = Old ->"' +  ISNULL(CAST(@OldId_Country  AS NVARCHAR(50)),'') + ' " NEW -> "' + isnull(CAST(@NewId_Country  AS NVARCHAR(50)),'') + '", ';
 							               end
 
-							            IF @NewKeySource <> @OldKeySource
+							            IF ISNULL(CAST(@NewKeySource AS NVARCHAR(50)),'null') <> ISNULL(CAST(@OldKeySource AS NVARCHAR(50)),'null')
 							               begin
 							                SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  KeySource = Old ->"' +  ISNULL(CAST(@OldKeySource AS NVARCHAR(50)),'') + ' " NEW -> "' + isnull(CAST(@NewKeySource AS NVARCHAR(50)),'') + '", ';
 							               end
 							            
-							            IF @NewName <> @OldName
+							            IF isnull(@NewName,'null') <> isnull(@OldName,'null')
 							               begin
 							                SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Name = Old ->"' +  ISNULL(@OldName,'') + ' " NEW -> "' + isnull(@NewName,'') + '", ';
 							               end                  							            
 							            
-							            IF @NewCity <> @OldCity
+							            IF isnull(@NewCity,'null') <> isnull(@OldCity,'null')
 							               begin
 							                SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  City = Old ->"' +  ISNULL(@OldCity,'') + ' " NEW -> "' + isnull(@NewCity,'') + '", ';
 							               end
 							            
-							            IF @NewAdress <> @OldAdress
+							            IF isnull(@NewAdress,'null') <> isnull(@OldAdress,'null')
 							               begin
 							                SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Adress = Old ->"' +  ISNULL(@OldAdress,'') + ' " NEW -> "' + isnull(@NewAdress,'') + '", ';
 							               end
 							            
-							            IF @NewMail <> @OldMail
+							            IF isnull(@NewMail,'null') <> isnull(@OldMail,'null')
 							               begin
 							                SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Mail = Old ->"' +  ISNULL(@OldMail,'') + ' " NEW -> "' + isnull(@NewMail,'') + '", ';
 							               end
 							            
-                                        IF @NewPhone <> @OldPhone
+                                        IF isnull(@NewPhone,'null') <> isnull(@OldPhone,'null')
 							               begin
 							                SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Phone = Old ->"' +  ISNULL(@OldPhone,'') + ' " NEW -> "' + isnull(@NewPhone,'') + '", ';
 							               end
 							            
-                                        IF @NewDate_Created <> @OldDate_Created
+                                        IF ISNULL(CAST(Format(@NewDate_Created,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'null') <> ISNULL(CAST(Format(@OldDate_Created,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'null')
 							               begin
 							                SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Date_Created = Old ->"' +  ISNULL(CAST(Format(@OldDate_Created,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(Format(@NewDate_Created,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", ';
 							               end
 							            
-                                        IF @NewDescription <> @OldDescription
+                                        IF ISNULL(@NewDescription,'null') <> ISNULL(@OldDescription,'null')
 							               begin
                                             SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Description = Old ->"' + ISNULL(@OldDescription,'') + ' " NEW -> "' + ISNULL(@NewDescription,'') + '",';
                                            end
-                                        SET @ChangeDescription = 'Updated: ' + ' ID_Storage_location = "' +  isnull(cast(@OldID_Storage_location as nvarchar(20)),'')+ '" ' + @ChangeDescription
+                                        SET @ChangeDescription = 'Updated: ' + ' ID_Storage_location = "' +  isnull(cast(@OldID_Storage_location as nvarchar(50)),'')+ '" ' + ISNULL(@ChangeDescription,'')
                                          --Удаляем запятую на конце
                                         IF LEN(@ChangeDescription) > 0
                                             SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
@@ -207,7 +209,7 @@ AS
                                          )
                                            SELECT  @ID_entity_D,@login_name_2_D,@ModifiedDate_D,@Name_action_D,@ChangeDescription;              
                                      
-									    set @ChangeDescription = null 
+									     set @ChangeDescription = '' 
 							 end try
 							 begin catch
 								     if xact_state() in (1, -1)
@@ -278,7 +280,9 @@ AS
 						    @ID_entity_D_2,@login_name_2_D_2,@ModifiedDate_D_2,@Name_action_D_2 
 						    while @@FETCH_STATUS  = 0
 						         begin
-							         begin try
+							         begin try  
+									            set @ChangeDescription = ''
+
                                                 SELECT 
 							                        @OldID_Storage_location_2         = D.ID_Storage_location     ,
 							                    	@OldID_Type_Storage_location_2	  = D.ID_Type_Storage_location,
@@ -296,10 +300,10 @@ AS
 												where @ID_entity_D_2 = D.ID_Storage_location
 
                                                 SET @ChangeDescription = 'Deleted: '
-							                    + 'ID_Storage_location'      +' = "'+  ISNULL(CAST(@OldID_Storage_location_2     AS NVARCHAR(20)),'')+ '", '
-							                    + 'ID_Type_Storage_location' +' = "'+  ISNULL(CAST(@OldID_Type_Storage_location_2  AS NVARCHAR(20)),'')+ '", '
-												+ 'Id_Status'                +' = "'+  ISNULL(CAST(@OldId_Status_2  AS NVARCHAR(20)),'')+ '", '
-												+ 'Id_Country'               +' = "'+  ISNULL(CAST(@OldId_Country_2  AS NVARCHAR(20)),'')+ '", '
+							                    + 'ID_Storage_location'      +' = "'+  ISNULL(CAST(@OldID_Storage_location_2     AS NVARCHAR(50)),'')+ '", '
+							                    + 'ID_Type_Storage_location' +' = "'+  ISNULL(CAST(@OldID_Type_Storage_location_2  AS NVARCHAR(50)),'')+ '", '
+												+ 'Id_Status'                +' = "'+  ISNULL(CAST(@OldId_Status_2  AS NVARCHAR(50)),'')+ '", '
+												+ 'Id_Country'               +' = "'+  ISNULL(CAST(@OldId_Country_2  AS NVARCHAR(50)),'')+ '", '
 							                    + 'KeySource'                +' = "'+  ISNULL(CAST(@OldKeySource_2 AS NVARCHAR(50)),'') + '", '
 							                    + 'Name'                     +' = "'+  ISNULL(@OldName_2,'')+ '", '				
 							                    + 'City'                     +' = "'+  ISNULL(@OldCity_2,'') + '", '
@@ -318,7 +322,7 @@ AS
                                                 )
                                                  SELECT  @ID_entity_D_2,@login_name_2_D_2,@ModifiedDate_D_2,@Name_action_D_2,@ChangeDescription;              
                                      
-									            set @ChangeDescription = null
+									            set @ChangeDescription = ''
 
 								  end try
 								  begin catch
@@ -378,9 +382,10 @@ AS
 					while @@FETCH_STATUS  = 0
 						  begin
 							     begin try
+								     set @ChangeDescription = ''
 
                                      SET @ChangeDescription = 'Inserted: '
-                                            + 'ID_Storage_location = "' + CAST(@ID_entity_I_2 AS NVARCHAR(20)) + '" ';
+                                            + 'ID_Storage_location = "' + CAST(@ID_entity_I_2 AS NVARCHAR(50)) + '" ';
                                       
                                      INSERT  INTO dbo.Storage_location_Audit
                                      ( 
@@ -388,7 +393,7 @@ AS
                                      )
                                       SELECT  @ID_entity_I_2,@login_name_2_I_2,@ModifiedDate_I_2,@Name_action_I_2,@ChangeDescription;              
                                      
-									set @ChangeDescription = null
+									 set @ChangeDescription = ''
                                 
 								end try
 								begin catch

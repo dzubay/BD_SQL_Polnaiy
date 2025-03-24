@@ -22,7 +22,7 @@ AS
     set nocount,xact_abort on;
 
     DECLARE @login_name nVARCHAR(128) 
-	DECLARE @ChangeDescription nvarchar(max);
+	DECLARE @ChangeDescription nvarchar(max)='';
 
 
     SELECT  @login_name = login_name
@@ -105,6 +105,8 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
+								        set @ChangeDescription = ''
+
 							            SELECT 
                                               @NewID_Passport    = I.ID_Passport    ,
 											  @NewNumber_Series  = I.Number_Series  ,
@@ -130,41 +132,41 @@ AS
 										where @ID_entity_D = D.ID_Passport;
 
                                        
-							           IF @NewNumber_Series <> @OldNumber_Series 
+							           IF isnull(@NewNumber_Series,'null') <> isnull(@OldNumber_Series,'null') 
 							              begin
 							               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Number_Series = Old ->"' +  ISNULL(@OldNumber_Series,'') + ' " NEW -> " ' + isnull(@NewNumber_Series,'') + '", ';
 							              end
 
-							           IF @NewDate_Of_Issue <> @OldDate_Of_Issue
+							           IF ISNULL(CAST(Format(@NewDate_Of_Issue,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'null') <> ISNULL(CAST(Format(@OldDate_Of_Issue,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'null')
 							              begin
 							               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Date_Of_Issue = Old ->"' +  ISNULL(CAST(Format(@OldDate_Of_Issue,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(Format(@NewDate_Of_Issue,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", ';
 							              end
 
-							           IF @NewDepartment_Code <> @OldDepartment_Code 
+							           IF ISNULL(@NewDepartment_Code,'null') <> ISNULL(@OldDepartment_Code,'null') 
 							              begin
 							               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Department_Code = Old ->"' +  ISNULL(@OldDepartment_Code,'') + ' " NEW -> " ' + isnull(@NewDepartment_Code,'') + '", ';
 							              end
 
-							           IF @NewIssued_By_Whom <> @OldIssued_By_Whom 
+							           IF isnull(@NewIssued_By_Whom,'null') <> isnull(@OldIssued_By_Whom,'null') 
 							              begin
 							               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Issued_By_Whom = Old ->"' +  ISNULL(@OldIssued_By_Whom,'') + ' " NEW -> " ' + isnull(@NewIssued_By_Whom,'') + '", ';
 							              end
 
-							           IF @NewRegistration <> @OldRegistration 
+							           IF isnull(@NewRegistration,'null') <> isnull(@OldRegistration,'null') 
 							              begin
 							               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Registration = Old ->"' +  ISNULL(@OldRegistration,'') + ' " NEW -> " ' + isnull(@NewRegistration,'') + '", ';
 							              end
 
-							           IF @NewMilitary_Duty <> @OldMilitary_Duty
+							           IF isnull(@NewMilitary_Duty,'null') <> isnull(@OldMilitary_Duty,'null')
 							              begin
 							               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Military_Duty = Old ->"' +  ISNULL(@OldMilitary_Duty,'') + ' " NEW -> " ' + isnull(@NewMilitary_Duty,'') + '", ';
 							              end
      
-                                       IF @NewDescription <> @OldDescription
+                                       IF isnull(@NewDescription,'null') <> isnull(@OldDescription,'null')
 							              begin
                                            SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Description = Old ->"' + ISNULL(@OldDescription,'') + ' " NEW -> " ' + ISNULL(@NewDescription,'') + '", ';
                                           end
-                                       SET @ChangeDescription = 'Updated: ' + ' ID_Passport = "' +  isnull(cast(@OldID_Passport as nvarchar(20)),'')+ '" ' + @ChangeDescription
+                                       SET @ChangeDescription = 'Updated: ' + ' ID_Passport = "' +  isnull(cast(@OldID_Passport as nvarchar(20)),'')+ '" ' + isnull(@ChangeDescription,'')
                                         --Удаляем запятую на конце
                                        IF LEN(@ChangeDescription) > 0
                                            SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
@@ -175,7 +177,7 @@ AS
                                         )
                                        SELECT  @ID_entity_D,@login_name_2_D,@ModifiedDate_D,@Name_action_D,@ChangeDescription;              
                                      
-									   set @ChangeDescription = null 
+									   set @ChangeDescription = ''
 								end try
 								begin catch
 								     if xact_state() in (1, -1)
@@ -244,6 +246,8 @@ AS
 						    while @@FETCH_STATUS  = 0
 						         begin
 							         begin try
+									        set @ChangeDescription = ''
+
                                             SELECT 
                                               @OldID_Passport_2     = D.ID_Passport    ,
 											  @OldNumber_Series_2   = D.Number_Series  ,
@@ -275,7 +279,7 @@ AS
                                            )
                                             SELECT  @ID_entity_D_2,@login_name_2_D_2,@ModifiedDate_D_2,@Name_action_D_2,@ChangeDescription;              
                                      
-									       set @ChangeDescription = null
+									       set @ChangeDescription = ''
 								end try
 								begin catch
 								     if xact_state() in (1, -1)
@@ -333,8 +337,10 @@ AS
 					while @@FETCH_STATUS  = 0
 						  begin
 							   begin try
+							           set @ChangeDescription = ''
+
                                        SET @ChangeDescription = 'Inserted: '
-                                         + 'ID_Passport = "' + CAST(@ID_entity_I_2 AS NVARCHAR(20)) + '" ';
+                                         + 'ID_Passport = "' + CAST(@ID_entity_I_2 AS NVARCHAR(50)) + '" ';
                                        
 									   INSERT  INTO dbo.Passport_Audit
                                        ( 
@@ -342,7 +348,7 @@ AS
                                        )
                                         SELECT  @ID_entity_I_2,@login_name_2_I_2,@ModifiedDate_I_2,@Name_action_I_2,@ChangeDescription;              
                                      
-									   set @ChangeDescription = null
+									   set @ChangeDescription = ''
            
 		                       end try
 							   begin catch

@@ -23,7 +23,7 @@ AS
     set nocount,xact_abort on;
 
     DECLARE @login_name nVARCHAR(128) 
-	DECLARE @ChangeDescription nvarchar(max);
+	DECLARE @ChangeDescription nvarchar(max)='';
 
 
     SELECT  @login_name = login_name
@@ -96,7 +96,7 @@ AS
 						       begin
 							      begin try
 
-
+								      set @ChangeDescription = ''
 							          SELECT 
 							                 @NewID_TypeOrders     = I.ID_TypeOrders     ,
 							                 @NewTypeOrdersName    = I.TypeOrdersName    ,
@@ -115,19 +115,22 @@ AS
 
 
 
-                                      IF @NewTypeOrdersName <> @OldTypeOrdersName 
+                                      IF isnull(@NewTypeOrdersName,'null') <> isnull(@OldTypeOrdersName,'null') 
 							             begin
                                           SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  TypeOrdersName = Old ->"' +  ISNULL(@OldTypeOrdersName,'') + ' " NEW -> " ' + isnull(@NewTypeOrdersName,'') + '", ';
 							             end
-                                      IF @NewTypeOrdersSysName <> @OldTypeOrdersSysName
+
+                                      IF isnull(@NewTypeOrdersSysName,'null') <> isnull(@OldTypeOrdersSysName,'null')
 							             begin
                                           SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  TypeOrdersSysName = Old ->"' + ISNULL(@OldTypeOrdersSysName,'') + ' " NEW -> "' + ISNULL(@NewTypeOrdersSysName,'') + '", ';
 							             end
-                                      IF @NewDescription <> @OldDescription
+
+                                      IF isnull(@NewDescription,'null') <> isnull(@OldDescription,'null')
 							             begin
                                           SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Description = Old ->"' + ISNULL(@OldDescription,'') + ' " NEW -> " ' + ISNULL(@NewDescription,'') + '", ';
                                          end
-                                      SET @ChangeDescription = 'Updated: ' + ' ID_TypeOrders = "' +  isnull(cast(@OldID_TypeOrders as nvarchar(20)),'')+ '" ' + @ChangeDescription
+
+                                      SET @ChangeDescription = 'Updated: ' + ' ID_TypeOrders = "' +  isnull(cast(@OldID_TypeOrders as nvarchar(50)),'')+ '" ' + isnull(@ChangeDescription,'')
                                        --Удаляем запятую на конце
                                       IF LEN(@ChangeDescription) > 0
                                           SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
@@ -138,7 +141,7 @@ AS
                                      )
                                       SELECT  @ID_entity_D,@login_name_2_D,@ModifiedDate_D,@Name_action_D,@ChangeDescription;              
                                      
-									set @ChangeDescription = null 
+									set @ChangeDescription = '' 
 
 								  end try
 								  begin catch
@@ -201,6 +204,7 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
+								      set @ChangeDescription = ''
 
 							          SELECT 
 							                 @OldID_TypeOrders_2     = D.ID_TypeOrders     ,
@@ -211,7 +215,7 @@ AS
 							          where @ID_entity_D_2 = D.ID_TypeOrders
 
                                       SET @ChangeDescription = 'Deleted: '
-                                          + 'ID_TypeOrders'     +' = "'+ isnull(CAST(@OldID_TypeOrders_2 AS NVARCHAR(20)),'') + '", '
+                                          + 'ID_TypeOrders'     +' = "'+ isnull(CAST(@OldID_TypeOrders_2 AS NVARCHAR(50)),'') + '", '
                                           + 'TypeOrdersName'    +' = "'+ ISNULL(@OldTypeOrdersName_2, '') + '", '
                                           + 'TypeOrdersSysName' +' = "'+ ISNULL(@OldTypeOrdersSysName_2, '') + '", '
                                           + 'Description'       +' = "'+ ISNULL(@OldDescription_2, '') + '" ';
@@ -225,7 +229,7 @@ AS
                                      )
                                       SELECT  @ID_entity_D_2,@login_name_2_D_2,@ModifiedDate_D_2,@Name_action_D_2,@ChangeDescription;              
                                      
-									set @ChangeDescription = null
+									set @ChangeDescription = ''
 
 								  end try
 								  begin catch
@@ -283,8 +287,10 @@ AS
 					while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
+								     set @ChangeDescription = ''
+
                                      SET @ChangeDescription = 'Inserted: '
-                                         + 'ID_TypeOrders = "' + CAST(@ID_entity_I_2 AS NVARCHAR(20)) + '" ';
+                                         + 'ID_TypeOrders = "' + CAST(@ID_entity_I_2 AS NVARCHAR(50)) + '" ';
                                      
 									 INSERT  INTO dbo.TypeOrders_Audit
                                      ( 
@@ -292,7 +298,7 @@ AS
                                      )
                                       SELECT  @ID_entity_I_2,@login_name_2_I_2,@ModifiedDate_I_2,@Name_action_I_2,@ChangeDescription;              
                                      
-									set @ChangeDescription = null
+									set @ChangeDescription = ''
 
                                   end try
 								  begin catch

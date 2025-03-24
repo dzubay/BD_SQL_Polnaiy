@@ -22,7 +22,7 @@ AS
     set nocount,xact_abort on;
 
     DECLARE @login_name nVARCHAR(128) 
-	DECLARE @ChangeDescription nvarchar(max);
+	DECLARE @ChangeDescription nvarchar(max)= '';
 
 
     SELECT  @login_name = login_name
@@ -96,6 +96,8 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
+								            set @ChangeDescription = ''
+
 							                SELECT 
                                                   @NewId_Buyer_Type         = I.Id_Buyer_Type       ,
 							                	  @NewName                 	= I.Name                ,
@@ -113,22 +115,22 @@ AS
 											 where @ID_entity_D = D.Id_Buyer_Type; 
 
 
-                                            IF @NewName <> @OldName 
+                                            IF isnull(@NewName,'null') <> isnull(@OldName,'null') 
 							                   begin
                                                 SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Name = Old ->"' +  ISNULL(@OldName,'') + ' " NEW -> " ' + isnull(@NewName,'') + '", ';
 							                   end
                                             
-							                IF @NewSysTypeBuyerTypeName <> @OldSysTypeBuyerTypeName 
+							                IF isnull(@NewSysTypeBuyerTypeName,'null') <> isnull(@OldSysTypeBuyerTypeName,'null') 
 							                   begin
 							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  SysTypeBuyerTypeName = Old ->"' +  ISNULL(@OldSysTypeBuyerTypeName,'') + ' " NEW -> " ' + isnull(@NewSysTypeBuyerTypeName,'') + '", ';
 							                   end
                                                                                                     
-                                            IF @NewDescription <> @OldDescription
+                                            IF isnull(@NewDescription,'null') <> isnull(@OldDescription,'null')
 							                   begin
                                                 SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Description = Old ->"' + ISNULL(@OldDescription,'') + ' " NEW -> " ' + ISNULL(@NewDescription,'') + '", ';
                                                end
                                             
-                                            SET @ChangeDescription = 'Updated: ' + ' Id_Buyer_Type = "' +  isnull(cast(@OldId_Buyer_Type as nvarchar(20)),'')+ '" ' + @ChangeDescription
+                                            SET @ChangeDescription = 'Updated: ' + ' Id_Buyer_Type = "' +  isnull(cast(@OldId_Buyer_Type as nvarchar(20)),'')+ '" ' + isnull(@ChangeDescription,'')
                                              --Удаляем запятую на конце
                                             IF LEN(@ChangeDescription) > 0
                                                 SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
@@ -139,7 +141,7 @@ AS
                                             )
                                             SELECT  @ID_entity_D,@login_name_2_D,@ModifiedDate_D,@Name_action_D,@ChangeDescription;              
                                      
-									        set @ChangeDescription = null 
+									        set @ChangeDescription = '' 
 
 								   end try
 								   begin catch
@@ -202,6 +204,8 @@ AS
 						    while @@FETCH_STATUS  = 0
 						        begin
 							       begin try
+								           set @ChangeDescription = ''
+
 							               SELECT 
                                               @OldId_Buyer_Type_2         = D.Id_Buyer_Type       ,
 							               	  @OldName_2                  = D.Name                ,
@@ -225,7 +229,7 @@ AS
                                            )
                                             SELECT  @ID_entity_D_2,@login_name_2_D_2,@ModifiedDate_D_2,@Name_action_D_2,@ChangeDescription;              
                                      
-									       set @ChangeDescription = null
+									       set @ChangeDescription = ''
 
 								  end try
 								  begin catch
@@ -286,8 +290,10 @@ AS
 				   while @@FETCH_STATUS  = 0
 						  begin
 							   begin try
+							         set @ChangeDescription = ''
+
                                      SET @ChangeDescription = 'Inserted: '
-                                         + 'Id_Buyer_Type = "' + CAST(@ID_entity_I_2 AS NVARCHAR(20)) + '" ';
+                                         + 'Id_Buyer_Type = "' + CAST(@ID_entity_I_2 AS NVARCHAR(50)) + '" ';
                     
                                       INSERT  INTO dbo.Buyer_Type_Audit
                                       ( 
@@ -295,7 +301,7 @@ AS
                                       )
                                        SELECT  @ID_entity_I_2,@login_name_2_I_2,@ModifiedDate_I_2,@Name_action_I_2,@ChangeDescription;              
                                      
-									 set @ChangeDescription = null              
+									 set @ChangeDescription = ''              
 
 								end try
 								begin catch

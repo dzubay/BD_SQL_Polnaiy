@@ -23,7 +23,7 @@ AS
     set nocount,xact_abort on;
 
     DECLARE @login_name nVARCHAR(128) 
-	DECLARE @ChangeDescription nvarchar(max);
+	DECLARE @ChangeDescription nvarchar(max) = '';
 
 
     SELECT  @login_name = login_name
@@ -116,6 +116,8 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
+								        set @ChangeDescription = ''
+
 								        SELECT 
 							                @NewId_buyer             = I.Id_buyer           , 
 							            	@NewID_Connection_Buyer  = I.ID_Connection_Buyer,
@@ -153,68 +155,72 @@ AS
 										where @ID_entity_D = D.Id_buyer;
 
 
-                                       IF @NewID_Connection_Buyer <> @OldID_Connection_Buyer 
+                                       IF ISNULL(CAST(@NewID_Connection_Buyer AS NVARCHAR(50)),'null') <> ISNULL(CAST(@OldID_Connection_Buyer AS NVARCHAR(50)),'null') 
 							              begin
                                            SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_Connection_Buyer = Old ->"' +  ISNULL(CAST(@OldID_Connection_Buyer AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewID_Connection_Buyer AS NVARCHAR(50)),'') + '", ';
 							              end
                                        
-							           IF @NewId_Status <> @OldId_Status
+							           IF ISNULL(CAST(@NewId_Status  AS NVARCHAR(50)),'null') <> ISNULL(CAST(@OldId_Status  AS NVARCHAR(50)),'null')
 							              begin
 							               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Id_Status = Old ->"' +  ISNULL(CAST(@OldId_Status AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewId_Status AS NVARCHAR(50)),'') + '", ';
 							              end
 
-                                       IF @NewId_Buyer_Type <> @OldId_Buyer_Type
+                                       IF ISNULL(CAST(@NewId_Buyer_Type AS NVARCHAR(50)),'null') <> ISNULL(CAST(@OldId_Buyer_Type AS NVARCHAR(50)),'null')
 							              begin
 							               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Id_Buyer_Type = Old ->"' +  ISNULL(CAST(@OldId_Buyer_Type AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewId_Buyer_Type AS NVARCHAR(50)),'') + '", ';
 							              end
 
-							           IF @NewName <> @OldName 
+							           IF isnull(@NewName,'null') <> isnull(@OldName,'null') 
 							              begin
 							               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Name = Old ->"' +  ISNULL(@OldName,'') + ' " NEW -> " ' + isnull(@NewName,'') + '", ';
 							              end
                                                                                                
-							           IF @NewSurName <> @OldSurName 
+							           IF isnull(@NewSurName,'null') <> isnull(@OldSurName,'null') 
 							              begin
 							               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  SurName = Old ->"' +  ISNULL(@OldSurName,'') + ' " NEW -> " ' + isnull(@NewSurName,'') + '", ';
 							              end
-							           IF @NewLastName <> @OldLastName 
+
+							           IF isnull(@NewLastName,'null') <> isnull(@OldLastName,'null') 
 							              begin
 							               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  LastName = Old ->"' +  ISNULL(@OldLastName,'') + ' " NEW -> " ' + isnull(@NewLastName,'') + '", ';
 							              end
-							           IF @NewMail <> @OldMail 
+
+							           IF isnull(@NewMail,'null') <> isnull(@OldMail,'null') 
 							              begin
 							               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Mail = Old ->"' +  ISNULL(@OldMail,'') + ' " NEW -> " ' + isnull(@NewMail,'') + '", ';
 							              end
 							           
-							           IF @NewPol <> @OldPol 
+							           IF ISNULL(CAST(@NewPol AS NVARCHAR(1)),'null') <> ISNULL(CAST(@OldPol AS NVARCHAR(1)),'null') 
 							              begin
 							               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Pol = Old ->"' +  ISNULL(CAST(@OldPol AS NVARCHAR(1)),'') + ' " NEW -> " ' + isnull(CAST(@NewPol AS NVARCHAR(1)),'') + '", ';
 							              end
-							           IF @NewPhone <> @OldPhone 
+
+							           IF isnull(@NewPhone,'null') <> isnull(@OldPhone,'null') 
 							              begin
 							               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Phone = Old ->"' +  ISNULL(@OldPhone,'') + ' " NEW -> " ' + isnull(@NewPhone,'') + '", ';
 							              end
                            	           			
-							           IF @NewDate_Of_Birth <> @OldDate_Of_Birth
+							           IF ISNULL(CAST(Format(@NewDate_Of_Birth,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'null') <> ISNULL(CAST(Format(@OldDate_Of_Birth,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'null')
 							              begin
 							               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Date_Of_Birth = Old ->"' +  ISNULL(CAST(Format(@OldDate_Of_Birth,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(Format(@NewDate_Of_Birth,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", ';
 							              end
 
-									   IF @NewPremium <> @OldPremium
+									   IF ISNULL(CAST(@NewPremium AS NVARCHAR(1)),'null') <> ISNULL(CAST(@OldPremium AS NVARCHAR(1)),'null')
 							                 begin
 							                  SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Premium = Old ->"' +  ISNULL(CAST(@OldPremium AS NVARCHAR(1)),'') + ' " NEW -> "' + isnull(CAST(@NewPremium AS NVARCHAR(1)),'') + '", ';
 							                 end
 
-                                       IF @NewThe_resident <> @OldThe_resident
+                                       IF ISNULL(CAST(@NewThe_resident AS NVARCHAR(1)),'null') <> ISNULL(CAST(@OldThe_resident AS NVARCHAR(1)),'null')
 							                 begin
 							                  SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  The_resident = Old ->"' +  ISNULL(CAST(@OldThe_resident AS NVARCHAR(1)),'') + ' " NEW -> "' + isnull(CAST(@NewThe_resident AS NVARCHAR(1)),'') + '", ';
 							                 end
 							           
-                                       IF @NewDescription <> @OldDescription
+                                       IF ISNULL(@NewDescription,'null') <> ISNULL(@OldDescription,'null')
 							              begin
                                            SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Description = Old ->"' + ISNULL(@OldDescription,'') + ' " NEW -> " ' + ISNULL(@NewDescription,'') + '", ';
                                           end
-                                       SET @ChangeDescription = 'Updated: ' + ' Id_buyer = "' +  isnull(cast(@OldId_buyer as nvarchar(20)),'')+ '" ' + @ChangeDescription
+
+                                       SET @ChangeDescription = 'Updated: ' + ' Id_buyer = "' +  isnull(cast(@OldId_buyer as nvarchar(50)),'')+ '" ' + ISNULL(@ChangeDescription,'')
                                         --Удаляем запятую на конце
                                        IF LEN(@ChangeDescription) > 0
                                            SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
@@ -225,7 +231,7 @@ AS
                                         )
                                        SELECT  @ID_entity_D,@login_name_2_D,@ModifiedDate_D,@Name_action_D,@ChangeDescription;              
                                      
-									   set @ChangeDescription = null 
+									   set @ChangeDescription = ''
 								end try
 								begin catch
 								     if xact_state() in (1, -1)
@@ -300,6 +306,8 @@ AS
 						    while @@FETCH_STATUS  = 0
 						         begin
 							         begin try
+									        set @ChangeDescription = ''
+
                                             SELECT 
 							                    @OldId_buyer_2             = D.Id_buyer           , 
 							                	@OldID_Connection_Buyer_2  = D.ID_Connection_Buyer,
@@ -343,7 +351,7 @@ AS
                                            )
                                             SELECT  @ID_entity_D_2,@login_name_2_D_2,@ModifiedDate_D_2,@Name_action_D_2,@ChangeDescription;              
                                      
-									       set @ChangeDescription = null
+									       set @ChangeDescription = ''
 								end try
 								begin catch
 								     if xact_state() in (1, -1)
@@ -401,8 +409,10 @@ AS
 					while @@FETCH_STATUS  = 0
 						  begin
 							   begin try
+							           set @ChangeDescription = ''
+
                                        SET @ChangeDescription = 'Inserted: '
-                                         + 'Id_buyer = "' + CAST(@ID_entity_I_2 AS NVARCHAR(20)) + '" ';
+                                         + 'Id_buyer = "' + CAST(@ID_entity_I_2 AS NVARCHAR(50)) + '" ';
                                        
 									   INSERT  INTO dbo.Buyer_Audit
                                        ( 
@@ -410,7 +420,7 @@ AS
                                        )
                                         SELECT  @ID_entity_I_2,@login_name_2_I_2,@ModifiedDate_I_2,@Name_action_I_2,@ChangeDescription;              
                                      
-									   set @ChangeDescription = null
+									   set @ChangeDescription = ''
            
 		                       end try
 							   begin catch
