@@ -10,7 +10,7 @@ CREATE TABLE Orders_status_Audit
 	Operation            CHAR(1)               null,
     ChangeDescription    nvarchar(max)         null
 --    PRIMARY KEY CLUSTERED ( AuditID ) 
-) on Orders_Group_2;
+) on Orders_Group;
 
 
 go
@@ -22,7 +22,7 @@ AS
     set nocount,xact_abort on;
 
     DECLARE @login_name nVARCHAR(128) 
-	DECLARE @ChangeDescription nvarchar(max);
+	DECLARE @ChangeDescription nvarchar(max)='';
 
 
     SELECT  @login_name = login_name
@@ -96,6 +96,7 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
+								        set @ChangeDescription = ''
 
 							            SELECT 
 							                   @NewId_Status              = D.Id_Status              ,    
@@ -113,19 +114,22 @@ AS
                                         FROM deleted D
 										where @ID_entity_D = D.Id_Status
                          
-                                        IF @NewName <> @OldName 
+                                        IF isnull(@NewName,'null') <> isnull(@OldName,'null') 
 							               begin
                                               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Name = Old ->"' +  ISNULL(@OldName,'') + ' " NEW -> " ' + isnull(@NewName,'') + '", ';
 							               end
-                                        IF @NewSysTypeOrderStatusName <> @OldSysTypeOrderStatusName
+
+                                        IF isnull(@NewSysTypeOrderStatusName,'null') <> isnull(@OldSysTypeOrderStatusName,'null')
 							               begin
                                               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  SysTypeOrderStatusName = Old ->"' + ISNULL(@OldSysTypeOrderStatusName,'') + ' " NEW -> "' + ISNULL(@NewSysTypeOrderStatusName,'') + '", ';
 							               end
-                                        IF @NewDescription <> @OldDescription
+
+                                        IF isnull(@NewDescription,'null') <> isnull(@OldDescription,'null')
 							               begin
                                               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Description = Old ->"' + ISNULL(@OldDescription,'') + ' " NEW -> " ' + ISNULL(@NewDescription,'') + '", ';
                                            end
-                                        SET @ChangeDescription = 'Updated: ' + ' Id_Status = "' +  isnull(cast(@OldId_Status as nvarchar(20)),'')+ '" ' + @ChangeDescription
+
+                                        SET @ChangeDescription = 'Updated: ' + ' Id_Status = "' +  isnull(cast(@OldId_Status as nvarchar(50)),'')+ '" ' + isnull(@ChangeDescription,'')
                                          --Удаляем запятую на конце
                                         IF LEN(@ChangeDescription) > 0
                                              SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
@@ -136,7 +140,7 @@ AS
                                         )
                                          SELECT  @ID_entity_D,@login_name_2_D,@ModifiedDate_D,@Name_action_D,@ChangeDescription;              
                                      
-									    set @ChangeDescription = null 
+									    set @ChangeDescription = ''
 
 									end try
 								  begin catch
@@ -201,6 +205,7 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
+								           set @ChangeDescription = ''
 
                                            SELECT 
 							                      @OldId_Status_2               = D.Id_Status              ,
@@ -212,7 +217,7 @@ AS
 
 
                                            SET @ChangeDescription = 'Deleted: '
-                                           + 'Id_Status'              +' = "'+ isnull(CAST(@OldId_Status_2 AS NVARCHAR(20)),'') + '", '
+                                           + 'Id_Status'              +' = "'+ isnull(CAST(@OldId_Status_2 AS NVARCHAR(50)),'') + '", '
                                            + 'Name'                   +' = "'+ ISNULL(@OldName_2, '') + '", '
                                            + 'SysTypeOrderStatusName' +' = "'+ ISNULL(@OldSysTypeOrderStatusName_2, '') + '", '
                                            + 'Description'            +' = "'+ ISNULL(@OldDescription_2, '') + '" ';
@@ -226,7 +231,7 @@ AS
                                           )
                                           SELECT  @ID_entity_D_2,@login_name_2_D_2,@ModifiedDate_D_2,@Name_action_D_2,@ChangeDescription;              
                                      
-									      set @ChangeDescription = null
+									      set @ChangeDescription = ''
 
 								 end try
 								  begin catch
@@ -287,9 +292,10 @@ AS
 					while @@FETCH_STATUS  = 0
 						begin
 							begin try
+							  set @ChangeDescription = ''
 
 							  SET @ChangeDescription = 'Inserted: '
-                                         + 'Id_Country = "' + CAST(@ID_entity_I_2 AS NVARCHAR(20)) + '" ';
+                                         + 'Id_Country = "' + CAST(@ID_entity_I_2 AS NVARCHAR(50)) + '" ';
   
 		                      INSERT  INTO dbo.Orders_status_Audit
                               ( 
@@ -297,7 +303,7 @@ AS
                               )
                                SELECT  @ID_entity_I_2,@login_name_2_I_2,@ModifiedDate_I_2,@Name_action_I_2,@ChangeDescription;              
                                      
-							  set @ChangeDescription = null
+							  set @ChangeDescription = ''
 						   end try
 								  begin catch
 								     if xact_state() in (1, -1)

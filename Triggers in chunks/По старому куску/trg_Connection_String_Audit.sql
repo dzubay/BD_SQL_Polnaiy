@@ -21,7 +21,7 @@ AS
     set nocount,xact_abort on;
 
     DECLARE @login_name nVARCHAR(128) 
-	DECLARE @ChangeDescription nvarchar(max);
+	DECLARE @ChangeDescription nvarchar(max) ='';
 
 
     SELECT  @login_name = login_name
@@ -96,6 +96,8 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
+								        set @ChangeDescription = ''
+
 							            SELECT 
                                                @NewID_Connection_String = I.ID_Connection_String,
 											   @NewPassword             = I.[Password]          ,  
@@ -115,17 +117,17 @@ AS
 										where @ID_entity_D = D.ID_Connection_String;
 
 
-							           IF @NewPassword <> @OldPassword 
+							           IF isnull(@NewPassword,'null') <> isnull(@OldPassword,'null') 
 							              begin
 							               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Password = Old ->"' +  ISNULL(@OldPassword,'') + ' " NEW -> " ' + isnull(@NewPassword,'') + '", ';
 							              end
 
-							           IF @NewLogin <> @OldLogin 
+							           IF isnull(@NewLogin,'null') <> isnull(@OldLogin,'null') 
 							              begin
 							               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Login = Old ->"' +  ISNULL(@OldLogin,'') + ' " NEW -> " ' + isnull(@NewLogin,'') + '", ';
 							              end
 
-							           IF @NewDate_Created <> @OldDate_Created
+							           IF ISNULL(CAST(Format(@NewDate_Created,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'null') <> ISNULL(CAST(Format(@OldDate_Created,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'null')
 							              begin
 							               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Date_Created = Old ->"' +  ISNULL(CAST(Format(@OldDate_Created,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(Format(@NewDate_Created,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", ';
 							              end
@@ -134,7 +136,8 @@ AS
 							              begin
                                            SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Description = Old ->"' + ISNULL(@OldDescription,'') + ' " NEW -> " ' + ISNULL(@NewDescription,'') + '", ';
                                           end
-                                       SET @ChangeDescription = 'Updated: ' + ' ID_Connection_String = "' +  isnull(cast(@OldID_Connection_String as nvarchar(20)),'')+ '" ' + @ChangeDescription
+
+                                       SET @ChangeDescription = 'Updated: ' + ' ID_Connection_String = "' +  isnull(cast(@OldID_Connection_String as nvarchar(50)),'')+ '" ' + ISNULL(@ChangeDescription,'')
                                         --Удаляем запятую на конце
                                        IF LEN(@ChangeDescription) > 0
                                            SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
@@ -145,7 +148,7 @@ AS
                                         )
                                        SELECT  @ID_entity_D,@login_name_2_D,@ModifiedDate_D,@Name_action_D,@ChangeDescription;              
                                      
-									   set @ChangeDescription = null 
+									   set @ChangeDescription = '' 
 								end try
 								begin catch
 								     if xact_state() in (1, -1)
@@ -210,6 +213,8 @@ AS
 						    while @@FETCH_STATUS  = 0
 						         begin
 							         begin try
+									        set @ChangeDescription = ''
+
                                             SELECT 
                                                    @OldID_Connection_String_2 = D.ID_Connection_String,
 												   @OldPassword_2             = D.[Password]          , 
@@ -220,11 +225,11 @@ AS
 											where @ID_entity_D_2 = D.ID_Connection_String;
 
                                             SET @ChangeDescription = 'Deleted: '
-							                + 'ID_Connection_String'            +' = "'+  ISNULL(CAST(@OldID_Connection_String_2     AS NVARCHAR(50)),'')     + '", '
-						                    + 'Password'                +' = "'+  ISNULL(@OldPassword_2,'')+ '", '				
-							                + 'Login'             +' = "'+  ISNULL(@OldLogin_2,'')+ '", ' 
-							                + 'Date_Created'       +' = "'+  ISNULL(CAST(Format(@OldDate_Created_2,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", '
-							                + 'Description'         +' = "'+  ISNULL(@OldDescription_2  ,'') + '", '
+							                + 'ID_Connection_String' +' = "'+  ISNULL(CAST(@OldID_Connection_String_2 AS NVARCHAR(50)),'') + '", '
+						                    + 'Password'             +' = "'+  ISNULL(@OldPassword_2,'')+ '", '				
+							                + 'Login'                +' = "'+  ISNULL(@OldLogin_2,'')+ '", ' 
+							                + 'Date_Created'         +' = "'+  ISNULL(CAST(Format(@OldDate_Created_2,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", '
+							                + 'Description'          +' = "'+  ISNULL(@OldDescription_2  ,'') + '", '
 
                                            IF LEN(@ChangeDescription) > 0
 						                       SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
@@ -235,7 +240,7 @@ AS
                                            )
                                             SELECT  @ID_entity_D_2,@login_name_2_D_2,@ModifiedDate_D_2,@Name_action_D_2,@ChangeDescription;              
                                      
-									       set @ChangeDescription = null
+									       set @ChangeDescription = ''
 								end try
 								begin catch
 								     if xact_state() in (1, -1)
@@ -293,8 +298,10 @@ AS
 					while @@FETCH_STATUS  = 0
 						  begin
 							   begin try
+							           set @ChangeDescription = ''
+
                                        SET @ChangeDescription = 'Inserted: '
-                                         + 'ID_Connection_String = "' + CAST(@ID_entity_I_2 AS NVARCHAR(20)) + '" ';
+                                         + 'ID_Connection_String = "' + CAST(@ID_entity_I_2 AS NVARCHAR(50)) + '" ';
                                        
 									   INSERT  INTO dbo.Connection_String_Audit
                                        ( 
@@ -302,7 +309,7 @@ AS
                                        )
                                         SELECT  @ID_entity_I_2,@login_name_2_I_2,@ModifiedDate_I_2,@Name_action_I_2,@ChangeDescription;              
                                      
-									   set @ChangeDescription = null
+									   set @ChangeDescription = ''
            
 		                       end try
 							   begin catch

@@ -23,7 +23,7 @@ AS
     set nocount,xact_abort on;
 
     DECLARE @login_name nVARCHAR(128) 
-	DECLARE @ChangeDescription nvarchar(max);
+	DECLARE @ChangeDescription nvarchar(max)='';
 
 
     SELECT  @login_name = login_name
@@ -116,6 +116,8 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
+								        set @ChangeDescription = ''
+
 										SELECT 
                                                @NewID_Orders           =  I.ID_Orders         ,
 							            	   @NewID_status           =  I.ID_status    	  ,
@@ -154,65 +156,67 @@ AS
 
 
 
-                                        IF @NewID_status <> @OldID_status 
+                                        IF ISNULL(CAST(@NewID_status AS NVARCHAR(50)),'null') <> ISNULL(CAST(@OldID_status AS NVARCHAR(50)),'null') 
 							               begin
                                               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_status = Old ->"' +  ISNULL(CAST(@OldID_status AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewID_status AS NVARCHAR(50)),'') + '", ';
 							               end
                                         
-							            IF @NewID_TypeOrders <> @OldID_TypeOrders 
+							            IF ISNULL(CAST(@NewID_TypeOrders AS NVARCHAR(50)),'null') <> ISNULL(CAST(@OldID_TypeOrders AS NVARCHAR(50)),'null') 
 							               begin
 							                  SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_TypeOrders = Old ->"' +  ISNULL(CAST(@OldID_TypeOrders AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewID_TypeOrders AS NVARCHAR(50)),'') + '", ';
 							               end
-							            IF @NewID_Currency <> @OldID_Currency 
+							            IF ISNULL(CAST(@NewID_Currency AS NVARCHAR(50)),'null') <> ISNULL(CAST(@OldID_Currency AS NVARCHAR(50)),'null') 
 							               begin
 							                  SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_Currency = Old ->"' +  ISNULL(CAST(@OldID_Currency AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewID_Currency AS NVARCHAR(50)),'') + '", ';
 							               end
-                                        IF @NewID_OrderAssignment <> @OldID_OrderAssignment 
+                                        IF ISNULL(CAST(@NewID_OrderAssignment AS NVARCHAR(50)),'null') <> ISNULL(CAST(@OldID_OrderAssignment AS NVARCHAR(50)),'null') 
 							               begin
 							                  SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_OrderAssignment = Old ->"' +  ISNULL(CAST(@OldID_OrderAssignment AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewID_OrderAssignment AS NVARCHAR(50)),'') + '", ';
 							               end        
-										IF @NewID_OrderCategory <> @OldID_OrderCategory 
+										IF ISNULL(CAST(@NewID_OrderCategory AS NVARCHAR(50)),'null') <> ISNULL(CAST(@OldID_OrderCategory AS NVARCHAR(50)),'null') 
 							               begin
 							                  SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_OrderCategory = Old ->"' +  ISNULL(CAST(@OldID_OrderCategory AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewID_OrderCategory AS NVARCHAR(50)),'') + '", ';
 							               end		
 
 
-							            IF @NewDate <> @OldDate 
+							            IF ISNULL(CAST(Format(@NewDate,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'null') <> ISNULL(CAST(Format(@OldDate,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'null') 
 							               begin
 							                  SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Date = Old ->"' +  ISNULL(CAST(Format(@OldDate,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(Format(@NewDate,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", ';
 							               end
-							            IF @NewPayment_Date <> @OldPayment_Date 
+							            IF ISNULL(CAST(Format(@NewPayment_Date,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'null') <> ISNULL(CAST(Format(@OldPayment_Date,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'null') 
 							               begin
 							                  SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Payment_Date = Old ->"' +  ISNULL(CAST(Format(@OldPayment_Date,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(Format(@NewPayment_Date,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", ';
 							               end
-							            IF @NewAmount <> @OldAmount 
+							            IF ISNULL(CAST(@NewAmount AS NVARCHAR(50)),'null') <> ISNULL(CAST(@OldAmount AS NVARCHAR(50)),'null') 
 							               begin
 							                  SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Amount = Old ->"' +  ISNULL(CAST(@OldAmount AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewAmount AS NVARCHAR(50)),'') + '", ';
 							               end
 							            
-							            IF @NewAmountCurr <> @OldAmountCurr 
+							            IF ISNULL(CAST(@NewAmountCurr AS NVARCHAR(50)),'null') <> ISNULL(CAST(@OldAmountCurr AS NVARCHAR(50)),'null') 
 							               begin
 							                  SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  AmountCurr = Old ->"' +  ISNULL(CAST(@OldAmountCurr AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewAmountCurr AS NVARCHAR(50)),'') + '", ';
 							               end
-							            IF @NewAmountNDS <> @OldAmountNDS 
+
+							            IF ISNULL(CAST(@NewAmountNDS AS NVARCHAR(50)),'null') <> ISNULL(CAST(@OldAmountNDS AS NVARCHAR(50)),'null') 
 							               begin
 							                  SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  AmountNDS = Old ->"' +  ISNULL(CAST(@OldAmountNDS AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewAmountNDS AS NVARCHAR(50)),'') + '", ';
 							               end
                                         
-							            IF @NewAmountCurrNDS <> @OldAmountCurrNDS 
+							            IF ISNULL(CAST(@NewAmountCurrNDS AS NVARCHAR(50)),'null') <> ISNULL(CAST(@OldAmountCurrNDS AS NVARCHAR(50)),'null') 
 							               begin
 							                  SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  AmountCurrNDS = Old ->"' +  ISNULL(CAST(@OldAmountCurrNDS AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewAmountCurrNDS AS NVARCHAR(50)),'') + '", ';
 							               end
-							            IF @NewNum <> @OldNum
+
+							            IF ISNULL(@NewNum,'null') <> ISNULL(@OldNum,'null')
 							               begin
 							                  SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Num = Old ->"' +  ISNULL(@OldNum,'') + ' " NEW -> " ' + isnull(@NewNum,'') + '", ';
 							               end
 							            
-                                        IF @NewDescription <> @OldDescription
+                                        IF isnull(@NewDescription,'null') <> isnull(@OldDescription,'null')
 							               begin
                                               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Description = Old ->"' + ISNULL(@OldDescription,'') + ' " NEW -> " ' + ISNULL(@NewDescription,'') + '", ';
                                            end
-                                        SET @ChangeDescription = 'Updated: ' + ' ID_Orders = "' +  isnull(cast(@OldID_Orders as nvarchar(20)),'')+ '" ' + @ChangeDescription
+                                        SET @ChangeDescription = 'Updated: ' + ' ID_Orders = "' +  isnull(cast(@OldID_Orders as nvarchar(20)),'')+ '" ' + ISNULL(@ChangeDescription,'')
                                          --Удаляем запятую на конце
                                         IF LEN(@ChangeDescription) > 0
                                             SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
@@ -223,7 +227,7 @@ AS
                                         )
                                          SELECT  @ID_entity_D,@login_name_2_D,@ModifiedDate_D,@Name_action_D,@ChangeDescription;              
                                      
-									    set @ChangeDescription = null 
+									    set @ChangeDescription = '' 
                                   end try
 								  begin catch
 								     if xact_state() in (1, -1)
@@ -296,6 +300,8 @@ AS
 						    while @@FETCH_STATUS  = 0
 						        begin
 							       begin try
+								        set @ChangeDescription = ''
+
 							            SELECT 
 							               @OldID_Orders_2          =  D.ID_Orders         ,
 							               @OldID_status_2     	    =  D.ID_status    	   ,
@@ -339,7 +345,7 @@ AS
                                          )
                                           SELECT  @ID_entity_D_2,@login_name_2_D_2,@ModifiedDate_D_2,@Name_action_D_2,@ChangeDescription;              
                                      
-									     set @ChangeDescription = null   
+									     set @ChangeDescription = ''   
 								    
 								  end try
 								  begin catch
@@ -399,8 +405,10 @@ AS
 					while @@FETCH_STATUS  = 0
 						 begin
 							  begin try
+							        set @ChangeDescription = ''
+
                                     SET @ChangeDescription = 'Inserted: '
-                                         + 'ID_Orders = "' + CAST(@ID_entity_I_2 AS NVARCHAR(20)) + '" ';
+                                         + 'ID_Orders = "' + CAST(@ID_entity_I_2 AS NVARCHAR(50)) + '" ';
                                      
                                      INSERT  INTO dbo.Orders_Audit
                                      ( 
@@ -408,7 +416,7 @@ AS
                                      )
                                       SELECT  @ID_entity_I_2,@login_name_2_I_2,@ModifiedDate_I_2,@Name_action_I_2,@ChangeDescription;              
                                      
-									 set @ChangeDescription = null
+									 set @ChangeDescription = ''
                                end try
 								  begin catch
 								     if xact_state() in (1, -1)

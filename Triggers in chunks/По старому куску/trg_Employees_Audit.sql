@@ -22,7 +22,7 @@ AS
     set nocount,xact_abort on;
 	
     DECLARE @login_name nVARCHAR(128) 
-	DECLARE @ChangeDescription nvarchar(max);
+	DECLARE @ChangeDescription nvarchar(max)='';
 
 
     SELECT  @login_name = login_name
@@ -141,6 +141,8 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
+								     set @ChangeDescription = ''
+
                                      SELECT  
 									     @NewID_Employee               	  = I.ID_Employee               ,	
 										 @NewID_Department             	  = I.ID_Department             ,
@@ -199,127 +201,127 @@ AS
 									 FROM   Deleted D 
 									 where @ID_entity_D = D.ID_Employee; 					
 														
-                                     IF @NewID_Department <> @OldID_Department 
+                                     IF ISNULL(CAST(@NewID_Department AS NVARCHAR(50)),'null') <> ISNULL(CAST(@OldID_Department AS NVARCHAR(50)),'null') 
 							              begin
                                            SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_Department = Old ->"' +  ISNULL(CAST(@OldID_Department AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewID_Department AS NVARCHAR(50)),'') + '", ';
 							              end
 
-								     IF @NewID_Group <> @OldID_Group 
+								     IF ISNULL(CAST(@NewID_Group AS NVARCHAR(50)),'null') <> ISNULL(CAST(@OldID_Group AS NVARCHAR(50)),'null') 
 							              begin
                                            SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_Group = Old ->"' +  ISNULL(CAST(@OldID_Group AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewID_Group AS NVARCHAR(50)),'') + '", ';
 							              end
 
-                                     IF @NewID_The_Subgroup <> @OldID_The_Subgroup 
+                                     IF ISNULL(CAST(@NewID_The_Subgroup AS NVARCHAR(50)),'null') <> ISNULL(CAST(@OldID_The_Subgroup AS NVARCHAR(50)),'null') 
 							              begin
                                            SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_The_Subgroup = Old ->"' +  ISNULL(CAST(@OldID_The_Subgroup AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewID_The_Subgroup AS NVARCHAR(50)),'') + '", ';
 							              end
                                      
-									 IF @NewID_Passport <> @OldID_Passport 
+									 IF ISNULL(CAST(@NewID_Passport AS NVARCHAR(50)),'null') <> ISNULL(CAST(@OldID_Passport AS NVARCHAR(50)),'null') 
 							              begin
                                            SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_Passport = Old ->"' +  ISNULL(CAST(@OldID_Passport AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewID_Passport AS NVARCHAR(50)),'') + '", ';
 							              end
 
-								     IF @NewID_Branch <> @OldID_Branch 
+								     IF ISNULL(CAST(@NewID_Branch AS NVARCHAR(50)),'null') <> ISNULL(CAST(@OldID_Branch AS NVARCHAR(50)),'null') 
 							              begin
                                            SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_Branch = Old ->"' +  ISNULL(CAST(@OldID_Branch AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewID_Branch AS NVARCHAR(50)),'') + '", ';
 							              end
 
-                                     IF @NewID_Post <> @OldID_Post
+                                     IF ISNULL(CAST(@NewID_Post AS NVARCHAR(50)),'null') <> ISNULL(CAST(@OldID_Post AS NVARCHAR(50)),'null')
 							              begin
                                            SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_Post = Old ->"' +  ISNULL(CAST(@OldID_Post AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewID_Post AS NVARCHAR(50)),'') + '", ';
 							              end
 
-                                     IF @NewID_Status_Employee <> @OldID_Status_Employee
+                                     IF ISNULL(CAST(@NewID_Status_Employee AS NVARCHAR(50)),'null') <>  ISNULL(CAST(@OldID_Status_Employee AS NVARCHAR(50)),'null')
 							              begin
                                            SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_Status_Employee = Old ->"' +  ISNULL(CAST(@OldID_Status_Employee AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewID_Status_Employee AS NVARCHAR(50)),'') + '", ';
 							              end
 
-								     IF @NewID_Connection_String <> @OldID_Connection_String 
+								     IF ISNULL(CAST(@NewID_Connection_String AS NVARCHAR(50)),'null') <>  ISNULL(CAST(@OldID_Connection_String AS NVARCHAR(50)),'null') 
 							              begin
                                            SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_Connection_String = Old ->"' +  ISNULL(CAST(@OldID_Connection_String AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewID_Connection_String AS NVARCHAR(50)),'') + '", ';
 							              end
 
-                                     IF @NewID_Chief <> @OldID_Chief 
+                                     IF ISNULL(CAST(@NewID_Chief AS NVARCHAR(50)),'null') <> ISNULL(CAST(@OldID_Chief AS NVARCHAR(50)),'null') 
 							              begin
                                            SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_Chief = Old ->"' +  ISNULL(CAST(@OldID_Chief AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewID_Chief AS NVARCHAR(50)),'') + '", ';
 							              end
 
-									 IF @NewName <> @OldName 
+									 IF ISNULL(@NewName,'null') <> ISNULL(@OldName,'null') 
 							            begin
                                          SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Name = Old ->"' +  ISNULL(@OldName,'') + ' " NEW -> " ' + isnull(@NewName,'') + '", ';
 							            end
 
-									 IF @NewSurName <> @OldSurName 
+									 IF ISNULL(@NewSurName,'null') <> ISNULL(@OldSurName,'null') 
 							            begin
                                          SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  SurName = Old ->"' +  ISNULL(@OldSurName,'') + ' " NEW -> " ' + isnull(@NewSurName,'') + '", ';
 							            end
 
-									 IF @NewLastName <> @OldLastName 
+									 IF ISNULL(@NewLastName,'null') <> ISNULL(@OldLastName,'null') 
 							            begin
                                          SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  LastName = Old ->"' +  ISNULL(@OldLastName,'') + ' " NEW -> " ' + isnull(@NewLastName,'') + '", ';
 							            end
 
-                                     IF @NewDate_Of_Hiring <> @OldDate_Of_Hiring
+                                     IF ISNULL(CAST(Format(@NewDate_Of_Hiring,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'null') <> ISNULL(CAST(Format(@OldDate_Of_Hiring,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'null')
 							              begin
 							               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Date_Of_Hiring = Old ->"' +  ISNULL(CAST(Format(@OldDate_Of_Hiring,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(Format(@NewDate_Of_Hiring,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", ';
 							              end
 
-									IF @NewDate_Card_Created_Employee <> @OldDate_Card_Created_Employee
+									IF ISNULL(CAST(Format(@NewDate_Card_Created_Employee,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'null') <> ISNULL(CAST(Format(@OldDate_Card_Created_Employee,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'null')
 							              begin
 							               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Date_Card_Created_Employee = Old ->"' +  ISNULL(CAST(Format(@OldDate_Card_Created_Employee,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(Format(@NewDate_Card_Created_Employee,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", ';
 							              end
                                    
-									IF @NewResidential_Address <> @OldResidential_Address 
+									IF ISNULL(@NewResidential_Address,'null') <> ISNULL(@OldResidential_Address,'null') 
 							            begin
                                           SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Residential_Address = Old ->"' +  ISNULL(@OldResidential_Address,'') + ' " NEW -> " ' + isnull(@NewResidential_Address,'') + '", ';
 							            end
 
-									IF @NewHome_Phone <> @OldHome_Phone
+									IF isnull(@NewHome_Phone,'null') <> isnull(@OldHome_Phone,'null')
 							            begin
                                           SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Home_Phone = Old ->"' +  ISNULL(@OldHome_Phone,'') + ' " NEW -> " ' + isnull(@NewHome_Phone,'') + '", ';
 							            end
 
-									IF @NewCell_Phone <> @OldCell_Phone
+									IF isnull(@NewCell_Phone,'null') <> isnull(@OldCell_Phone,'null')
 							            begin
                                           SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Cell_Phone = Old ->"' +  ISNULL(@OldCell_Phone,'') + ' " NEW -> " ' + isnull(@NewCell_Phone,'') + '", ';
 							            end
 
-								    IF @NewImage_Employees <> @OldImage_Employees
+								    IF isnull(@NewImage_Employees,'null') <> isnull(@OldImage_Employees,'null')
 							                   begin
 							                     SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Image_Employees = '  +  '"Изображение было изменено или удалено", ';
 							                   end
 
-									IF @NewWork_Phone <> @OldWork_Phone
+									IF isnull(@NewWork_Phone,'null') <> isnull(@OldWork_Phone,'null')
 							            begin
                                           SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Work_Phone = Old ->"' +  ISNULL(@OldWork_Phone,'') + ' " NEW -> " ' + isnull(@NewWork_Phone,'') + '", ';
 							            end 
 
-									IF @NewMail <> @OldMail
+									IF isnull(@NewMail,'null') <> isnull(@OldMail,'null')
 							            begin
                                           SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Mail = Old ->"' +  ISNULL(@OldMail,'') + ' " NEW -> " ' + isnull(@NewMail,'') + '", ';
 							            end 
 
-							        IF @NewPol <> @OldPol 
+							        IF ISNULL(CAST(@NewPol AS NVARCHAR(1)),'null') <> ISNULL(CAST(@OldPol AS NVARCHAR(1)),'null') 
 							              begin
 							                 SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Pol = Old ->"' +  ISNULL(CAST(@OldPol AS NVARCHAR(1)),'') + ' " NEW -> " ' + isnull(CAST(@NewPol AS NVARCHAR(1)),'') + '", ';
 							              end
 
-                                   IF @NewDate_Of_Dismissal <> @OldDate_Of_Dismissal
+                                   IF ISNULL(CAST(Format(@NewDate_Of_Dismissal,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'null') <> ISNULL(CAST(Format(@OldDate_Of_Dismissal,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'null')
 							              begin
 							                 SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Date_Of_Dismissal = Old ->"' +  ISNULL(CAST(Format(@OldDate_Of_Dismissal,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(Format(@NewDate_Of_Dismissal,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", ';
 							              end
 
-								   IF @NewDate_Of_Birth <> @OldDate_Of_Birth
+								   IF ISNULL(CAST(Format(@NewDate_Of_Birth,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'null') <> ISNULL(CAST(Format(@OldDate_Of_Birth,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'null')
 							              begin
 							                 SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Date_Of_Birth = Old ->"' +  ISNULL(CAST(Format(@OldDate_Of_Birth,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(Format(@NewDate_Of_Birth,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", ';
 							              end
 
-                                   IF @NewDescription <> @OldDescription
+                                   IF ISNULL(@NewDescription,'null') <> ISNULL(@OldDescription,'null')
 							              begin
                                              SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Description = Old ->"' + ISNULL(@OldDescription,'') + ' " NEW -> " ' + ISNULL(@NewDescription,'') + '", ';
                                           end
                                     
-									SET @ChangeDescription = 'Updated: ' + ' ID_Employee = "' +  isnull(cast(@OldID_Employee as nvarchar(20)),'')+ '" ' + @ChangeDescription
+									SET @ChangeDescription = 'Updated: ' + ' ID_Employee = "' +  isnull(cast(@OldID_Employee as nvarchar(20)),'')+ '" ' + ISNULL(@ChangeDescription,'')
 
 									IF LEN(@ChangeDescription) > 0
                                                  SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
@@ -331,7 +333,7 @@ AS
                                      )
                                        SELECT  @ID_entity_D,@login_name_2_D,@ModifiedDate_D,@Name_action_D,@ChangeDescription;              
                                      
-									set @ChangeDescription = null 
+									set @ChangeDescription = '' 
 
 								  end try
 								  begin catch
@@ -417,6 +419,7 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
+								      set @ChangeDescription = ''
 								     
                                       SELECT  
 									     @OldID_Employee_2               	  = D.ID_Employee               ,	
@@ -483,7 +486,7 @@ AS
                                      )
                                       SELECT  @ID_entity_D_2,@login_name_2_D_2,@ModifiedDate_D_2,@Name_action_D_2,@ChangeDescription;              
                                      
-									set @ChangeDescription = null
+									set @ChangeDescription = ''
 
 								  end try
 								  begin catch
@@ -543,10 +546,10 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
-								     				 
+								     set @ChangeDescription = ''				 
 					
 					                 SET @ChangeDescription = 'Inserted: '
-                                         + 'ID_Employee = "' + CAST(@ID_entity_I_2 AS NVARCHAR(20)) + '" ';
+                                         + 'ID_Employee = "' + CAST(@ID_entity_I_2 AS NVARCHAR(50)) + '" ';
   
                                     INSERT  INTO dbo.Employees_Audit
                                      ( 
@@ -554,7 +557,7 @@ AS
                                      )
                                       SELECT  @ID_entity_I_2,@login_name_2_I_2,@ModifiedDate_I_2,@Name_action_I_2,@ChangeDescription;              
                                      
-									set @ChangeDescription = null
+									set @ChangeDescription = ''
 
 								  end try
 								  begin catch

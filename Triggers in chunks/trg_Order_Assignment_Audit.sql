@@ -21,7 +21,7 @@ AS
     set nocount,xact_abort on;
 
     DECLARE @login_name nVARCHAR(128) 
-	DECLARE @ChangeDescription nvarchar(max);
+	DECLARE @ChangeDescription nvarchar(max)='';
 
 
     SELECT  @login_name = login_name
@@ -95,6 +95,8 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
+								            set @ChangeDescription = ''
+
 							                SELECT 
                                                   @NewID_OrderAssignment      	= I.ID_OrderAssignment    ,
 												  @NewOrderAssignmentName    	= I.OrderAssignmentName   ,
@@ -114,27 +116,27 @@ AS
 											 where @ID_entity_D = D.ID_OrderAssignment; 
 
 
-                                            IF @NewOrderAssignmentName <> @OldOrderAssignmentName
+                                            IF ISNULL(@NewOrderAssignmentName,'null') <> ISNULL(@OldOrderAssignmentName,'null')
 							                   begin
                                                 SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  OrderAssignmentName = Old ->"' +  ISNULL(@OldOrderAssignmentName,'') + ' " NEW -> " ' + isnull(@NewOrderAssignmentName,'') + '", ';
 							                   end
                                             
-							                IF @NewOrderAssignmentNameEng <> @OldOrderAssignmentNameEng 
+							                IF ISNULL(@NewOrderAssignmentNameEng,'null') <> ISNULL(@OldOrderAssignmentNameEng,'null') 
 							                   begin
 							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  OrderAssignmentNameEng = Old ->"' +  ISNULL(@OldOrderAssignmentNameEng,'') + ' " NEW -> " ' + isnull(@NewOrderAssignmentNameEng,'') + '", ';
 							                   end
 
-											IF @NewOrderAssignmentSysName <> @OldOrderAssignmentSysName 
+											IF ISNULL(@NewOrderAssignmentSysName,'null') <> ISNULL(@OldOrderAssignmentSysName,'null') 
 							                   begin
 							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  OrderAssignmentSysName = Old ->"' +  ISNULL(@OldOrderAssignmentSysName,'') + ' " NEW -> " ' + isnull(@NewOrderAssignmentSysName,'') + '", ';
 							                   end
                                                                                                     
-                                            IF @NewDescription <> @OldDescription
+                                            IF ISNULL(@NewDescription,'null') <> ISNULL(@OldDescription,'null')
 							                   begin
                                                 SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Description = Old ->"' + ISNULL(@OldDescription,'') + ' " NEW -> " ' + ISNULL(@NewDescription,'') + '", ';
                                                end
                                             
-                                            SET @ChangeDescription = 'Updated: ' + ' ID_OrderAssignment = "' +  isnull(cast(@OldID_OrderAssignment as nvarchar(20)),'')+ '" ' + @ChangeDescription
+                                            SET @ChangeDescription = 'Updated: ' + ' ID_OrderAssignment = "' +  isnull(cast(@OldID_OrderAssignment as nvarchar(50)),'')+ '" ' + ISNULL(@ChangeDescription,'')
                                              --Удаляем запятую на конце
                                             IF LEN(@ChangeDescription) > 0
                                                 SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
@@ -145,7 +147,7 @@ AS
                                             )
                                             SELECT  @ID_entity_D,@login_name_2_D,@ModifiedDate_D,@Name_action_D,@ChangeDescription;              
                                      
-									        set @ChangeDescription = null 
+									        set @ChangeDescription = '' 
 
 								   end try
 								   begin catch
@@ -209,6 +211,8 @@ AS
 						    while @@FETCH_STATUS  = 0
 						        begin
 							       begin try
+								           set @ChangeDescription = ''
+
 							               SELECT 
                                                 @OldID_OrderAssignment_2     = D.ID_OrderAssignment    ,
 												@OldOrderAssignmentName_2    = D.OrderAssignmentName   ,
@@ -234,7 +238,7 @@ AS
                                            )
                                             SELECT  @ID_entity_D_2,@login_name_2_D_2,@ModifiedDate_D_2,@Name_action_D_2,@ChangeDescription;              
                                      
-									       set @ChangeDescription = null
+									       set @ChangeDescription = ''
 
 								  end try
 								  begin catch
@@ -295,8 +299,10 @@ AS
 				   while @@FETCH_STATUS  = 0
 						  begin
 							   begin try
+							         set @ChangeDescription = ''
+
                                      SET @ChangeDescription = 'Inserted: '
-                                         + 'ID_OrderAssignment = "' + CAST(@ID_entity_I_2 AS NVARCHAR(20)) + '" ';
+                                         + 'ID_OrderAssignment = "' + CAST(@ID_entity_I_2 AS NVARCHAR(50)) + '" ';
                     
                                       INSERT  INTO dbo.Order_Assignment_Audit
                                       ( 
@@ -304,7 +310,7 @@ AS
                                       )
                                        SELECT  @ID_entity_I_2,@login_name_2_I_2,@ModifiedDate_I_2,@Name_action_I_2,@ChangeDescription;              
                                      
-									 set @ChangeDescription = null              
+									 set @ChangeDescription = ''              
 
 								end try
 								begin catch

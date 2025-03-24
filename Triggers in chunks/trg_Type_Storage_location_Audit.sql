@@ -10,7 +10,7 @@ CREATE TABLE Type_Storage_location_Audit
 	Operation                 CHAR(1)               null,
     ChangeDescription         nvarchar(max)         null
 --    PRIMARY KEY CLUSTERED ( AuditID ) 
-) on Products_Group_2;
+) on Products_Group;
 
 
 go
@@ -22,7 +22,7 @@ AS
     set nocount,xact_abort on;
 
     DECLARE @login_name nVARCHAR(128) 
-	DECLARE @ChangeDescription nvarchar(max);
+	DECLARE @ChangeDescription nvarchar(max)='';
 
 
     SELECT  @login_name = login_name
@@ -94,7 +94,8 @@ AS
 						   while @@FETCH_STATUS  = 0
 						        begin
 							         begin try
-                         
+                                        set @ChangeDescription = ''
+
 							            SELECT 
 							                @NewID_Type_Storage_location    = I.ID_Type_Storage_location  ,
 							            	@NewName_Type_Storage_location	= I.Name_Type_Storage_location,
@@ -112,22 +113,22 @@ AS
 										where @ID_entity_D = D.ID_Type_Storage_location; 
 
                             
-							            IF @NewName_Type_Storage_location <> @OldName_Type_Storage_location
+							            IF ISNULL(@NewName_Type_Storage_location,'null') <> ISNULL(@OldName_Type_Storage_location,'null')
 							               begin
 							                SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Name_Type_Storage_location = Old ->"' +  ISNULL(@OldName_Type_Storage_location,'') + ' " NEW -> "' + isnull(@NewName_Type_Storage_location,'') + '", ';
 							               end
 							            
-							            IF @NewSysNameTypeStoragelocation <> @OldSysNameTypeStoragelocation 
+							            IF ISNULL(@NewSysNameTypeStoragelocation,'null') <> ISNULL(@OldSysNameTypeStoragelocation,'null') 
 							               begin
 							                SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  SysNameTypeStoragelocation = Old ->"' +  ISNULL(@OldSysNameTypeStoragelocation,'') + ' " NEW -> "' + isnull(@NewSysNameTypeStoragelocation,'') + '", ';
 							               end                  
 							            
-                                        IF @NewDescription <> @OldDescription
+                                        IF ISNULL(@NewDescription,'null') <> ISNULL(@OldDescription,'null')
 							               begin
                                             SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Description = Old ->"' + ISNULL(@OldDescription,'') + ' " NEW -> "' + ISNULL(@NewDescription,'') + '",';
                                            end
 							            
-                                        SET @ChangeDescription = 'Updated: ' + ' ID_Type_Storage_location = "' +  isnull(cast(@OldID_Type_Storage_location as nvarchar(20)),'')+ '" ' + @ChangeDescription
+                                        SET @ChangeDescription = 'Updated: ' + ' ID_Type_Storage_location = "' +  isnull(cast(@OldID_Type_Storage_location as nvarchar(50)),'')+ '" ' + ISNULL(@ChangeDescription,'')
                                          --Удаляем запятую на конце
                                         IF LEN(@ChangeDescription) > 0
                                             SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
@@ -139,7 +140,7 @@ AS
                                         )
                                           SELECT  @ID_entity_D,@login_name_2_D,@ModifiedDate_D,@Name_action_D,@ChangeDescription;              
                                         
-									    set @ChangeDescription = null 
+									    set @ChangeDescription = '' 
 								end try
 								begin catch
 								     if xact_state() in (1, -1)
@@ -202,6 +203,8 @@ AS
 						   while @@FETCH_STATUS  = 0
 						         begin
 							          begin try
+									        set @ChangeDescription = ''
+
                                             SELECT 
 							                    @OldID_Type_Storage_location_2    = D.ID_Type_Storage_location   ,
 							                	@OldName_Type_Storage_location_2  = D.Name_Type_Storage_location ,
@@ -225,7 +228,7 @@ AS
                                             )
                                              SELECT  @ID_entity_D_2,@login_name_2_D_2,@ModifiedDate_D_2,@Name_action_D_2,@ChangeDescription;              
                                      
-									        set @ChangeDescription = null  
+									        set @ChangeDescription = '' 
 								  end try
 								  begin catch
 								     if xact_state() in (1, -1)
@@ -283,9 +286,10 @@ AS
 				   while @@FETCH_STATUS  = 0
 						   begin
 							     begin try
+								       set @ChangeDescription = ''
 
                                        SET @ChangeDescription = 'Inserted: '
-                                               + 'ID_Type_Storage_location = "' + CAST(@ID_entity_I_2 AS NVARCHAR(20)) + '" ';
+                                               + 'ID_Type_Storage_location = "' + CAST(@ID_entity_I_2 AS NVARCHAR(50)) + '" ';
                                        
 									   INSERT  INTO dbo.Type_Storage_location_Audit
                                        ( 
@@ -293,7 +297,7 @@ AS
                                        )
                                         SELECT  @ID_entity_I_2,@login_name_2_I_2,@ModifiedDate_I_2,@Name_action_I_2,@ChangeDescription;              
                                      
-									   set @ChangeDescription = null
+									   set @ChangeDescription = ''
 								 end try
 								 begin catch
 								     if xact_state() in (1, -1)

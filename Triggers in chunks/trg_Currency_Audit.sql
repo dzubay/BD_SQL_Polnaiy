@@ -22,7 +22,7 @@ AS
     set nocount,xact_abort on;
 
     DECLARE @login_name nVARCHAR(128) 
-	DECLARE @ChangeDescription nvarchar(max);
+	DECLARE @ChangeDescription nvarchar(max)= '';
 
 
     SELECT  @login_name = login_name
@@ -99,6 +99,8 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 						         begin try
+								 set @ChangeDescription = ''
+
 								 SELECT 
 								     @NewID_Currency       =   ID_Currency     ,
 								 	 @NewFull_name_rus     =   Full_name_rus   ,
@@ -122,29 +124,32 @@ AS
 
 
                          
-                            IF @NewFull_name_rus <> @OldFull_name_rus 
+                            IF isnull(@NewFull_name_rus,'null') <> isnull(@OldFull_name_rus,'null') 
 							   begin
                                 SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Full_name_rus = Old ->"' +  ISNULL(@OldFull_name_rus,'') + ' " NEW -> " ' + isnull(@NewFull_name_rus,'') + '", ';
 							   end
-                            IF @NewFull_name_eng <> @OldFull_name_eng
+
+                            IF isnull(@NewFull_name_eng,'null') <> isnull(@OldFull_name_eng,'null')
 							   begin
                                 SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Full_name_eng = Old ->"' + ISNULL(@OldFull_name_eng,'') + ' " NEW -> "' + ISNULL(@NewFull_name_eng,'') + '", ';
 							   end
 
-                            IF @NewAbbreviation_rus <> @OldAbbreviation_rus 
+                            IF isnull(@NewAbbreviation_rus,'null') <> isnull(@OldAbbreviation_rus,'null') 
 							   begin
                                 SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Abbreviation_rus = Old ->"' +  ISNULL(@OldAbbreviation_rus,'') + ' " NEW -> " ' + isnull(@NewAbbreviation_rus,'') + '", ';
 							   end
-                            IF @NewAbbreviation_eng <> @OldAbbreviation_eng
+
+                            IF isnull(@NewAbbreviation_eng,'null') <> isnull(@OldAbbreviation_eng,'null')
 							   begin
                                 SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Abbreviation_eng = Old ->"' + ISNULL(@OldAbbreviation_eng,'') + ' " NEW -> "' + ISNULL(@NewAbbreviation_eng,'') + '", ';
 							   end
 
-                            IF @NewDescription <> @OldDescription
+                            IF isnull(@NewDescription,'null') <> isnull(@OldDescription,'null')
 							   begin
                                 SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Description = Old ->"' + ISNULL(@OldDescription,'') + ' " NEW -> " ' + ISNULL(@NewDescription,'') + '", ';
                                end
-                            SET @ChangeDescription = 'Updated: ' + ' ID_Currency = "' +  isnull(cast(@OldID_Currency as nvarchar(20)),'')+ '" ' + @ChangeDescription
+
+                            SET @ChangeDescription = 'Updated: ' + ' ID_Currency = "' +  isnull(cast(@OldID_Currency as nvarchar(20)),'')+ '" ' + isnull(@ChangeDescription,'')
                              --Удаляем запятую на конце
                             IF LEN(@ChangeDescription) > 0
                                 SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
@@ -155,7 +160,7 @@ AS
                                      )
                                       SELECT  @ID_entity_D,@login_name_2_D,@ModifiedDate_D,@Name_action_D,@ChangeDescription;              
                                      
-							set @ChangeDescription = null 
+							set @ChangeDescription = '' 
                             
 							end try
 								  begin catch
@@ -222,6 +227,7 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
+								         set @ChangeDescription = ''
 
                                          SELECT 
 							                 @OldID_Currency_2        = D.ID_Currency,     
@@ -235,7 +241,7 @@ AS
 
 
                                         SET @ChangeDescription = 'Deleted: '
-                                                + 'ID_Currency'      +' = "'+ ISNULL(CAST(@OldID_Currency_2 AS NVARCHAR(20)), '') + '", '
+                                                + 'ID_Currency'      +' = "'+ ISNULL(CAST(@OldID_Currency_2 AS NVARCHAR(50)), '') + '", '
                                                 + 'Full_name_rus'    +' = "'+ ISNULL(@OldFull_name_rus_2, '') + '", '
 							            		+ 'Full_name_eng'    +' = "'+ ISNULL(@OldFull_name_eng_2, '') + '", '
                                                 + 'Abbreviation_rus' +' = "'+ ISNULL(@OldAbbreviation_rus_2, '') + '", '
@@ -251,7 +257,7 @@ AS
 									    )
 									     SELECT  @ID_entity_D_2,@login_name_2_D_2,@ModifiedDate_D_2,@Name_action_D_2,@ChangeDescription;      
 									    
-									   set @ChangeDescription = null
+									   set @ChangeDescription = ''
 									end try
 								  begin catch
 								     if xact_state() in (1, -1)
@@ -310,10 +316,10 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
-
+								   set @ChangeDescription = ''
 		            
                                    SET @ChangeDescription = 'Inserted: '
-                                              + 'ID_Currency = "' + CAST(@ID_entity_I_2 AS NVARCHAR(20)) + '" ';
+                                              + 'ID_Currency = "' + CAST(@ID_entity_I_2 AS NVARCHAR(50)) + '" ';
                                    
 								   INSERT  INTO dbo.Currency_Audit
                                      ( 
@@ -321,7 +327,7 @@ AS
                                      )
                                       SELECT  @ID_entity_I_2,@login_name_2_I_2,@ModifiedDate_I_2,@Name_action_I_2,@ChangeDescription;              
                                      
-									set @ChangeDescription = null
+									set @ChangeDescription = ''
 
 								 end try
 								  begin catch

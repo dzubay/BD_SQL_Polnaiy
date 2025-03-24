@@ -21,7 +21,7 @@ AS
     set nocount,xact_abort on;
 
     DECLARE @login_name nVARCHAR(128) 
-	DECLARE @ChangeDescription nvarchar(max);
+	DECLARE @ChangeDescription nvarchar(max)  = '';
 
 
     SELECT  @login_name = login_name
@@ -100,6 +100,8 @@ AS
 						   while @@FETCH_STATUS  = 0
 						       begin
 							      begin try
+								        set @ChangeDescription = ''
+
 							            SELECT
 										    @NewID_Department            = I.ID_Department          ,
 											@NewID_Head_Department     	 = I.ID_Head_Department     ,
@@ -124,36 +126,36 @@ AS
 
 
 
-                                       IF @NewID_Head_Department <> @OldID_Head_Department 
+                                       IF ISNULL(CAST(@NewID_Head_Department AS NVARCHAR(50)),'null') <> ISNULL(CAST(@OldID_Head_Department AS NVARCHAR(50)),'null') 
 							              begin
                                            SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_Head_Department = Old ->"' +  ISNULL(CAST(@OldID_Head_Department AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewID_Head_Department AS NVARCHAR(50)),'') + '", ';
 							              end
                                        
-									   IF @NewID_Vice_Head_Department <> @OldID_Vice_Head_Department 
+									   IF ISNULL(CAST(@NewID_Vice_Head_Department AS NVARCHAR(50)),'null') <> ISNULL(CAST(@OldID_Vice_Head_Department AS NVARCHAR(50)),'null') 
 							              begin
                                            SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_Vice_Head_Department = Old ->"' +  ISNULL(CAST(@OldID_Vice_Head_Department AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewID_Vice_Head_Department AS NVARCHAR(50)),'') + '", ';
 							              end
 
-							           IF @NewName_Department <> @OldName_Department
+							           IF ISNULL(@NewName_Department,'null') <> ISNULL(@OldName_Department,'null')
 							              begin
 							               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Name_Department = Old ->"' +  ISNULL(@OldName_Department,'') + ' " NEW -> " ' + isnull(@NewName_Department,'') + '", ';
 							              end
 
-									   IF @NewID_Branch <> @OldID_Branch 
+									   IF ISNULL(CAST(@NewID_Branch AS NVARCHAR(50)),'null') <> ISNULL(CAST(@OldID_Branch AS NVARCHAR(50)),'null') 
 							              begin
                                            SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_Branch = Old ->"' +  ISNULL(CAST(@OldID_Branch AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewID_Branch AS NVARCHAR(50)),'') + '", ';
 							              end
 
-									   IF @NewDepartment_Code <> @OldDepartment_Code 
+									   IF ISNULL(CAST(@NewDepartment_Code AS NVARCHAR(50)),'null') <> ISNULL(CAST(@OldDepartment_Code AS NVARCHAR(50)),'null') 
 							              begin
                                            SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Department_Code = Old ->"' +  ISNULL(CAST(@OldDepartment_Code AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(@NewDepartment_Code AS NVARCHAR(50)),'') + '", ';
 							              end
 							           
-                                       IF @NewDescription <> @OldDescription
+                                       IF ISNULL(@NewDescription,'null') <> ISNULL(@OldDescription,'null')
 							              begin
                                            SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Description = Old ->"' + ISNULL(@OldDescription,'') + ' " NEW -> " ' + ISNULL(@NewDescription,'') + '", ';
                                           end
-                                       SET @ChangeDescription = 'Updated: ' + ' ID_Department = "' +  isnull(cast(@OldID_Department as nvarchar(20)),'')+ '" ' + @ChangeDescription
+                                       SET @ChangeDescription = 'Updated: ' + ' ID_Department = "' +  isnull(cast(@OldID_Department as nvarchar(20)),'')+ '" ' + ISNULL(@ChangeDescription,'')
                                         --Удаляем запятую на конце
                                        IF LEN(@ChangeDescription) > 0
                                            SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
@@ -164,7 +166,7 @@ AS
                                         )
                                        SELECT  @ID_entity_D,@login_name_2_D,@ModifiedDate_D,@Name_action_D,@ChangeDescription;              
                                      
-									   set @ChangeDescription = null 
+									   set @ChangeDescription = '' 
 								end try
 								begin catch
 								     if xact_state() in (1, -1)
@@ -232,6 +234,8 @@ AS
 						    while @@FETCH_STATUS  = 0
 						         begin
 							         begin try
+									        set @ChangeDescription = ''
+
                                             SELECT 
 										        @OldID_Department_2              = D.ID_Department          ,
 										    	@OldID_Head_Department_2     	 = D.ID_Head_Department     ,
@@ -261,7 +265,7 @@ AS
                                            )
                                             SELECT  @ID_entity_D_2,@login_name_2_D_2,@ModifiedDate_D_2,@Name_action_D_2,@ChangeDescription;              
                                      
-									       set @ChangeDescription = null
+									       set @ChangeDescription = ''
 								end try
 								begin catch
 								     if xact_state() in (1, -1)
@@ -319,8 +323,10 @@ AS
 					while @@FETCH_STATUS  = 0
 						  begin
 							   begin try
+							           set @ChangeDescription = ''
+
                                        SET @ChangeDescription = 'Inserted: '
-                                         + 'ID_Department = "' + CAST(@ID_entity_I_2 AS NVARCHAR(20)) + '" ';
+                                         + 'ID_Department = "' + CAST(@ID_entity_I_2 AS NVARCHAR(50)) + '" ';
                                        
 									   INSERT  INTO dbo.Department_Audit
                                        ( 
@@ -328,7 +334,7 @@ AS
                                        )
                                         SELECT  @ID_entity_I_2,@login_name_2_I_2,@ModifiedDate_I_2,@Name_action_I_2,@ChangeDescription;              
                                      
-									   set @ChangeDescription = null
+									   set @ChangeDescription = ''
            
 		                       end try
 							   begin catch

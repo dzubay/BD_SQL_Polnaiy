@@ -24,7 +24,7 @@ AS
     set nocount,xact_abort on;
 
     DECLARE @login_name nVARCHAR(128) 
-	DECLARE @ChangeDescription nvarchar(max);
+	DECLARE @ChangeDescription nvarchar(max)='';
 
 
     SELECT  @login_name = login_name
@@ -97,6 +97,8 @@ AS
 						    while @@FETCH_STATUS  = 0
 						         begin
 							         begin try
+									       set @ChangeDescription = ''
+
 									       SELECT @NewId_TypeItem     = I.Id_TypeItem    ,
 							                      @NewTypeItemName    = I.TypeItemName   , 
 							                      @NewSysTypeItemName = I.SysTypeItemName,
@@ -112,19 +114,22 @@ AS
 										   where @ID_entity_D = D.Id_TypeItem;
 
 							               
-                                          IF @NewTypeItemName <> @OldTypeItemName 
+                                          IF isnull(@NewTypeItemName,'null') <> isnull(@OldTypeItemName,'null') 
 							                 begin
                                               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  TypeItemName = Old ->"' +  ISNULL(@OldTypeItemName,'') + ' " NEW -> " ' + isnull(@NewTypeItemName,'') + '", ';
 							                 end
-                                          IF @NewSysTypeItemName <> @OldSysTypeItemName
+
+                                          IF isnull(@NewSysTypeItemName,'null') <> isnull(@OldSysTypeItemName,'null')
 							                 begin
                                               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  SysTypeItemName = Old ->"' + ISNULL(@OldSysTypeItemName,'') + ' " NEW -> "' + ISNULL(@NewSysTypeItemName,'') + '", ';
 							                 end
-                                          IF @NewDescription <> @OldDescription
+
+                                          IF isnull(@NewDescription,'null') <> isnull(@OldDescription,'null')
 							                 begin
                                               SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Description = Old ->"' + ISNULL(@OldDescription,'') + ' " NEW -> " ' + ISNULL(@NewDescription,'') + '", ';
                                              end
-                                          SET @ChangeDescription = 'Updated: ' + ' Id_TypeItem = "' +  isnull(cast(@OldId_TypeItem as nvarchar(20)),'')+ '" ' + @ChangeDescription
+
+                                          SET @ChangeDescription = 'Updated: ' + ' Id_TypeItem = "' +  isnull(cast(@OldId_TypeItem as nvarchar(20)),'')+ '" ' + isnull(@ChangeDescription,'')
                                            --Удаляем запятую на конце
                                           IF LEN(@ChangeDescription) > 0
                                               SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
@@ -135,7 +140,7 @@ AS
                                           )
                                             SELECT  @ID_entity_D,@login_name_2_D,@ModifiedDate_D,@Name_action_D,@ChangeDescription;              
                                      
-									      set @ChangeDescription = null 
+									      set @ChangeDescription = '' 
 								  end try
 								  begin catch
 								     if xact_state() in (1, -1)
@@ -197,6 +202,8 @@ AS
 						    while @@FETCH_STATUS  = 0
 						         begin
 							         begin try
+									       set @ChangeDescription = ''
+
 									       SELECT
 										          @OldId_TypeItem_2     = D.Id_TypeItem    , 
                                                   @OldTypeItemName_2    = D.TypeItemName   , 
@@ -206,7 +213,7 @@ AS
 										   where @ID_entity_D_2 = D.Id_TypeItem;
 										   
                                            SET @ChangeDescription = 'Deleted: '
-                                              + 'Id_TypeItem'    + ' = "' + isnull(CAST(@OldId_TypeItem_2 AS NVARCHAR(20)),'') + '", '
+                                              + 'Id_TypeItem'    + ' = "' + isnull(CAST(@OldId_TypeItem_2 AS NVARCHAR(50)),'') + '", '
                                               + 'TypeItemName'   + ' = "' + ISNULL(@OldTypeItemName_2, '') + '", '
                                               + 'SysTypeItemName'+ ' = "' + ISNULL(@OldSysTypeItemName_2, '') + '", '
                                               + 'Description'    + ' = "' + ISNULL(@OldDescription_2, '') + '" ';
@@ -220,7 +227,7 @@ AS
                                           )
                                            SELECT  @ID_entity_D_2,@login_name_2_D_2,@ModifiedDate_D_2,@Name_action_D_2,@ChangeDescription;              
                                           
-									      set @ChangeDescription = null 
+									      set @ChangeDescription = '' 
 
 								  end try
 								  begin catch
@@ -279,8 +286,10 @@ AS
 					while @@FETCH_STATUS  = 0
 						  begin
 							    begin try 
+								       set @ChangeDescription = ''
+
                                        SET @ChangeDescription = 'Inserted: '
-                                            + 'Id_TypeItem = "' + CAST(@ID_entity_I_2 AS NVARCHAR(20)) + '" ';
+                                            + 'Id_TypeItem = "' + CAST(@ID_entity_I_2 AS NVARCHAR(50)) + '" ';
                                        
 									   INSERT  INTO dbo.TypeItem_Audit
                                         ( 
@@ -288,7 +297,7 @@ AS
                                         )
                                          SELECT  @ID_entity_I_2,@login_name_2_I_2,@ModifiedDate_I_2,@Name_action_I_2,@ChangeDescription;              
                                      
-									   set @ChangeDescription = null
+									   set @ChangeDescription = ''
                                  end try
 								 begin catch
 								     if xact_state() in (1, -1)

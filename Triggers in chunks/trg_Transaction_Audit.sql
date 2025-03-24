@@ -21,7 +21,7 @@ AS
     set nocount,xact_abort on;
 
     DECLARE @login_name nVARCHAR(128) 
-	DECLARE @ChangeDescription nvarchar(max);
+	DECLARE @ChangeDescription nvarchar(max)='';
 
 
     SELECT  @login_name = login_name
@@ -108,6 +108,8 @@ AS
 						    while @@FETCH_STATUS  = 0
 						          begin
 							          begin try	
+									        set @ChangeDescription = ''
+
 											SELECT  
                                                   @NewID_Transaction          = I.ID_Transaction          ,
 							                	  @NewID_Currency             = I.ID_Currency            	,
@@ -137,47 +139,47 @@ AS
 											where @ID_entity_D = D.ID_Transaction; 	
 
 
-                                            IF @NewID_Currency <> @OldID_Currency 
+                                            IF ISNULL(cast(@NewID_Currency as nvarchar(50)),'null') <> ISNULL(cast(@OldID_Currency as nvarchar(50)),'null') 
 							                   begin
-                                                  SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_Currency = Old ->"' +  ISNULL(cast(@OldID_Currency as nvarchar(20)),'') + ' " NEW -> " ' + isnull(cast(@NewID_Currency as nvarchar(20)),'') + '", ';
+                                                  SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_Currency = Old ->"' +  ISNULL(cast(@OldID_Currency as nvarchar(50)),'') + ' " NEW -> " ' + isnull(cast(@NewID_Currency as nvarchar(50)),'') + '", ';
 							                   end
                                             
-							                IF @NewID_Transaction_status <> @OldID_Transaction_status 
+							                IF ISNULL(cast(@NewID_Transaction_status as nvarchar(50)),'null') <> ISNULL(cast(@OldID_Transaction_status as nvarchar(50)),'null') 
 							                   begin
-                                                  SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_Transaction_status = Old ->"' +  ISNULL(cast(@OldID_Transaction_status as nvarchar(20)),'') + ' " NEW -> " ' + isnull(cast(@NewID_Transaction_status as nvarchar(20)),'') + '", ';
+                                                  SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_Transaction_status = Old ->"' +  ISNULL(cast(@OldID_Transaction_status as nvarchar(50)),'') + ' " NEW -> " ' + isnull(cast(@NewID_Transaction_status as nvarchar(50)),'') + '", ';
 							                   end
                                             
-							                IF @NewID_Currency_Rate <> @OldID_Currency_Rate 
+							                IF ISNULL(cast(@NewID_Currency_Rate as nvarchar(50)),'null') <> ISNULL(cast(@OldID_Currency_Rate as nvarchar(50)),'null') 
 							                   begin
-                                                  SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_Currency_Rate = Old ->"' +  ISNULL(cast(@OldID_Currency_Rate as nvarchar(20)),'') + ' " NEW -> " ' + isnull(cast(@NewID_Currency_Rate as nvarchar(20)),'') + '", ';
+                                                  SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  ID_Currency_Rate = Old ->"' +  ISNULL(cast(@OldID_Currency_Rate as nvarchar(50)),'') + ' " NEW -> " ' + isnull(cast(@NewID_Currency_Rate as nvarchar(50)),'') + '", ';
 							                   end
                                             
-							                IF @NewTransaction_Date <> @OldTransaction_Date
+							                IF ISNULL(CAST(Format(@NewTransaction_Date,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'null') <> ISNULL(CAST(Format(@OldTransaction_Date,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'null')
 							                   begin
 							                      SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Transaction_Date = Old ->"' +  ISNULL(CAST(Format(@OldTransaction_Date,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + ' " NEW -> " ' + isnull(CAST(Format(@NewTransaction_Date,'yyyy-MM-dd HH:mm:ss.fff') AS NVARCHAR(50)),'') + '", ';
 							                   end
 							                
 							                
-							                IF @NewKeySource <> @OldKeySource
+							                IF ISNULL(cast(@NewKeySource as nvarchar(100)),'null') <> ISNULL(cast(@OldKeySource as nvarchar(100)),'null')
 							                   begin
 							                      SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  KeySource = Old ->"' +  ISNULL(cast(@OldKeySource as nvarchar(100)),'') + ' " NEW -> " ' + isnull(cast(@NewKeySource as nvarchar(100)),'') + '", ';
 							                   end
 							                
-							                IF @NewTransaction_name_sender <> @OldTransaction_name_sender
+							                IF ISNULL(@NewTransaction_name_sender,'null') <> ISNULL(@OldTransaction_name_sender,'null')
 							                   begin
 							                      SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Transaction_name_sender = Old ->"' +  ISNULL(@OldTransaction_name_sender,'') + ' " NEW -> " ' + isnull(@NewTransaction_name_sender,'') + '", ';
 							                   end  																	   			
 							                
-							                IF @NewJSON_Transaction_sender <> @OldJSON_Transaction_sender
+							                IF ISNULL(cast(@NewJSON_Transaction_sender as nvarchar(max)),'null') <> ISNULL(cast(@OldJSON_Transaction_sender as nvarchar(max)),'null')
 							                   begin
 							                      SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  JSON_Transaction_sender = Old ->"' +  ISNULL(cast(@OldJSON_Transaction_sender as nvarchar(max)),'') + ' " NEW -> " ' + isnull(cast(@NewJSON_Transaction_sender as nvarchar(max)),'') + '", ';
 							                   end
 							                
-                                            IF @NewDescription <> @OldDescription
+                                            IF isnull(@NewDescription,'null') <> isnull(@OldDescription,'null')
 							                   begin
                                                   SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Description = Old ->"' + ISNULL(@OldDescription,'') + ' " NEW -> " ' + ISNULL(@NewDescription,'') + '", ';
                                                end
-                                            SET @ChangeDescription = 'Updated: ' + ' ID_Transaction = "' +  isnull(cast(@OldID_Transaction as nvarchar(20)),'')+ '" ' + @ChangeDescription
+                                            SET @ChangeDescription = 'Updated: ' + ' ID_Transaction = "' +  isnull(cast(@OldID_Transaction as nvarchar(20)),'')+ '" ' + ISNULL(@ChangeDescription,'')
                                              --Удаляем запятую на конце
                                             IF LEN(@ChangeDescription) > 0
                                                 SET @ChangeDescription = LEFT(@ChangeDescription, LEN(@ChangeDescription) - 1);
@@ -188,7 +190,7 @@ AS
                                             )
                                               SELECT  @ID_entity_D,@login_name_2_D,@ModifiedDate_D,@Name_action_D,@ChangeDescription;              
                                      
-									        set @ChangeDescription = null 
+									        set @ChangeDescription = '' 
 
 								  end try
 								  begin catch
@@ -260,6 +262,7 @@ AS
 						    while @@FETCH_STATUS  = 0
 						         begin
 							         begin try
+									        set @ChangeDescription = ''
 
                                             SELECT
                                                   @OldID_Transaction_2          = D.ID_Transaction          ,
@@ -284,7 +287,7 @@ AS
 							                + 'KeySource'                +' = "'+  ISNULL(cast(@OldKeySource_2 as nvarchar(100)),'') + '", ' 
 							                + 'Transaction_name_sender'  +' = "'+  ISNULL(@OldTransaction_name_sender_2,'')+ '", ' 
 							                + 'JSON_Currency_Rate_Data'  +' = "'+  ISNULL(@OldJSON_Transaction_sender_2,'')+ '", '
-							                + 'Transaction_Amount      ' +' = "'+  ISNULL(cast(@OldTransaction_Amount_2 as nvarchar(20)),'')+ '", '		
+							                + 'Transaction_Amount      ' +' = "'+  ISNULL(cast(@OldTransaction_Amount_2 as nvarchar(50)),'')+ '", '		
 							                + 'Description'              +' = "'+  ISNULL(@OldDescription_2  ,'') + '", '
 
                                            IF LEN(@ChangeDescription) > 0
@@ -296,7 +299,7 @@ AS
                                            )
                                             SELECT  @ID_entity_D_2,@login_name_2_D_2,@ModifiedDate_D_2,@Name_action_D_2,@ChangeDescription;              
                                      
-									        set @ChangeDescription = null
+									       set @ChangeDescription = ''
 
 								  end try
 								  begin catch
@@ -354,8 +357,10 @@ AS
 					while @@FETCH_STATUS  = 0
 						    begin
 							      begin try
+								       set @ChangeDescription = ''
+
                                        SET @ChangeDescription = 'Inserted: '
-                                            + 'ID_Transaction = "' + CAST(@ID_entity_I_2 AS NVARCHAR(20)) + '" ';
+                                            + 'ID_Transaction = "' + CAST(@ID_entity_I_2 AS NVARCHAR(50)) + '" ';
                                         
 									   INSERT  INTO dbo.TRANSACTION_Audit
                                        ( 
@@ -363,7 +368,7 @@ AS
                                        )
                                         SELECT  @ID_entity_I_2,@login_name_2_I_2,@ModifiedDate_I_2,@Name_action_I_2,@ChangeDescription;              
                                      
-									    set @ChangeDescription = null
+									    set @ChangeDescription = ''
                                  end try
 								 begin catch
 								     if xact_state() in (1, -1)
