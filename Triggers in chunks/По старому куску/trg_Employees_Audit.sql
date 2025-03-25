@@ -286,7 +286,7 @@ AS
                                           SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Cell_Phone = Old ->"' +  ISNULL(@OldCell_Phone,'') + ' " NEW -> " ' + isnull(@NewCell_Phone,'') + '", ';
 							            end
 
-								    IF isnull(@NewImage_Employees,'null') <> isnull(@OldImage_Employees,'null')
+								    IF isnull(cast(@NewImage_Employees as nvarchar(10)),'null') <> isnull(cast(@OldImage_Employees as nvarchar(10)),'null')
 							                   begin
 							                     SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Image_Employees = '  +  '"Изображение было изменено или удалено", ';
 							                   end

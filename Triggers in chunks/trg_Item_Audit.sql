@@ -199,7 +199,7 @@ AS
 							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Name_Item = Old ->"' +  ISNULL(@OldName_Item,'') + ' " NEW -> " ' + isnull(@NewName_Item,'') + '", ';
 							                   end
 					                        
-							                IF ISNULL(@NewImage_Item,'null') <> ISNULL(@OldImage_Item,'null')
+							                IF ISNULL(cast(@NewImage_Item as nvarchar(10)),'null') <> ISNULL(cast(@OldImage_Item as nvarchar(10)),'null')
 							                   begin
 							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Image_Item = '  +  '"Изображение было изменено или удалено", ';
 							                   end
@@ -234,7 +234,7 @@ AS
 							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Phone = Old ->"' +  ISNULL(@OldPhone,'') + ' " NEW -> " ' + isnull(@NewPhone,'') + '", ';
 							                   end
 					                        
-							                IF ISNULL(@NewLogo,'null') <> ISNULL(@OldLogo,'null')
+							                IF ISNULL(cast(@NewLogo as nvarchar(10)),'null') <> ISNULL(cast(@OldLogo as nvarchar(10)),'null')
 							                   begin
 							                    SET @ChangeDescription = '' + isnull(@ChangeDescription,'') + '  Logo = ' +  '"Изображение было изменено или удалено", ';
 							                   end
