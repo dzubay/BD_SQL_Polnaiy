@@ -4879,7 +4879,38 @@ declare @Buyer_The_resident        bit;
 
 go
 
+insert into  Condition_of_the_item(Name_Condition_of_the_item,SysNameConditionTypeOfTheItem,[Description]) values 
+('Продан', 'SysNameConditionTypeOfTheItem_Sold', null)
+,('Просрочен', 'SysNameConditionTypeOfTheItem_Expired', null)
+,('Задублирован', 'SysNameConditionTypeOfTheItem_Duplicated', null)
+,('На отгрузке', 'SysNameConditionTypeOfTheItem_Shipping', null)
+,('На складе', 'SysNameConditionTypeOfTheItem_InStock', null)
+,('Ожидает возврата', 'SysNameConditionTypeOfTheItem_AwaitingReturn', null)
+,('Потерян', 'SysNameConditionTypeOfTheItem_Lost', null)
+,('На проверке', 'SysNameConditionTypeOfTheItem_UnderInspection', null)
+,('Ожидает отгрузки', 'SysNameConditionTypeOfTheItem_AwaitingShipment', null)
+,('Зарезервирован', 'SysNameConditionTypeOfTheItem_Reserved', null)
+,('В пути', 'SysNameConditionTypeOfTheItem_InTransit', null)
+,('Бракованный', 'SysNameConditionTypeOfTheItem_Defective', null)
+,('Возвращён пользователем', 'SysNameConditionTypeOfTheItem_ReturnedByCustomer', null)
+,('Уценён', 'SysNameConditionTypeOfTheItem_Discounted', null)
+,('Продан в рассрочку', 'SysNameConditionTypeOfTheItem_SoldInInstallments', null)
+,('Не полностью оплачен по рассрочке', 'SysNameConditionTypeOfTheItem_PartiallyPaidInstallment', null)
+,('Испорчен', 'SysNameConditionTypeOfTheItem_Damaged', null)
+,('Срок годности просрочен', 'SysNameConditionTypeOfTheItem_ExpiredShelfLife', null)
+,('Ожидает на пункте выдачи', 'SysNameConditionTypeOfTheItem_AwaitingPickup', null)
+,('Ожидает курьера', 'SysNameConditionTypeOfTheItem_AwaitingCourier', null)
+,('Черновик', 'SysNameConditionTypeOfTheItem_Draft', null)
+,('Редактируется', 'SysNameConditionTypeOfTheItem_Editing', null)
+,('Найдены несоответствия в карточке товара', 'SysNameConditionTypeOfTheItem_ProductCardMismatch', null)
+,('Перерасчёт цен', 'SysNameConditionTypeOfTheItem_PriceRecalculation', null);
 
+
+declare @Condition_of_the_items int;
+set @Condition_of_the_items = (select count(ID_Condition_of_the_item) as Id_Status from Condition_of_the_item)
+print 'Заполнена таблица dbo.Condition_of_the_item. Общее количество заполненных строк --> ' +  cast(@Condition_of_the_items as nvarchar(5))
+
+go
 
 commit
 --rollback
