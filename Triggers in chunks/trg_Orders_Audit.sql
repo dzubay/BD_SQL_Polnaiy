@@ -78,10 +78,10 @@ AS
 						   DECLARE @OldID_OrderCategory	  bigint        		;
 						   DECLARE @OldDate               datetime      		;
 						   DECLARE @OldPayment_Date       datetime      		;
-						   DECLARE @OldAmount             float         		;
-						   DECLARE @OldAmountCurr         float         		;
-						   DECLARE @OldAmountNDS          float         		;
-						   DECLARE @OldAmountCurrNDS      float         		;
+						   DECLARE @OldAmount             decimal(10,2)         ;
+						   DECLARE @OldAmountCurr         decimal(10,2)         ;
+						   DECLARE @OldAmountNDS          decimal(10,2)         ;
+						   DECLARE @OldAmountCurrNDS      decimal(10,2)         ;
 						   DECLARE @OldNum                nvarchar(50)  		;
 						   DECLARE @OldDescription        nvarchar(4000)		;
 
@@ -94,10 +94,10 @@ AS
 						   DECLARE @NewID_OrderCategory	   bigint        		;
 						   DECLARE @NewDate                datetime      		;
 						   DECLARE @NewPayment_Date        datetime      		;
-						   DECLARE @NewAmount              float         		;
-						   DECLARE @NewAmountCurr          float         		;
-						   DECLARE @NewAmountNDS           float         		;
-						   DECLARE @NewAmountCurrNDS       float         		;
+						   DECLARE @NewAmount              decimal(10,2)       	;
+						   DECLARE @NewAmountCurr          decimal(10,2)       	;
+						   DECLARE @NewAmountNDS           decimal(10,2)       	;
+						   DECLARE @NewAmountCurrNDS       decimal(10,2)       	;
 						   DECLARE @NewNum                 nvarchar(50)  		;
 						   DECLARE @NewDescription         nvarchar(4000)		;
 						
@@ -278,10 +278,10 @@ AS
 						    DECLARE @OldID_OrderCategory_2	  bigint        ;
 							DECLARE @OldDate_2                datetime      ;
 							DECLARE @OldPayment_Date_2        datetime      ;
-							DECLARE @OldAmount_2              float         ;
-							DECLARE @OldAmountCurr_2          float         ;
-							DECLARE @OldAmountNDS_2           float         ;
-							DECLARE @OldAmountCurrNDS_2       float         ;
+							DECLARE @OldAmount_2              decimal(10,2) ;
+							DECLARE @OldAmountCurr_2          decimal(10,2) ;
+							DECLARE @OldAmountNDS_2           decimal(10,2) ;
+							DECLARE @OldAmountCurrNDS_2       decimal(10,2) ;
 							DECLARE @OldNum_2                 nvarchar(50)  ;
 							DECLARE @OldDescription_2         nvarchar(4000);
 

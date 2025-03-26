@@ -70,7 +70,7 @@ AS
                           
 							DECLARE @OldID_Currency_Rate        bigint          ;
 							DECLARE @OldID_Currency             bigint       	;
-							DECLARE @OldAmount_Rate             float        	;
+							DECLARE @OldAmount_Rate             decimal(5,2)    ;
 							DECLARE @OldValid_from              datetime     	;
 							DECLARE @OldValid_to                datetime     	;
 							DECLARE @OldJSON_Currency_Rate_Data nvarchar(max)	;
@@ -78,7 +78,7 @@ AS
 
 							DECLARE @NewID_Currency_Rate        bigint          ;
 							DECLARE @NewID_Currency             bigint       	;
-							DECLARE @NewAmount_Rate             float        	;
+							DECLARE @NewAmount_Rate             decimal(5,2)    ;
 							DECLARE @NewValid_from              datetime     	;
 							DECLARE @NewValid_to                datetime     	;
 							DECLARE @NewJSON_Currency_Rate_Data nvarchar(max)	;
@@ -212,7 +212,7 @@ AS
 
 							DECLARE @OldID_Currency_Rate_2        bigint          ;
 							DECLARE @OldID_Currency_2             bigint       	  ;
-							DECLARE @OldAmount_Rate_2             float        	  ;
+							DECLARE @OldAmount_Rate_2             decimal(5,2)    ;
 							DECLARE @OldValid_from_2              datetime     	  ;
 							DECLARE @OldValid_to_2                datetime     	  ;
 							DECLARE @OldJSON_Currency_Rate_Data_2 nvarchar(max)	  ;

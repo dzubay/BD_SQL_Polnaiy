@@ -76,14 +76,14 @@ AS
 						   DECLARE @OldKeySource                  bigint         ;
 						   DECLARE @OldSerial_number              nvarchar(500)  ;
 						   DECLARE @OldID_Condition_of_the_item   bigint         ;
-						   DECLARE @OldOld_Price_no_NDS           float          ;
+						   DECLARE @OldOld_Price_no_NDS           decimal(10,2)  ;
 						   DECLARE @OldRefund                     bit            ;
 						   DECLARE @OldDate_Refund                datetime       ;
 						   DECLARE @OldReturn_Note                nvarchar(4000) ;
-						   DECLARE @OldOld_Price_NDS              float          ;
+						   DECLARE @OldOld_Price_NDS              decimal(10,2)  ;
 						   DECLARE @OldJSON_Size_Volume           nvarchar(max)  ;
-						   DECLARE @OldNew_Price_NDS              float          ;
-						   DECLARE @OldNew_Price_no_NDS           float          ;
+						   DECLARE @OldNew_Price_NDS              decimal(10,2)  ;
+						   DECLARE @OldNew_Price_no_NDS           decimal(10,2)  ;
 						   DECLARE @OldDate_Created               datetime       ;
 						   DECLARE @OldDescription                nvarchar(4000) ;
 
@@ -94,14 +94,14 @@ AS
 						   DECLARE @NewKeySource                  bigint         ;
 						   DECLARE @NewSerial_number              nvarchar(500)  ;
 						   DECLARE @NewID_Condition_of_the_item   bigint         ;
-						   DECLARE @NewOld_Price_no_NDS           float          ;
+						   DECLARE @NewOld_Price_no_NDS           decimal(10,2)  ;
 						   DECLARE @NewRefund                     bit            ;
 						   DECLARE @NewDate_Refund                datetime       ;
 						   DECLARE @NewReturn_Note                nvarchar(4000) ;
-						   DECLARE @NewOld_Price_NDS              float          ;
+						   DECLARE @NewOld_Price_NDS              decimal(10,2)  ;
 						   DECLARE @NewJSON_Size_Volume           nvarchar(max)  ;
-						   DECLARE @NewNew_Price_NDS              float          ;
-						   DECLARE @NewNew_Price_no_NDS           float          ;
+						   DECLARE @NewNew_Price_NDS              decimal(10,2)  ;
+						   DECLARE @NewNew_Price_no_NDS           decimal(10,2)  ;
 						   DECLARE @NewDate_Created               datetime       ;
 						   DECLARE @NewDescription                nvarchar(4000) ;
 
@@ -306,14 +306,14 @@ AS
 						   DECLARE @OldKeySource_2                  bigint         ;
 						   DECLARE @OldSerial_number_2              nvarchar(500)  ;
 						   DECLARE @OldID_Condition_of_the_item_2   bigint         ;
-						   DECLARE @OldOld_Price_no_NDS_2           float          ;
+						   DECLARE @OldOld_Price_no_NDS_2           decimal(10,2)  ;
 						   DECLARE @OldRefund_2                     bit            ;
 						   DECLARE @OldDate_Refund_2                datetime       ;
 						   DECLARE @OldReturn_Note_2                nvarchar(4000) ;
-						   DECLARE @OldOld_Price_NDS_2              float          ;
+						   DECLARE @OldOld_Price_NDS_2              decimal(10,2)  ;
 						   DECLARE @OldJSON_Size_Volume_2           nvarchar(max)  ;
-						   DECLARE @OldNew_Price_NDS_2              float          ;
-						   DECLARE @OldNew_Price_no_NDS_2           float          ;
+						   DECLARE @OldNew_Price_NDS_2              decimal(10,2)  ;
+						   DECLARE @OldNew_Price_no_NDS_2           decimal(10,2)  ;
 						   DECLARE @OldDate_Created_2               datetime       ;
 						   DECLARE @OldDescription_2                nvarchar(4000) ;    	  	
 

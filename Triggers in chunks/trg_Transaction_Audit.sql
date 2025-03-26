@@ -78,7 +78,7 @@ AS
 							DECLARE @OldKeySource                       bigint       	;
 							DECLARE @OldTransaction_name_sender         nvarchar(500)	;
 							DECLARE @OldJSON_Transaction_sender         nvarchar(max)	;
-							DECLARE @OldTransaction_Amount              float        	;
+							DECLARE @OldTransaction_Amount              decimal(10,2)   ;
 							DECLARE @OldDescription                     nvarchar(4000)	;
 
 							DECLARE @NewID_Transaction                  bigint          ;
@@ -89,7 +89,7 @@ AS
 							DECLARE @NewKeySource                       bigint       	;
 							DECLARE @NewTransaction_name_sender         nvarchar(500)	;
 							DECLARE @NewJSON_Transaction_sender         nvarchar(max)	;
-							DECLARE @NewTransaction_Amount              float        	;
+							DECLARE @NewTransaction_Amount              decimal(10,2)   ;
 							DECLARE @NewDescription                     nvarchar(4000)	;
                             
 
@@ -244,7 +244,7 @@ AS
 							DECLARE @OldKeySource_2                       bigint       	  ;
 							DECLARE @OldTransaction_name_sender_2         nvarchar(500)	  ;
 							DECLARE @OldJSON_Transaction_sender_2         nvarchar(max)	  ;
-							DECLARE @OldTransaction_Amount_2              float        	  ;
+							DECLARE @OldTransaction_Amount_2              decimal(10,2)   ;
 							DECLARE @OldDescription_2                     nvarchar(4000)  ;
                             
 							declare cr_2 cursor local fast_forward for
