@@ -4912,5 +4912,503 @@ print 'Заполнена таблица dbo.Condition_of_the_item. Общее �
 
 go
 
+
+declare @Currency_Rate_2024 table (id bigint, name_Currency nvarchar(100),Cur decimal(5,2))
+insert into @Currency_Rate_2024 values
+(1, 'Афгани', 0.84),
+(2, 'Евро', 97.45),
+(3, 'Лек', 0.90),
+(4, 'Алжирский динар', 0.55),
+(5, 'Доллар США', 89.75),
+(6, 'Евро', 97.45),
+(7, 'Кванза', 0.11),
+(8, 'Восточнокарибский доллар', 33.22),
+(9, 'Аргентинское песо', 0.10),
+(10, 'Армянский драм', 0.23),
+(11, 'Арубанский флорин', 49.87),
+(12, 'Австралийский доллар', 59.12),
+(13, 'Азербайджанский манат', 52.80),
+(14, 'Багамский доллар', 89.75),
+(15, 'Бахрейнский динар', 238.05),
+(16, 'Така', 0.86),
+(17, 'Барбадосский доллар', 44.88),
+(18, 'Белорусский рубль', 27.45),
+(19, 'Белизский доллар', 44.88),
+(20, 'Западноафриканский франк', 0.15),
+(21, 'Бермудский доллар', 89.75),
+(22, 'Нгултрум', 1.08),
+(23, 'Боливиано', 12.99),
+(24, 'Конвертируемая марка', 48.73),
+(25, 'Ботсванская пула', 6.80),
+(26, 'Бразильский реал', 17.45),
+(27, 'Брунейский доллар', 66.32),
+(28, 'Болгарский лев', 49.82),
+(29, 'Бурундийский франк', 0.01),
+(30, 'Кабо-вердешское эскудо', 0.90),
+(31, 'Камбоджийский риель', 0.01),
+(32, 'Центральноафриканский франк', 0.15),
+(33, 'Канадский доллар', 65.78),
+(34, 'Доллар Каймановых островов', 108.99),
+(35, 'Чилийское песо', 0.10),
+(36, 'Китайский юань', 12.38),
+(37, 'Колумбийское песо', 0.01),
+(38, 'Коморский франк', 0.20),
+(39, 'Конголезский франк', 0.01),
+(40, 'Новозеландский доллар', 54.67),
+(41, 'Коста-риканский колон', 0.17),
+(42, 'Хорватская куна', 12.89),
+(43, 'Кубинское песо', 0.75),
+(44, 'Чешская крона', 3.86),
+(45, 'Датская крона', 13.08),
+(46, 'Джибутийский франк', 0.50),
+(47, 'Доминиканское песо', 1.59),
+(48, 'Египетский фунт', 2.90),
+(49, 'Сальвадорский колон', 10.26),
+(50, 'Эритрейская накфа', 5.97),
+(51, 'Эфиопский быр', 1.57),
+(52, 'Фиджийский доллар', 39.88),
+(53, 'Гамбийский даласи', 1.48),
+(54, 'Лари', 33.45),
+(55, 'Ганский седи', 6.78),
+(56, 'Гибралтарский фунт', 112.34),
+(57, 'Гватемальский кетсаль', 11.45),
+(58, 'Гвинейский франк', 0.01),
+(59, 'Гайанский доллар', 0.43),
+(60, 'Гурд', 0.01),
+(61, 'Гондурасская лемпира', 3.64),
+(62, 'Гонконгский доллар', 11.48),
+(63, 'Форинт', 0.25),
+(64, 'Исландская крона', 0.65),
+(65, 'Индийская рупия', 1.08),
+(66, 'Индонезийская рупия', 0.01),
+(67, 'Иранский риал', 0.01),
+(68, 'Иракский динар', 0.07),
+(69, 'Новый израильский шекель', 24.56),
+(70, 'Ямайский доллар', 0.58),
+(71, 'Иена', 0.61),
+(72, 'Иорданский динар', 126.67),
+(73, 'Тенге', 0.20),
+(74, 'Кенийский шиллинг', 0.69),
+(75, 'Кувейтский динар', 292.45),
+(76, 'Сом', 1.02),
+(77, 'Лаосский кип', 0.01),
+(78, 'Латвийский лат', 139.00),
+(79, 'Ливанский фунт', 0.01),
+(80, 'Лоти', 4.89),
+(81, 'Либерийский доллар', 0.45),
+(82, 'Ливийский динар', 18.72),
+(83, 'Швейцарский франк', 101.35),
+(84, 'Македонский денар', 1.58),
+(85, 'Малагасийский ариари', 0.02),
+(86, 'Малавийская квача', 0.09),
+(87, 'Малайзийский ринггит', 19.05),
+(88, 'Мальдивская руфия', 5.82),
+(89, 'Угия', 0.22),
+(90, 'Маврикийская рупия', 2.05),
+(91, 'Мексиканское песо', 5.25),
+(92, 'Молдавский лей', 4.95),
+(93, 'Тугрик', 0.03),
+(94, 'Марокканский дирхам', 9.12),
+(95, 'Мозамбикский метикал', 1.41),
+(96, 'Мьянманский кьят', 0.04),
+(97, 'Намибийский доллар', 4.88),
+(98, 'Непальская рупия', 0.68),
+(99, 'Нидерландский антильский гульден', 50.15),
+(100, 'Новозеландский доллар', 54.67),
+(101, 'Никарагуанская кордоба', 2.45),
+(102, 'Найра', 0.12),
+(103, 'Северокорейская вона', 0.01),
+(104, 'Норвежская крона', 8.45),
+(105, 'Оманский риал', 233.15),
+(106, 'Пакистанская рупия', 0.32),
+(107, 'Панамский бальбоа', 89.75),
+(108, 'Кина', 23.85),
+(109, 'Парагвайский гуарани', 0.01),
+(110, 'Перуанский соль', 24.15),
+(111, 'Филиппинское песо', 1.60),
+(112, 'Польский злотый', 21.45),
+(113, 'Катарский риал', 24.65),
+(114, 'Румынский лей', 19.65),
+(115, 'Российский рубль', 1.00),
+(116, 'Руандийский франк', 0.09),
+(117, 'Самоанская тала', 33.45),
+(118, 'Добра', 0.01),
+(119, 'Саудовский риял', 23.93),
+(120, 'Сербский динар', 0.85),
+(121, 'Сейшельская рупия', 6.55),
+(122, 'Сьерра-леонский леоне', 0.04),
+(123, 'Сингапурский доллар', 66.32),
+(124, 'Соломоновский доллар', 10.75),
+(125, 'Сомалийский шиллинг', 0.01),
+(126, 'Южноафриканский рэнд', 4.88),
+(127, 'Южнокорейская вона', 0.07),
+(128, 'Южносуданский фунт', 0.70),
+(129, 'Шри-ланкийская рупия', 0.30),
+(130, 'Суданский фунт', 0.15),
+(131, 'Суринамский доллар', 2.95),
+(132, 'Шведская крона', 8.45),
+(133, 'Сирийский фунт', 0.04),
+(134, 'Тайваньский доллар', 2.85),
+(135, 'Таджикский сомони', 8.20),
+(136, 'Танзанийский шиллинг', 0.04),
+(137, 'Бат', 2.45),
+(138, 'Паанга', 37.85),
+(139, 'Тринидадский доллар', 13.25),
+(140, 'Тунисский динар', 28.90),
+(141, 'Турецкая лира', 3.05),
+(142, 'Туркменский манат', 25.60),
+(143, 'Угандийский шиллинг', 0.02),
+(144, 'Гривна', 2.37),
+(145, 'Дирхам ОАЭ', 24.43),
+(146, 'Фунт стерлингов', 113.75),
+(147, 'Уругвайское песо', 2.25),
+(148, 'Узбекский сум', 0.01),
+(149, 'Вату', 0.75),
+(150, 'Венесуэльский боливар', 0.01),
+(151, 'Вьетнамский донг', 0.004),
+(152, 'Йеменский риал', 0.36),
+(153, 'Замбийская квача', 0.45),
+(154, 'Доллар Зимбабве', 0.01)   
+
+/*
+Заполнение суммы цены и случайной десятичной цыфрой, по случайной выбранной валюте из табличной переменной  @Currency_Rate_2024 
+и заполняем табличную переменную @Currency_Rate_2024_1 в колонках id,Currency_Rate_new
+*/
+declare @Currency_Rate_2024_1 table (id bigint,Currency_Rate_new decimal(5,2),Valid_from datetime,Valid_to datetime)
+declare @i int = 1
+   while @i < 20000
+       begin 
+	       
+	       WITH RandomValues AS (
+                SELECT TOP 1 
+                    id,
+                    name_Currency,
+                    Cur,
+                    (Cur + CAST(((RAND() * 20) - 10) AS DECIMAL(5,2))) AS CalculatedRate
+                FROM @Currency_Rate_2024
+                ORDER BY NEWID()
+                )
+				insert @Currency_Rate_2024_1 (id,Currency_Rate_new)
+                SELECT 
+                    id,					
+                    CASE WHEN CalculatedRate <= 0 THEN ABS(CalculatedRate) ELSE CalculatedRate END AS Currency_Rate --Если сумма уходи в минус, то убираем минус
+                FROM RandomValues;
+	   set @i = @i + 1 
+	   end;
+
+drop table if exists #Currency_Rate
+create table #Currency_Rate 
+(
+ID_Currency_Rate  bigint identity(1,1),
+id                bigint,
+Currency_Rate_new decimal(5,2),
+Valid_from        datetime,
+Valid_to          datetime,
+[row_number]      int,
+сумма             int,
+flag              int
+)
+
+insert #Currency_Rate(id,Currency_Rate_new,Valid_from,Valid_to,[row_number],сумма,flag)
+select 
+t.id,
+t.Currency_Rate_new,
+t.Valid_from,
+t.Valid_to,
+t.[row_number],
+t.[сумма],
+0 flag
+from 
+(select  
+a.id,
+a.Currency_Rate_new,
+a.Valid_from,
+a.Valid_to,
+ROW_NUMBER() OVER (PARTITION BY a.id ORDER BY a.id) AS 'row_number',
+d.сумма
+from @Currency_Rate_2024_1 as a
+join (select id,count(Currency_Rate_new) as 'сумма'from @Currency_Rate_2024_1 group by id) as d on d.id = a.id
+) as t  order by t.id
+
+
+/* Формируем с случайною дату и время для начальной даты отчёта с которых будет начинаться все ставки */
+declare @RandomDate datetime  
+exec RandomDateTimeNew '20240101','20250101', @RandomDate output  
+
+
+
+declare
+@ID_Currency_Rate  bigint,
+@id                bigint,
+@Currency_Rate_new decimal(5,2),
+@Valid_from        datetime,
+@Valid_to          datetime,
+@row_number        int,
+@сумма             int,
+@flag              int
+
+declare @i_2 int = 0,@s  int = 0 , @n varchar(40), @mess varchar(8000), @err varchar(1000)
+/*
+ Первый курсор  заполняет первую строчку по каждому ID,в первой заполняем начало периода Valid_from, и конец периода Valid_to на день больше,
+*/
+
+declare mycur cursor local fast_forward  for
+
+select * from #Currency_Rate order by ID_Currency_Rate,id
+
+open mycur
+fetch next from mycur into
+@ID_Currency_Rate
+,@id               
+,@Currency_Rate_new
+,@Valid_from       
+,@Valid_to         
+,@row_number       
+,@сумма            
+,@flag    
+
+while @@FETCH_STATUS  = 0
+    begin 
+	   begin try
+	        
+
+
+                       update t
+                       set Valid_from = @RandomDate, Valid_to = DATEADD(day, 1, @RandomDate)
+                       from #Currency_Rate t 
+                       where ID_Currency_Rate = @ID_Currency_Rate and [row_number] = 1 				   
+					   
+
+					   if exists (select * from #Currency_Rate  as a where ID_Currency_Rate = @ID_Currency_Rate and flag = 0 and  Valid_from is not null and Valid_to is not null)
+					       begin 
+					            set @i_2 =  @i_2 + 1
+			                    update a set flag = 1 from #Currency_Rate  as a where ID_Currency_Rate = @ID_Currency_Rate and flag = 0 and  Valid_from is not null and Valid_to is not null
+						   end
+	
+
+	          select @s = count(0) from #Currency_Rate where flag = 0
+			  set @n = (select  
+			            case  t.flag  when 1 then ' 1  Значения изменены' when 0  then ' 0  Значения не изменялись' end  
+			            from #Currency_Rate t  where ID_Currency_Rate = @ID_Currency_Rate)
+			  set @mess = @n + ' - > ' +  ' Объект ' + cast(@ID as varchar)  + ' ID_Currency_Rate '  + Cast(@ID_Currency_Rate as varchar)  + ' --> ' + ' - ' + Cast(@i_2 as varchar) + ' / ' + Cast(@s as varchar)
+			  RAISERROR(@mess,0,0) WITH NOWAIT
+	   end try
+
+	   begin catch
+	        if @@trancount > 0
+                begin
+                   rollback;
+                end;
+                
+                set @err = formatmessage(N'ID=%I64d, error - %s', @ID, error_message());
+                print @err;
+	   end catch;
+	fetch next from mycur into 
+	@ID_Currency_Rate
+	,@id               
+    ,@Currency_Rate_new
+    ,@Valid_from       
+    ,@Valid_to         
+    ,@row_number       
+    ,@сумма            
+    ,@flag  
+	end
+close mycur
+deallocate mycur
+
+
+/*
+ Второй  курсор  заполняет и добавляет дополнительные поля по значениям предыдущих полей даты и времени, начала Previous_Valid_from  и окончания периода Previous_Valid_to.
+ В строках с row_number = 1 в новых добавленных столбцах Previous_Valid_from,Previous_Valid_to указан NULL. Так как оконная функция LAG() - выводит предыдущию ячейку из таблицы,
+ но если нет прошлых данных то она выводит Null, и это нормально.
+ И учитывая столбец ID, и  row_number - подсчёт строк по конкретному одному ID, добавляется на день больше  в каждый период. Время не трогается, так как это не нужно сейчас.
+ И заполнение дат, окончания периода и конца периода проходит gj каждой строчки по одному ID  и прибовляет на 1 день больше, с начальной строчки которая была заполнина в первом курсоре.
+*/
+
+drop table if exists #Currency_Rate_2
+create table #Currency_Rate_2 
+(
+ID_Currency_Rate    bigint,
+id                  bigint,
+Currency_Rate_new   decimal(5,2),
+Valid_from          datetime,
+Previous_Valid_from datetime,
+Valid_to            datetime,
+Previous_Valid_to   datetime,
+[row_number]        int,
+сумма               int,
+flag                int
+)
+
+
+insert #Currency_Rate_2(ID_Currency_Rate,id,Currency_Rate_new,Valid_from,Previous_Valid_from,Valid_to,Previous_Valid_to,[row_number],сумма,flag)
+select 
+e.ID_Currency_Rate,
+e.id,
+e.Currency_Rate_new,
+e.Valid_from,
+LAG(e.Valid_from) OVER (PARTITION BY e.id ORDER BY e.ID_Currency_Rate,e.id) AS Previous_Valid_from, 
+e.Valid_to,
+LAG(e.Valid_to) OVER (PARTITION BY e.id ORDER BY e.ID_Currency_Rate,e.id) AS Previous_Valid_to,
+e.[row_number],
+e.сумма,  
+e.flag 
+from #Currency_Rate e order by e.ID_Currency_Rate,e.id
+
+
+declare
+@ID_Currency_Rate_2    bigint,
+@id_2                  bigint,
+@Currency_Rate_new_2   decimal(5,2),
+@Valid_from_2          datetime,
+@Previous_Valid_from_2 datetime,
+@Valid_to_2            datetime,
+@Previous_Valid_to_2   datetime,
+@row_number_2          int,
+@сумма_2               int,
+@flag_2                int
+
+declare @i_4 int = 0,@s_2  int = 0 , @n_2 varchar(40), @mess_2 varchar(8000), @err_2 varchar(1000)
+
+declare mycur_2 cursor local fast_forward  for
+
+select * from #Currency_Rate_2  order by ID_Currency_Rate,id
+
+open mycur_2
+fetch next from mycur_2 into
+@ID_Currency_Rate_2  
+,@id_2                
+,@Currency_Rate_new_2 
+,@Valid_from_2        
+,@Previous_Valid_from_2
+,@Valid_to_2          
+,@Previous_Valid_to_2 
+,@row_number_2        
+,@сумма_2             
+,@flag_2
+while @@FETCH_STATUS  = 0
+    begin 
+	   begin try         
+
+	                     declare @Previous_Valid_from_3 datetime,@Previous_Valid_to_3 datetime
+
+
+	                     if exists  (select * from #Currency_Rate_2 where ID_Currency_Rate = @ID_Currency_Rate_2 and Previous_Valid_from is not null and Previous_Valid_to is not null)
+						     begin
+							      update u
+								  set Valid_from = @Previous_Valid_to_2, Valid_to = DATEADD(day, 1, @Previous_Valid_to_2)
+								  from #Currency_Rate_2 u 
+								  where ID_Currency_Rate = @ID_Currency_Rate_2 and [row_number] != 1 
+							 end
+						 else
+						     begin 
+							      select 
+								  @Previous_Valid_from_3 = h.max_Valid_from,
+								  @Previous_Valid_to_3 =   h.max_Valid_to
+								  from (
+								  select						 
+								  g.ID,
+								  max(g.Previous_Valid_from) as max_Valid_from,
+								  max(g.Previous_Valid_to) as max_Valid_to
+								  from
+								  (select 
+								  e.ID,
+								  LAG(e.Valid_from) OVER (PARTITION BY e.id ORDER BY e.ID_Currency_Rate,e.id) as Previous_Valid_from,
+								  LAG(e.Valid_to) OVER (PARTITION BY e.id ORDER BY e.ID_Currency_Rate,e.id) as Previous_Valid_to
+								  from #Currency_Rate_2 e)  as g
+								  where g.ID = @id_2 group by g.ID) as h
+
+								  update u2
+								  set Previous_Valid_from = @Previous_Valid_from_3, Previous_Valid_to = DATEADD(day, 1, @Previous_Valid_from_3)
+								  from #Currency_Rate_2 u2 
+								  where ID_Currency_Rate = @ID_Currency_Rate_2 and [row_number] != 1 and [row_number] = @row_number_2
+
+								 if exists  (select * from #Currency_Rate_2 
+								             where 1 = 1 
+											 and ID_Currency_Rate = @ID_Currency_Rate_2 
+											 and Previous_Valid_from is not null 
+											 and Previous_Valid_to is not null
+											 and (Valid_from is null or Valid_to is null) 
+											 )
+						               begin
+								           update u3
+								           set Valid_from = @Previous_Valid_to_3, Valid_to = DATEADD(day, 1, @Previous_Valid_to_3)
+								           from #Currency_Rate_2 u3 
+								           where ID_Currency_Rate = @ID_Currency_Rate_2 and [row_number] != 1 and [row_number] = @row_number_2
+									   end
+							 end
+						  
+
+			  if exists (select * from #Currency_Rate_2  as a where ID_Currency_Rate = @ID_Currency_Rate_2 and flag = 0 and  Valid_from is not null and Valid_to is not null)
+					begin 
+					     set @i_4 =  @i_4 + 1
+			             update a set flag = 1 from #Currency_Rate_2  as a where ID_Currency_Rate = @ID_Currency_Rate_2 and flag = 0 and  Valid_from is not null and Valid_to is not null 
+					end
+
+	          select @s_2 = count(0) from #Currency_Rate_2 where flag = 0
+			  set @n_2 = (select  
+			            case  t.flag  when 1 then ' 1  Значения изменены' when 0  then ' 0  Значения не изменялись' end  
+			            from #Currency_Rate_2 t  where ID_Currency_Rate = @ID_Currency_Rate_2)
+			  set @mess_2 = @n_2 + ' - > ' +  ' Объект ' + cast(@id_2 as varchar)  + ' ID_Currency_Rate '  + Cast(@ID_Currency_Rate_2 as varchar)  + ' --> ' + ' - ' + Cast(@i_4 as varchar) + ' / ' + Cast(@s_2 as varchar)
+			  RAISERROR(@mess_2,0,0) WITH NOWAIT
+	   end try
+       begin catch
+	        if @@trancount > 0
+                begin
+                   rollback;
+                end;
+                
+                set @err_2 = formatmessage(N'ID=%I64d, error - %s', @id_2, error_message());
+                print @err_2;
+	   end catch;
+	fetch next from mycur_2 into 
+     @ID_Currency_Rate_2  
+    ,@id_2                
+    ,@Currency_Rate_new_2 
+    ,@Valid_from_2        
+    ,@Previous_Valid_from_2
+    ,@Valid_to_2          
+    ,@Previous_Valid_to_2 
+    ,@row_number_2        
+    ,@сумма_2             
+    ,@flag_2
+	end
+close mycur_2
+deallocate mycur_2
+
+
+/* 
+Формируем из заполненных столбцов из таблицы #Currency_Rate_2, данные Json в столбец JSON_Currency_Rate_Data  в конечную таблицу Currency_Rate , из столбцов id,Currency_Rate_new,Valid_from,Valid_to
+И заполним текущию таблицу.
+*/
+INSERT INTO Currency_Rate (
+    ID_Currency,
+    Amount_Rate,
+    Valid_from,
+    Valid_to,
+    JSON_Currency_Rate_Data
+)
+SELECT 
+    id AS ID_Currency,
+    Currency_Rate_new AS Amount_Rate,
+    Valid_from,
+    Valid_to,
+    JSON_QUERY('{' +
+        '"ID_Currency":' + CAST(id AS nvarchar) + ',' +
+        '"Amount_Rate":' + CAST(Currency_Rate_new AS nvarchar) + ',' +
+        '"Valid_from":"' + CONVERT(varchar, Valid_from, 120) + '",' +
+        '"Valid_to":"' + CONVERT(varchar, Valid_to, 120) + '"' ++
+    '}') AS JSON_Currency_Rate_Data
+FROM #Currency_Rate_2 order by id,Valid_from
+
+drop table if exists #Currency_Rate
+drop table if exists #Currency_Rate_2
+
+declare @Currency_Rate int;
+set @Currency_Rate = (select count(ID_Currency_Rate) as ID_Currency_Rate from Currency_Rate)
+print 'Заполнена таблица dbo.Currency_Rate. Общее количество заполненных строк --> ' +  cast(@Currency_Rate as nvarchar(5))
+
+go
+
 commit
 --rollback

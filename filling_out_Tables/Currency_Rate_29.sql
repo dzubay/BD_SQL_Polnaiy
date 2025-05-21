@@ -194,97 +194,40 @@
 */
 
 
-
-
-
-
-/*
-Вариант 1: Триггер AFTER INSERT
-Создайте триггер, который будет срабатывать после вставки данных и обновлять остальные столбцы на основе JSON:
-
-sql
-Copy
-CREATE TRIGGER tr_Currency_Rate_AfterInsert
-ON Currency_Rate
-AFTER INSERT
-AS
-BEGIN
-    SET NOCOUNT ON;
-    
-    UPDATE cr
-    SET 
-        ID_Currency = JSON_VALUE(i.JSON_Currency_Rate_Data, '$.ID_Currency'),
-        Amount_Rate = CAST(JSON_VALUE(i.JSON_Currency_Rate_Data, '$.Amount_Rate') AS decimal(5,2)),
-        Valid_from = CAST(JSON_VALUE(i.JSON_Currency_Rate_Data, '$.Valid_from') AS datetime),
-        Valid_to = CAST(JSON_VALUE(i.JSON_Currency_Rate_Data, '$.Valid_to') AS datetime)
-    FROM Currency_Rate cr
-    INNER JOIN inserted i ON cr.ID_Currency_Rate = i.ID_Currency_Rate
-    WHERE i.JSON_Currency_Rate_Data IS NOT NULL;
-END;
-GO
-Вариант 2: Хранимая процедура для вставки
-Создайте хранимую процедуру, которая будет принимать JSON и выполнять вставку:
-
-sql
-Copy
-CREATE PROCEDURE sp_InsertCurrencyRateFromJSON
-    @JsonData nvarchar(max),
-    @Description nvarchar(4000) = NULL
-AS
-BEGIN
-    SET NOCOUNT ON;
-    
-    INSERT INTO Currency_Rate (
-        ID_Currency,
-        Amount_Rate,
-        Valid_from,
-        Valid_to,
-        JSON_Currency_Rate_Data,
-        [Description]
-    )
-    SELECT
-        JSON_VALUE(@JsonData, '$.ID_Currency'),
-        CAST(JSON_VALUE(@JsonData, '$.Amount_Rate') AS decimal(5,2)),
-        CAST(JSON_VALUE(@JsonData, '$.Valid_from') AS datetime),
-        CAST(JSON_VALUE(@JsonData, '$.Valid_to') AS datetime),
-        @JsonData,
-        @Description;
-END;
-GO
-Вариант 3: COMPUTED COLUMNS (если данные всегда берутся из JSON)
-Вы можете сделать столбцы вычисляемыми (но это менее гибкий вариант):
-
-sql
-Copy
-ALTER TABLE Currency_Rate
-DROP COLUMN ID_Currency, Amount_Rate, Valid_from, Valid_to;
-
-ALTER TABLE Currency_Rate
-ADD 
-    ID_Currency AS CAST(JSON_VALUE(JSON_Currency_Rate_Data, '$.ID_Currency') AS bigint),
-    Amount_Rate AS CAST(JSON_VALUE(JSON_Currency_Rate_Data, '$.Amount_Rate') AS decimal(5,2)),
-    Valid_from AS CAST(JSON_VALUE(JSON_Currency_Rate_Data, '$.Valid_from') AS datetime),
-    Valid_to AS CAST(JSON_VALUE(JSON_Currency_Rate_Data, '$.Valid_to') AS datetime);
-Пример JSON
-Для работы этих решений JSON должен быть в таком формате:
-
-json
-Copy
-{
-    "ID_Currency": 1,
-    "Amount_Rate": "75.50",
-    "Valid_from": "2023-01-01T00:00:00",
-    "Valid_to": "2023-12-31T23:59:59"
-}
-*/
-
-
-
 use Magaz_DB_Poln_test 
 go
 
 set nocount,xact_abort on
+go
 
+/*
+ --Если с самого начала создаётся на с ID равным = 1, то можно обновить таблицу с помощью процы, и заполнить таблицу.
+begin tran
+if exists 
+	  (	  
+	  	SELECT * 
+	  	FROM sys.identity_columns 
+	  	WHERE object_id = OBJECT_ID('dbo.Currency_Rate') 
+	  		AND last_value IS not NULL 	  
+	  )
+	  begin
+	  DBCC CHECKIDENT ('dbo.Currency_Rate', RESEED, 0)
+	  end
+--rollback
+commit
+go
+*/
+
+
+/*
+select * from  Currency_Rate
+
+select distinct ID_Currency_Rate from  Currency_Rate order by ID_Currency_Rate
+
+select * from  Currency_Rate_audit
+
+delete from  Currency_Rate where ID_Currency_Rate < 99999999
+*/
 begin tran
 /*берём цены на валюты за 2024г*/
 declare @Currency_Rate_2024 table (id bigint, name_Currency nvarchar(100),Cur decimal(5,2))
@@ -453,7 +396,7 @@ commit;
 */
 declare @Currency_Rate_2024_1 table (id bigint,Currency_Rate_new decimal(5,2),Valid_from datetime,Valid_to datetime)
 declare @i int = 1
-   while @i < 1000
+   while @i < 20000
        begin 
 	       
 	       WITH RandomValues AS (
@@ -468,21 +411,10 @@ declare @i int = 1
 				insert @Currency_Rate_2024_1 (id,Currency_Rate_new)
                 SELECT 
                     id,					
-                    CASE WHEN CalculatedRate <= 0 THEN ABS(CalculatedRate) ELSE CalculatedRate END AS Currency_Rate
+                    CASE WHEN CalculatedRate <= 0 THEN ABS(CalculatedRate) ELSE CalculatedRate END AS Currency_Rate --Если сумма уходи в минус, то убираем минус
                 FROM RandomValues;
 	   set @i = @i + 1 
 	   end;
-
---declare @Currency_Rate_2024_2 table (id bigint,Currency_Rate_new decimal(5,2),Valid_from datetime,Valid_to datetime)
---declare @i_2 int = 1
---   while @1_2 <  (select  
---                  id
---                  ,count(Currency_Rate_new) as 'сумма'
---                  ,replicate('|',count(distinct Currency_Rate_new)/4) as orderCount_Bar
---                  from @Currency_Rate_2024_1 group by id order by id)
-
---	  begin 
---	  end;
 
 drop table if exists #Currency_Rate
 create table #Currency_Rate 
@@ -519,23 +451,12 @@ join (select id,count(Currency_Rate_new) as 'сумма'from @Currency_Rate_2024
 ) as t  order by t.id
 
 
+/* Формируем с случайною дату и время для начальной даты отчёта с которых будет начинаться все ставки */
+declare @RandomDate datetime  
+exec RandomDateTimeNew '20240101','20250101', @RandomDate output  
 
 
-declare @RandomDate datetime
-exec RandomDateTimeNew '20240101','20250101', @RandomDate output
 
-
---if exists (select LAG(e.Valid_from) OVER (ORDER BY [e.row_number]) AS Previous_Valid_to from #Currency_Rate e where e.Previous_Valid_to is null  and e.ID_Currency_Rate = 1 ) 
---   begin
---       update t
---       set Valid_from = @RandomDate, Valid_to = DATEADD(day, 1, @RandomDate)
---       from #Currency_Rate t 
---       where ID_Currency_Rate = 1 --@ID_Currency_Rate
---   end
---select * from #Currency_Rate order by ID_Currency_Rate,id
-
-
---/*
 declare
 @ID_Currency_Rate  bigint,
 @id                bigint,
@@ -546,7 +467,10 @@ declare
 @сумма             int,
 @flag              int
 
-declare @i_2 int = 0, @s int = 0 , @n varchar(40), @mess varchar(8000), @err varchar(1000)
+declare @i_2 int = 0,@s  int = 0 , @n varchar(40), @mess varchar(8000), @err varchar(1000)
+/*
+ Первый курсор  заполняет первую строчку по каждому ID,в первой заполняем начало периода Valid_from, и конец периода Valid_to на день больше,
+*/
 
 declare mycur cursor local fast_forward  for
 
@@ -566,20 +490,21 @@ fetch next from mycur into
 while @@FETCH_STATUS  = 0
     begin 
 	   begin try
-	          begin tran
-			           select 
-					   LAG(e.Valid_from) OVER (ORDER BY e.[row_number]) AS Previous_Valid_from, 
-					   LAG(e.Valid_to) OVER (ORDER BY e.[row_number]) AS Previous_Valid_to 
-					   from #Currency_Rate e where e.ID_Currency_Rate = @ID_Currency_Rate
+	        
+
 
                        update t
                        set Valid_from = @RandomDate, Valid_to = DATEADD(day, 1, @RandomDate)
                        from #Currency_Rate t 
-                       where ID_Currency_Rate = @ID_Currency_Rate
+                       where ID_Currency_Rate = @ID_Currency_Rate and [row_number] = 1 				   
 					   
-					   set @i_2 =  @i_2 + 1
-			           update a set flag = 1 from #Currency_Rate  as a where ID_Currency_Rate = @ID_Currency_Rate and flag = 0
-			  commit
+
+					   if exists (select * from #Currency_Rate  as a where ID_Currency_Rate = @ID_Currency_Rate and flag = 0 and  Valid_from is not null and Valid_to is not null)
+					       begin 
+					            set @i_2 =  @i_2 + 1
+			                    update a set flag = 1 from #Currency_Rate  as a where ID_Currency_Rate = @ID_Currency_Rate and flag = 0 and  Valid_from is not null and Valid_to is not null
+						   end
+	
 
 	          select @s = count(0) from #Currency_Rate where flag = 0
 			  set @n = (select  
@@ -612,30 +537,195 @@ close mycur
 deallocate mycur
 
 
-
---*/
-
---declare @RandomDate datetime
---exec RandomDateTimeNew '20000101','20100101', @RandomDate output
---select @RandomDate, DATEADD(day, 1, @RandomDate)
-
---select  SUBSTRING((rand()* 10),1,5)
-
---SELECT str(((RAND() * 20) - 10),5,2)AS RandomFraction;
-
 /*
-CREATE TABLE Currency_Rate         -- Ставка за период
-(
-ID_Currency_Rate        bigint          not null identity(1,1)  check(ID_Currency_Rate != 0),   -- ID Ставки  за период
-ID_Currency             bigint          not null,                                               -- ID Валюты                                                          
-Amount_Rate             decimal(5,2)    not null,                                               -- Сумма ставки одной  ед в рублях, за текущий период
-Valid_from              datetime        not null,                                               -- Сумма ставки с момента.
-Valid_to                datetime        not null,                                               -- Сумма ставки до момента.
-JSON_Currency_Rate_Data nvarchar(max)   null      check(isjson(JSON_Currency_Rate_Data)>0),		-- JSON Данные приходящие из стороннего ресурса
-[Description]           nvarchar(4000)  null                                                    -- Комментарий
-constraint      PK_ID_Currency_Rate     primary key (ID_Currency_Rate)
-)  on Products_Group
-go
+ Второй  курсор  заполняет и добавляет дополнительные поля по значениям предыдущих полей даты и времени, начала Previous_Valid_from  и окончания периода Previous_Valid_to.
+ В строках с row_number = 1 в новых добавленных столбцах Previous_Valid_from,Previous_Valid_to указан NULL. Так как оконная функция LAG() - выводит предыдущию ячейку из таблицы,
+ но если нет прошлых данных то она выводит Null, и это нормально.
+ И учитывая столбец ID, и  row_number - подсчёт строк по конкретному одному ID, добавляется на день больше  в каждый период. Время не трогается, так как это не нужно сейчас.
+ И заполнение дат, окончания периода и конца периода проходит gj каждой строчки по одному ID  и прибовляет на 1 день больше, с начальной строчки которая была заполнина в первом курсоре.
 */
+
+drop table if exists #Currency_Rate_2
+create table #Currency_Rate_2 
+(
+ID_Currency_Rate    bigint,
+id                  bigint,
+Currency_Rate_new   decimal(5,2),
+Valid_from          datetime,
+Previous_Valid_from datetime,
+Valid_to            datetime,
+Previous_Valid_to   datetime,
+[row_number]        int,
+сумма               int,
+flag                int
+)
+
+
+insert #Currency_Rate_2(ID_Currency_Rate,id,Currency_Rate_new,Valid_from,Previous_Valid_from,Valid_to,Previous_Valid_to,[row_number],сумма,flag)
+select 
+e.ID_Currency_Rate,
+e.id,
+e.Currency_Rate_new,
+e.Valid_from,
+LAG(e.Valid_from) OVER (PARTITION BY e.id ORDER BY e.ID_Currency_Rate,e.id) AS Previous_Valid_from, 
+e.Valid_to,
+LAG(e.Valid_to) OVER (PARTITION BY e.id ORDER BY e.ID_Currency_Rate,e.id) AS Previous_Valid_to,
+e.[row_number],
+e.сумма,  
+e.flag 
+from #Currency_Rate e order by e.ID_Currency_Rate,e.id
+
+
+declare
+@ID_Currency_Rate_2    bigint,
+@id_2                  bigint,
+@Currency_Rate_new_2   decimal(5,2),
+@Valid_from_2          datetime,
+@Previous_Valid_from_2 datetime,
+@Valid_to_2            datetime,
+@Previous_Valid_to_2   datetime,
+@row_number_2          int,
+@сумма_2               int,
+@flag_2                int
+
+declare @i_4 int = 0,@s_2  int = 0 , @n_2 varchar(40), @mess_2 varchar(8000), @err_2 varchar(1000)
+
+declare mycur_2 cursor local fast_forward  for
+
+select * from #Currency_Rate_2  order by ID_Currency_Rate,id
+
+open mycur_2
+fetch next from mycur_2 into
+@ID_Currency_Rate_2  
+,@id_2                
+,@Currency_Rate_new_2 
+,@Valid_from_2        
+,@Previous_Valid_from_2
+,@Valid_to_2          
+,@Previous_Valid_to_2 
+,@row_number_2        
+,@сумма_2             
+,@flag_2
+while @@FETCH_STATUS  = 0
+    begin 
+	   begin try         
+
+	                     declare @Previous_Valid_from_3 datetime,@Previous_Valid_to_3 datetime
+
+
+	                     if exists  (select * from #Currency_Rate_2 where ID_Currency_Rate = @ID_Currency_Rate_2 and Previous_Valid_from is not null and Previous_Valid_to is not null)
+						     begin
+							      update u
+								  set Valid_from = @Previous_Valid_to_2, Valid_to = DATEADD(day, 1, @Previous_Valid_to_2)
+								  from #Currency_Rate_2 u 
+								  where ID_Currency_Rate = @ID_Currency_Rate_2 and [row_number] != 1 
+							 end
+						 else
+						     begin 
+							      select 
+								  @Previous_Valid_from_3 = h.max_Valid_from,
+								  @Previous_Valid_to_3 =   h.max_Valid_to
+								  from (
+								  select						 
+								  g.ID,
+								  max(g.Previous_Valid_from) as max_Valid_from,
+								  max(g.Previous_Valid_to) as max_Valid_to
+								  from
+								  (select 
+								  e.ID,
+								  LAG(e.Valid_from) OVER (PARTITION BY e.id ORDER BY e.ID_Currency_Rate,e.id) as Previous_Valid_from,
+								  LAG(e.Valid_to) OVER (PARTITION BY e.id ORDER BY e.ID_Currency_Rate,e.id) as Previous_Valid_to
+								  from #Currency_Rate_2 e)  as g
+								  where g.ID = @id_2 group by g.ID) as h
+
+								  update u2
+								  set Previous_Valid_from = @Previous_Valid_from_3, Previous_Valid_to = DATEADD(day, 1, @Previous_Valid_from_3)
+								  from #Currency_Rate_2 u2 
+								  where ID_Currency_Rate = @ID_Currency_Rate_2 and [row_number] != 1 and [row_number] = @row_number_2
+
+								 if exists  (select * from #Currency_Rate_2 
+								             where 1 = 1 
+											 and ID_Currency_Rate = @ID_Currency_Rate_2 
+											 and Previous_Valid_from is not null 
+											 and Previous_Valid_to is not null
+											 and (Valid_from is null or Valid_to is null) 
+											 )
+						               begin
+								           update u3
+								           set Valid_from = @Previous_Valid_to_3, Valid_to = DATEADD(day, 1, @Previous_Valid_to_3)
+								           from #Currency_Rate_2 u3 
+								           where ID_Currency_Rate = @ID_Currency_Rate_2 and [row_number] != 1 and [row_number] = @row_number_2
+									   end
+							 end
+						  
+
+			  if exists (select * from #Currency_Rate_2  as a where ID_Currency_Rate = @ID_Currency_Rate_2 and flag = 0 and  Valid_from is not null and Valid_to is not null)
+					begin 
+					     set @i_4 =  @i_4 + 1
+			             update a set flag = 1 from #Currency_Rate_2  as a where ID_Currency_Rate = @ID_Currency_Rate_2 and flag = 0 and  Valid_from is not null and Valid_to is not null 
+					end
+
+	          select @s_2 = count(0) from #Currency_Rate_2 where flag = 0
+			  set @n_2 = (select  
+			            case  t.flag  when 1 then ' 1  Значения изменены' when 0  then ' 0  Значения не изменялись' end  
+			            from #Currency_Rate_2 t  where ID_Currency_Rate = @ID_Currency_Rate_2)
+			  set @mess_2 = @n_2 + ' - > ' +  ' Объект ' + cast(@id_2 as varchar)  + ' ID_Currency_Rate '  + Cast(@ID_Currency_Rate_2 as varchar)  + ' --> ' + ' - ' + Cast(@i_4 as varchar) + ' / ' + Cast(@s_2 as varchar)
+			  RAISERROR(@mess_2,0,0) WITH NOWAIT
+	   end try
+       begin catch
+	        if @@trancount > 0
+                begin
+                   rollback;
+                end;
+                
+                set @err_2 = formatmessage(N'ID=%I64d, error - %s', @id_2, error_message());
+                print @err_2;
+	   end catch;
+	fetch next from mycur_2 into 
+     @ID_Currency_Rate_2  
+    ,@id_2                
+    ,@Currency_Rate_new_2 
+    ,@Valid_from_2        
+    ,@Previous_Valid_from_2
+    ,@Valid_to_2          
+    ,@Previous_Valid_to_2 
+    ,@row_number_2        
+    ,@сумма_2             
+    ,@flag_2
+	end
+close mycur_2
+deallocate mycur_2
+
+
+/* 
+Формируем из заполненных столбцов из таблицы #Currency_Rate_2, данные Json в столбец JSON_Currency_Rate_Data  в конечную таблицу Currency_Rate , из столбцов id,Currency_Rate_new,Valid_from,Valid_to
+И заполним текущию таблицу.
+*/
+INSERT INTO Currency_Rate (
+    ID_Currency,
+    Amount_Rate,
+    Valid_from,
+    Valid_to,
+    JSON_Currency_Rate_Data
+)
+SELECT 
+    id AS ID_Currency,
+    Currency_Rate_new AS Amount_Rate,
+    Valid_from,
+    Valid_to,
+    JSON_QUERY('{' +
+        '"ID_Currency":' + CAST(id AS nvarchar) + ',' +
+        '"Amount_Rate":' + CAST(Currency_Rate_new AS nvarchar) + ',' +
+        '"Valid_from":"' + CONVERT(varchar, Valid_from, 120) + '",' +
+        '"Valid_to":"' + CONVERT(varchar, Valid_to, 120) + '"' ++
+    '}') AS JSON_Currency_Rate_Data
+FROM #Currency_Rate_2 order by id,Valid_from
+
+
+drop table if exists #Currency_Rate
+drop table if exists #Currency_Rate_2
+
 go
+
+
 
