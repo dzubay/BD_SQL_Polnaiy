@@ -4558,24 +4558,34 @@ drop table if exists  #Item_TypeItem
 
 select * from #Item_TypeItem order by ID_Item_TypeItem
 
-/*
-declare @i int = 0
 
-
-while @i < 200
+declare @i int = 1
+declare @Id_Item_Status bigint 
+declare @Article_number nvarchar(300)
+declare @Country nvarchar(200)
+while @i <= 4454
    begin
-      insert into  Item(
-	  ID_product_measurement,ID_TypeItem,ID_Species_Item,Id_Item_Status,Article_number,Name_Item,Image_Item,
-	  Manufacturer,Country,City,Adress,Mail,Phone,Logo,Date_Created,Quantity,[Description]) values
-	  (
-	  )
+      set @Id_Item_Status = (select top 1 Id_Item_Status from Item_Status order by NEWID())
+	  set @Article_number = (REPLACE(SUBSTRING(CONVERT(varchar(72), NEWID()), 1,CONVERT(int,(ROUND(5+rand()*25,0)))), '-', ''))
+	  set @Country = (select top 1 Name_Country from Country  order by NEWID())
+   --   insert into  Item(
+	  --ID_product_measurement,ID_TypeItem,ID_Species_Item,Id_Item_Status,Article_number,Name_Item,Image_Item,
+	  --Manufacturer,Country,City,Adress,Mail,Phone,Logo,Date_Created,Quantity,[Description]) values
+	  --(
+	  --)
       set @i = @i + 1
    end 
 
-   */
+
 --rollback
 commit
 go
+
+select * from Branch
+
+declare @Country nvarchar(200)
+set @Country = (select top 1 Name_Country from Country  order by NEWID())
+select @Country
 
 --create table Item                                                                       --Товар
 --(
