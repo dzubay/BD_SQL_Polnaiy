@@ -98,7 +98,7 @@ INSERT INTO dbo.Country (Name_Country, Name_English, Cod_Country_Phone) VALUES
 ('Коста-Рика', 'Costa Rica', '+506'),
 ('Кот-д’Ивуар', 'Ivory Coast', '+225'),
 ('Куба', 'Cuba', '+53'),
-('Кюрасао', 'Curaçao', '+599'),
+('Кюрасао', 'Cura?ao', '+599'),
 ('Лаос', 'Laos', '+856'),
 ('Латвия', 'Latvia', '+371'),
 ('Лесото', 'Lesotho', '+266'),
