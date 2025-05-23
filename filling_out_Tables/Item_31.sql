@@ -74,7 +74,7 @@ ID_product_measurement	Product_measurement_Name
 Продолжи последний запрос, хотя бы ещё 100 - 150 строк
 */
 
-use Magaz_DB_Poln_test
+use Magaz_DB_Poln
 go
 set nocount,xact_abort on
 go
@@ -413,7 +413,7 @@ drop table if exists  #Item_TypeItem
 (2,2,4,'Панама "Summer"', 'Ecco'),  
 (2,2,4,'Бюстгальтер "Sport"', 'Adidas'),  
 (2,2,4,'Кеды "Retro"', 'Reebok'),  
-(2,2,4,'Шарф "Cashmere"', 'Hermès'),  
+(2,2,4,'Шарф "Cashmere"', 'Herm?s'),  
 (2,2,4,'Бермуды "Surf"', 'Quiksilver'),  
 (2,2,4,'Футболка "Graphic"', 'Stussy'),  
 (2,2,4,'Шапка "Fur"', 'Canada Goose'),  
@@ -531,7 +531,7 @@ drop table if exists  #Item_TypeItem
 (2,2,4,'Куртка "Motorcycle"', 'Schott NYC'),  
 (2,2,4,'Перчатки "Driving"', 'Chester Jefferies'),  
 (2,2,4,'Костюм "Basketball"', 'Mitchell & Ness'),  
-(2,2,4,'Сумка "Backpack Mini"', 'Fjällräven'),  
+(2,2,4,'Сумка "Backpack Mini"', 'Fj?llr?ven'),  
 (2,2,4,'Ботинки "Logger"', 'Wolverine'),  
 (2,2,4,'Футболка "V-Neck"', 'Banana Republic'),  
 (2,2,4,'Шарф "Plaid"', 'Burberry'),  
@@ -544,7 +544,7 @@ drop table if exists  #Item_TypeItem
 (2,2,4,'Носки "Hiking"', 'Falke'),  
 (2,2,4,'Костюм "Judo"', 'Mizuno'),  
 (2,2,4,'Туфли "Moccasin"', 'Minnetonka'),  
-(2,2,4,'Шапка "Beret"', 'Laulhère'),  
+(2,2,4,'Шапка "Beret"', 'Laulh?re'),  
 (2,2,4,'Брюки "Tapered"', 'Uniqlo'),  
 (2,2,4,'Куртка "Leather"', 'Schott'),
 (3,2,7,'Смартфон "Galaxy S24"','Samsung Electronics'),
@@ -641,7 +641,7 @@ drop table if exists  #Item_TypeItem
 (3,2,7,'Ингалятор "NE-C28"','Omron'),
 (3,2,7,'Ирригатор "Aquarius"','Waterpik'),
 (3,2,7,'Электрощетка "Sonicare"','Philips'),
-(3,2,7,'Эпилятор "Silk-épil 9"','Braun'),
+(3,2,7,'Эпилятор "Silk-?pil 9"','Braun'),
 (3,2,7,'Триммер "MGK7280"','Philips'),
 (3,2,7,'Фен "HD8900"','Philips'),
 (3,2,7,'Выпрямитель "BHS675"','Philips'),
@@ -2656,7 +2656,7 @@ drop table if exists  #Item_TypeItem
 (13,2,4,'Садовый домик для отдыха "Шале"','ООО "Садовые домики"'),
 (14,2,4,'Краски акварельные "Белые ночи" 24цв','ООО "Невская палитра"'),
 (14,2,4,'Кисть синтетическая "Сонет" №5','ЗАО "Художественные кисти"'),
-(14,2,4,'Холст на подрамнике "Грунтованный" 40×50см','ООО "АртХолст"'),
+(14,2,4,'Холст на подрамнике "Грунтованный" 40?50см','ООО "АртХолст"'),
 (14,2,4,'Мольберт "Тренога" алюминиевый','Компания "ПрофиАрт"'),
 (14,2,4,'Карандаши графитные "Koh-i-Noor" набор 12шт','ООО "Чешские карандаши"'),
 (14,2,4,'Палитра пластиковая "Классик"','ЗАО "Художественные аксессуары"'),
@@ -2678,7 +2678,7 @@ drop table if exists  #Item_TypeItem
 (14,2,4,'Лак фиксатив "Для пастели"','ЗАО "Фиксирующие составы"'),
 (14,2,4,'Карандаши цветные "Faber-Castell" 36цв','ООО "Немецкие карандаши"'),
 (14,2,4,'Кисть беличья "Экстра" №8','Компания "Натуральные кисти"'),
-(14,2,4,'Холст картон "Грунтованный" 30×40см','ООО "Картонные холсты"'),
+(14,2,4,'Холст картон "Грунтованный" 30?40см','ООО "Картонные холсты"'),
 (14,2,4,'Масло льняное "Очищенное" 250мл','ЗАО "Живописные масла"'),
 (14,2,4,'Гелевые ручки "Uni" набор 6цв','ООО "Японские ручки"'),
 (14,2,4,'Палитра деревянная "Профи"','Компания "Деревянные палитры"'),
@@ -2701,9 +2701,9 @@ drop table if exists  #Item_TypeItem
 (14,2,4,'Мольберт "Студенческий"','ООО "Учебные мольберты"'),
 (14,2,4,'Бумага для масла "Льняная"','ЗАО "Специальная бумага"'),
 (14,2,4,'Лак ретушный "Для графики"','ООО "Ретушные материалы"'),
-(14,2,4,'Карандаши акварельные "Albrecht Dürer"','Компания "Акварельные карандаши"'),
+(14,2,4,'Карандаши акварельные "Albrecht D?rer"','Компания "Акварельные карандаши"'),
 (14,2,4,'Кисть колонок "Круглая" №3','ООО "Колонковые кисти"'),
-(14,2,4,'Холст "Льняной" 50×70см','ЗАО "Льняные холсты"'),
+(14,2,4,'Холст "Льняной" 50?70см','ЗАО "Льняные холсты"'),
 (14,2,4,'Скипидар "Очищенный"','ООО "Живописные растворители"'),
 (14,2,4,'Линеры "Каллиграфические" набор','Компания "Каллиграфические инструменты"'),
 (14,2,4,'Палитра керамическая "Белая"','ООО "Керамические палитры"'),
@@ -2715,7 +2715,7 @@ drop table if exists  #Item_TypeItem
 (14,2,4,'Медиум "Глянцевый" для акрила','ООО "Акриловые медиумы"'),
 (14,2,4,'Карандаши графитные "Архитектурные"','Компания "Архитектурные карандаши"'),
 (14,2,4,'Кисть синтетика "Веерная"','ООО "Веерные кисти"'),
-(14,2,4,'Холст "Хлопковый" 60×80см','ЗАО "Хлопковые холсты"'),
+(14,2,4,'Холст "Хлопковый" 60?80см','ЗАО "Хлопковые холсты"'),
 (14,2,4,'Сепия "Натуральная"','ООО "Классические материалы"'),
 (14,2,4,'Маркеры спиртовые "Sketch"','Компания "Эскизные маркеры"'),
 (14,2,4,'Скетчбук "Текстурированный" А4','ООО "Текстурированные блокноты"'),
@@ -2728,7 +2728,7 @@ drop table if exists  #Item_TypeItem
 (14,2,4,'Лак "Аэрозольный" матовый','Компания "Аэрозольные лаки"'),
 (14,2,4,'Карандаши угольные "Прессованные"','ООО "Прессованный уголь"'),
 (14,2,4,'Кисть пони "Круглая" №2','ЗАО "Кисти из пони"'),
-(14,2,4,'Холст "Двойной грунт" 70×100см','ООО "Профессиональные холсты"'),
+(14,2,4,'Холст "Двойной грунт" 70?100см','ООО "Профессиональные холсты"'),
 (14,2,4,'Разбавитель "Пинен"','Компания "Живописные разбавители"'),
 (14,2,4,'Линеры "Архитектурные" 0.1-0.5мм','ООО "Архитектурные линеры"'),
 (14,2,4,'Палитра стеклянная "Серая"','ЗАО "Стеклянные палитры"'),
@@ -2740,7 +2740,7 @@ drop table if exists  #Item_TypeItem
 (14,2,4,'Медиум "Матовая" для акрила','Компания "Матовые медиумы"'),
 (14,2,4,'Карандаши цветные "Акварельные"','ООО "Акварельные карандаши"'),
 (14,2,4,'Кисть синтетика "Плоская" №10','ЗАО "Плоские кисти"'),
-(14,2,4,'Холст "Тройной грунт" 80×120см','ООО "Холсты премиум"'),
+(14,2,4,'Холст "Тройной грунт" 80?120см','ООО "Холсты премиум"'),
 (14,2,4,'Уголь "Ивовый"','Компания "Натуральный уголь"'),
 (14,2,4,'Маркеры "Каллиграфические"','ООО "Каллиграфические маркеры"'),
 (14,2,4,'Скетчбук "Спиральный" А5','ЗАО "Спиральные блокноты"'),
@@ -2753,7 +2753,7 @@ drop table if exists  #Item_TypeItem
 (14,2,4,'Лак "Аэрозольный" глянцевый','ООО "Глянцевые лаки"'),
 (14,2,4,'Карандаши графитные "Механические"','ЗАО "Механические карандаши"'),
 (14,2,4,'Кисть коза "Круглая" №4','ООО "Козьи кисти"'),
-(14,2,4,'Холст "Музейный" 90×120см','Компания "Музейные холсты"'),
+(14,2,4,'Холст "Музейный" 90?120см','Компания "Музейные холсты"'),
 (14,2,4,'Разбавитель "Уайт-спирит"','ООО "Художественные растворители"'),
 (14,2,4,'Линеры "Иллюстрационные"','ЗАО "Иллюстрационные линеры"'),
 (14,2,4,'Палитра "Бумажная" блок','ООО "Бумажные палитры"'),
@@ -2765,7 +2765,7 @@ drop table if exists  #Item_TypeItem
 (14,2,4,'Медиум "Гелевый" для акрила','ООО "Гелевые медиумы"'),
 (14,2,4,'Карандаши цветные "Металлик"','ЗАО "Металлические карандаши"'),
 (14,2,4,'Кисть синтетика "Овальная"','ООО "Овальные кисти"'),
-(14,2,4,'Холст "Экстра" 100×150см','Компания "Экстра холсты"'),
+(14,2,4,'Холст "Экстра" 100?150см','Компания "Экстра холсты"'),
 (14,2,4,'Сангина "Карандаш"','ООО "Сангинные карандаши"'),
 (14,2,4,'Маркеры "Архитектурные"','ЗАО "Архитектурные маркеры"'),
 (14,2,4,'Скетчбук "Твердая обложка" А4','ООО "Твердые скетчбуки"'),
@@ -4556,58 +4556,1076 @@ drop table if exists  #Item_TypeItem
 
 
 
-select * from #Item_TypeItem order by ID_Item_TypeItem
+
+/*
+Есть таблица
+Id_Country	Name_Country
+1	Австралия
+2	Австрия
+3	Азербайджан
+4	Албания
+5	Алжир
+6	Американское Самоа
+7	Ангилья
+8	Ангола
+9	Антигуа и Барбуда
+10	Аргентина
+11	Армения
+12	Афганистан
+13	Багамские Острова
+14	Бангладеш
+15	Барбадос
+16	Бахрейн
+17	Беларусь
+18	Белиз
+19	Бельгия
+20	Бенин
+21	Болгария
+22	Боливия
+23	Бразилия
+24	Буркина-Фасо
+25	Бурунди
+26	Вануату
+27	Ватикан
+28	Венгрия
+29	Венесуэла
+30	Вьетнам
+31	Габон
+32	Гаити
+33	Гана
+34	Греция
+35	Гренада
+36	Грузия
+37	Дания
+38	Джорджия
+39	Доминика
+40	Доминиканская Республика
+41	Египет
+42	Замбия
+43	Зимбабве
+44	Индия
+45	Индонезия
+46	Иордания
+47	Ирландия
+48	Исландия
+49	Испания
+50	Италия
+51	Кабо-Верде
+52	Казахстан
+53	Канаду
+54	Катар
+55	Кения
+56	Кипр
+57	Киргизия
+58	Китай
+59	Корея, Северная
+60	Корея, Южная
+61	Коста-Рика
+62	Кот-д’Ивуар
+63	Куба
+64	Кюрасао
+65	Лаос
+66	Латвия
+67	Лесото
+68	Литва
+69	Люксембург
+70	Маврикий
+71	Мавритания
+72	Мадейра
+73	Малайзия
+74	Мали
+75	Мальдивы
+76	Мальта
+77	Мексика
+78	Молдова
+79	Монако
+80	Монголия
+81	Морокко
+82	Намибия
+83	Непал
+84	Нигер
+85	Нигерия
+86	Новая Зеландия
+87	Норвегия
+88	Объединенные Арабские Эмираты
+89	Оман
+90	Пакистан
+91	Палау
+92	Панама
+93	Папуа – Новая Гвинея
+94	Парагвай
+95	Португалия
+96	Россия
+97	Румыния
+98	Сальвадор
+99	Саудовская Аравия
+100	Сингапур
+101	Словакия
+102	Словения
+103	Сомали
+104	Судан
+105	Таджикистан
+106	Таиланд
+107	Тайвань
+108	Танзания
+109	Того
+110	Туркменистан
+111	Турция
+112	Уганда
+113	Узбекистан
+114	Украина
+115	Уругвай
+116	Филиппины
+117	Финляндия
+118	Франция
+119	Хорватия
+120	Центральноафриканская Республика
+121	Чад
+122	Чехия
+123	Чили
+124	Швейцария
+125	Швеция
+126	Эквадор
+127	Экваториальная Гвинея
+128	Эстония
+129	Южноафриканская Республика
+130	Южный Судан
+131	Япония
+
+требуется сформировать по каждой стране 5 адресов,  в отдельной колонке ID страны, в другой город, в другом столбце адрес. Не нужно указывать под строками страну в комментариях. 
+В наименованиях городов и адресов, не должно быть одинарных кавычек. Страна и адрес должны быть в одинарных  кавычках.
+Каждая строка должна быть в скобках , столбец через запятую, Название города , и адрес. Адреса должны быть настоящими.
+Наименования  адресов должны быть на Латинице, либо на Кириллице, никаких других языков и символов!!! Строго! никаких других языков и символов ещё раз!!!!!!!.
+ в конце строки должна быть запятая.
+
+
+*/
+
+
+
+drop table if exists #country_addresses
+
+CREATE TABLE #country_addresses (
+    id_country INT,
+    city NVARCHAR(100),
+    address NVARCHAR(255)
+);
+
+INSERT INTO #country_addresses (id_country, city, address) VALUES
+(1, 'Sydney', '100 Market St, Sydney NSW 2000, Australia'),
+(1, 'Melbourne', '250 Collins St, Melbourne VIC 3000, Australia'),
+(1, 'Brisbane', '123 Queen St, Brisbane City QLD 4000, Australia'),
+(1, 'Perth', '200 St Georges Terrace, Perth WA 6000, Australia'),
+(1, 'Adelaide', '1 King William St, Adelaide SA 5000, Australia'),
+
+(2, 'Vienna', 'Graben 15, 1010 Wien, Austria'),
+(2, 'Graz', 'Herrengasse 16, 8010 Graz, Austria'),
+(2, 'Salzburg', 'Getreidegasse 9, 5020 Salzburg, Austria'),
+(2, 'Innsbruck', 'Maria-Theresien-Strasse 18, 6020 Innsbruck, Austria'),
+(2, 'Linz', 'Hauptplatz 1, 4020 Linz, Austria'),
+
+(3, 'Baku', '28 May Street 7, Baku 1005, Azerbaijan'),
+(3, 'Ganja', 'Ataturk Avenue 45, Ganja 2000, Azerbaijan'),
+(3, 'Sumqayit', 'Z. Aliyeva Street 10, Sumqayit 5000, Azerbaijan'),
+(3, 'Lankaran', 'A. Abbaszade Street 25, Lankaran 4200, Azerbaijan'),
+(3, 'Shirvan', 'M. Mushfig Street 30, Shirvan 1800, Azerbaijan'),
+
+(4, 'Tirana', 'Bulevardi Deshmoret e Kombit 1, Tirana 1001, Albania'),
+(4, 'Durres', 'Sheshi Liria 5, Durres 2001, Albania'),
+(4, 'Vlore', 'Rruga Uji i Ftohte 12, Vlore 9401, Albania'),
+(4, 'Shkoder', 'Rruga Kole Idromeno 10, Shkoder 4001, Albania'),
+(4, 'Elbasan', 'Rruga Kristaq Tutulani 8, Elbasan 3001, Albania'),
+
+(5, 'Algiers', 'Rue Didouche Mourad 10, Algiers 16000, Algeria'),
+(5, 'Oran', 'Boulevard de la Soummam 15, Oran 31000, Algeria'),
+(5, 'Constantine', 'Avenue Ali Mendjeli 20, Constantine 25000, Algeria'),
+(5, 'Annaba', 'Rue du 19 Juin 1965 5, Annaba 23000, Algeria'),
+(5, 'Blida', 'Rue des Martyrs 30, Blida 09000, Algeria'),
+
+(6, 'Pago Pago', 'Main Street 123, Pago Pago 96799, American Samoa'),
+(6, 'Tafuna', 'Tafuna Highway 45, Tafuna 96799, American Samoa'),
+(6, 'Leone', 'Leone Road 78, Leone 96799, American Samoa'),
+(6, 'Fagatogo', 'Fagatogo Square 12, Fagatogo 96799, American Samoa'),
+(6, 'Aua', 'Aua Village Road 34, Aua 96799, American Samoa'),
+
+(7, 'The Valley', 'Wallblake Road 5, The Valley AI-2640, Anguilla'),
+(7, 'Blowing Point', 'Blowing Point Road 10, Blowing Point AI-2640, Anguilla'),
+(7, 'Sandy Ground', 'Sandy Ground Road 15, Sandy Ground AI-2640, Anguilla'),
+(7, 'Island Harbour', 'Island Harbour Road 20, Island Harbour AI-2640, Anguilla'),
+(7, 'George Hill', 'George Hill Road 25, George Hill AI-2640, Anguilla'),
+
+(8, 'Luanda', 'Avenida 4 de Fevereiro 50, Luanda, Angola'),
+(8, 'Lubango', 'Rua da Liberdade 30, Lubango, Angola'),
+(8, 'Huambo', 'Avenida da Independencia 20, Huambo, Angola'),
+(8, 'Benguela', 'Rua Comandante Cowboy 15, Benguela, Angola'),
+(8, 'Cabinda', 'Avenida do Mar 10, Cabinda, Angola'),
+
+(9, 'St. Johns', 'Market Street 25, St. Johns, Antigua and Barbuda'),
+(9, 'All Saints', 'All Saints Road 30, All Saints, Antigua and Barbuda'),
+(9, 'Liberta', 'Liberta Village Road 15, Liberta, Antigua and Barbuda'),
+(9, 'Bolans', 'Bolans Main Road 20, Bolans, Antigua and Barbuda'),
+(9, 'Potters Village', 'Potters Road 10, Potters Village, Antigua and Barbuda'),
+
+(10, 'Buenos Aires', 'Avenida de Mayo 500, Buenos Aires C1084, Argentina'),
+(10, 'Cordoba', 'Boulevard San Juan 300, Cordoba X5000, Argentina'),
+(10, 'Rosario', 'Santa Fe Street 200, Rosario S2000, Argentina'),
+(10, 'Mendoza', 'Avenida San Martin 100, Mendoza M5500, Argentina'),
+(10, 'La Plata', 'Calle 7 800, La Plata B1900, Argentina'),
+
+(11, 'Yerevan', 'Tumanyan Street 10, Yerevan 0001, Armenia'),
+(11, 'Gyumri', 'Vartanants Street 20, Gyumri 3101, Armenia'),
+(11, 'Vanadzor', 'Tigran Mets Avenue 30, Vanadzor 2001, Armenia'),
+(11, 'Ejmiatsin', 'Vardanants Street 40, Ejmiatsin 1101, Armenia'),
+(11, 'Hrazdan', 'Garegin Nzhdeh Street 50, Hrazdan 2301, Armenia'),
+
+(12, 'Kabul', 'Macroryan Street 15, Kabul 1001, Afghanistan'),
+(12, 'Kandahar', 'Aino Mina Road 20, Kandahar 3801, Afghanistan'),
+(12, 'Herat', 'Herat City Center 25, Herat 3001, Afghanistan'),
+(12, 'Mazar-i-Sharif', 'Blue Mosque Road 30, Mazar-i-Sharif 4001, Afghanistan'),
+(12, 'Jalalabad', 'Spinghar Road 35, Jalalabad 2001, Afghanistan'),
+
+(13, 'Nassau', 'Bay Street 100, Nassau, Bahamas'),
+(13, 'Freeport', 'Explorers Way 200, Freeport, Bahamas'),
+(13, 'Lucaya', 'Sea Horse Road 300, Lucaya, Bahamas'),
+(13, 'Marsh Harbour', 'Don Mackay Boulevard 400, Marsh Harbour, Bahamas'),
+(13, 'George Town', 'Queens Highway 500, George Town, Bahamas'),
+
+(14, 'Dhaka', 'Gulshan Avenue 70, Dhaka 1212, Bangladesh'),
+(14, 'Chittagong', 'Agrabad Commercial Area 80, Chittagong 4100, Bangladesh'),
+(14, 'Khulna', 'Khalishpur Road 90, Khulna 9000, Bangladesh'),
+(14, 'Rajshahi', 'Shaheb Bazar Road 100, Rajshahi 6000, Bangladesh'),
+(14, 'Sylhet', 'Zindabazar Road 110, Sylhet 3100, Bangladesh'),
+
+(15, 'Bridgetown', 'Broad Street 50, Bridgetown BB11000, Barbados'),
+(15, 'Speightstown', 'Queen Street 60, Speightstown BB26000, Barbados'),
+(15, 'Holetown', 'Second Street 70, Holetown BB24000, Barbados'),
+(15, 'Oistins', 'Main Road 80, Oistins BB17000, Barbados'),
+(15, 'Hastings', 'Hastings Main Road 90, Hastings BB15000, Barbados'),
+
+(16, 'Manama', 'Government Avenue 10, Manama 304, Bahrain'),
+(16, 'Muharraq', 'Sheikh Hamad Avenue 20, Muharraq 305, Bahrain'),
+(16, 'Riffa', 'Shaikh Salman Road 30, Riffa 306, Bahrain'),
+(16, 'Hamad Town', 'Al Fateh Highway 40, Hamad Town 307, Bahrain'),
+(16, 'Isa Town', 'Al Muaskar Avenue 50, Isa Town 308, Bahrain'),
+
+(17, 'Minsk', 'Nezavisimosti Avenue 10, Minsk 220030, Belarus'),
+(17, 'Gomel', 'Sovetskaya Street 20, Gomel 246000, Belarus'),
+(17, 'Mogilev', 'Leninskaya Street 30, Mogilev 212000, Belarus'),
+(17, 'Vitebsk', 'Zamkovaya Street 40, Vitebsk 210000, Belarus'),
+(17, 'Grodno', 'Sovetskaya Street 50, Grodno 230000, Belarus'),
+
+(18, 'Belmopan', 'Constitution Drive 10, Belmopan, Belize'),
+(18, 'Belize City', 'Albert Street 20, Belize City, Belize'),
+(18, 'San Ignacio', 'Burns Avenue 30, San Ignacio, Belize'),
+(18, 'Orange Walk', 'Queen Victoria Avenue 40, Orange Walk, Belize'),
+(18, 'Dangriga', 'Commerce Street 50, Dangriga, Belize'),
+
+(19, 'Brussels', 'Rue de la Loi 10, 1000 Brussels, Belgium'),
+(19, 'Antwerp', 'Meir 20, 2000 Antwerp, Belgium'),
+(19, 'Ghent', 'Korenmarkt 30, 9000 Ghent, Belgium'),
+(19, 'Charleroi', 'Boulevard Tirou 40, 6000 Charleroi, Belgium'),
+(19, 'Liege', 'Place Saint-Lambert 50, 4000 Liege, Belgium'),
+
+(20, 'Porto-Novo', 'Rue des Ministeres 10, Porto-Novo, Benin'),
+(20, 'Cotonou', 'Boulevard de la Marina 20, Cotonou, Benin'),
+(20, 'Parakou', 'Avenue des Martyrs 30, Parakou, Benin'),
+(20, 'Djougou', 'Rue du Commerce 40, Djougou, Benin'),
+(20, 'Abomey-Calavi', 'Route de lAeroport 50, Abomey-Calavi, Benin'),
+
+(21, 'Sofia', 'Vitosha Boulevard 10, Sofia 1000, Bulgaria'),
+(21, 'Plovdiv', 'Gladston Street 20, Plovdiv 4000, Bulgaria'),
+(21, 'Varna', 'Slivnitsa Boulevard 30, Varna 9000, Bulgaria'),
+(21, 'Burgas', 'Aleksandrovska Street 40, Burgas 8000, Bulgaria'),
+(21, 'Ruse', 'Borisova Street 50, Ruse 7000, Bulgaria'),
+
+(22, 'La Paz', 'Avenida 16 de Julio 10, La Paz, Bolivia'),
+(22, 'Santa Cruz', 'Avenida San Martin 20, Santa Cruz, Bolivia'),
+(22, 'Cochabamba', 'Avenida Heroinas 30, Cochabamba, Bolivia'),
+(22, 'Sucre', 'Calle Bustillos 40, Sucre, Bolivia'),
+(22, 'Oruro', 'Calle Presidente Montes 50, Oruro, Bolivia'),
+
+(23, 'Brasilia', 'Esplanada dos Ministerios 10, Brasilia DF 70050, Brazil'),
+(23, 'Sao Paulo', 'Avenida Paulista 20, Sao Paulo SP 01310, Brazil'),
+(23, 'Rio de Janeiro', 'Avenida Atlantica 30, Rio de Janeiro RJ 22010, Brazil'),
+(23, 'Belo Horizonte', 'Avenida Afonso Pena 40, Belo Horizonte MG 30130, Brazil'),
+(23, 'Salvador', 'Avenida Sete de Setembro 50, Salvador BA 40060, Brazil'),
+
+(24, 'Ouagadougou', 'Avenue Kwame Nkrumah 10, Ouagadougou, Burkina Faso'),
+(24, 'Bobo-Dioulasso', 'Avenue de la Revolution 20, Bobo-Dioulasso, Burkina Faso'),
+(24, 'Koudougou', 'Boulevard de la Liberte 30, Koudougou, Burkina Faso'),
+(24, 'Ouahigouya', 'Rue du Commerce 40, Ouahigouya, Burkina Faso'),
+(24, 'Banfora', 'Avenue de lIndependance 50, Banfora, Burkina Faso'),
+
+(25, 'Bujumbura', 'Avenue de lIndependance 10, Bujumbura, Burundi'),
+(25, 'Gitega', 'Boulevard de la Revolution 20, Gitega, Burundi'),
+(25, 'Ngozi', 'Rue du Marche 30, Ngozi, Burundi'),
+(25, 'Rumonge', 'Avenue du Lac 40, Rumonge, Burundi'),
+(25, 'Kayanza', 'Boulevard des Martyrs 50, Kayanza, Burundi'),
+
+(26, 'Port Vila', 'Kumul Highway 10, Port Vila, Vanuatu'),
+(26, 'Luganville', 'Main Street 20, Luganville, Vanuatu'),
+(26, 'Lenakel', 'Coastal Road 30, Lenakel, Vanuatu'),
+(26, 'Norsup', 'Market Road 40, Norsup, Vanuatu'),
+(26, 'Sola', 'Harbour Road 50, Sola, Vanuatu'),
+
+(27, 'Vatican City', 'Via della Conciliazione 10, 00120 Vatican City'),
+(27, 'Vatican Gardens', 'Viale Vaticano 20, 00120 Vatican City'),
+(27, 'St. Peters Square', 'Piazza San Pietro 30, 00120 Vatican City'),
+(27, 'Vatican Museums', 'Viale Vaticano 40, 00120 Vatican City'),
+(27, 'Vatican Library', 'Cortile del Belvedere 50, 00120 Vatican City'),
+
+(28, 'Budapest', 'Andrassy ut 10, 1061 Budapest, Hungary'),
+(28, 'Debrecen', 'Piac utca 20, 4024 Debrecen, Hungary'),
+(28, 'Szeged', 'Karasz utca 30, 6720 Szeged, Hungary'),
+(28, 'Miskolc', 'Szechenyi utca 40, 3525 Miskolc, Hungary'),
+(28, 'Pecs', 'Kiraly utca 50, 7621 Pecs, Hungary'),
+
+(29, 'Caracas', 'Avenida Bolivar 10, Caracas 1010, Venezuela'),
+(29, 'Maracaibo', 'Calle 72 20, Maracaibo 4001, Venezuela'),
+(29, 'Valencia', 'Avenida Bolivar Norte 30, Valencia 2001, Venezuela'),
+(29, 'Barquisimeto', 'Calle 25 40, Barquisimeto 3001, Venezuela'),
+(29, 'Maracay', 'Avenida Las Delicias 50, Maracay 2101, Venezuela'),
+
+(30, 'Hanoi', 'Hoan Kiem Street 10, Hanoi 10000, Vietnam'),
+(30, 'Ho Chi Minh City', 'Le Loi Boulevard 20, Ho Chi Minh City 70000, Vietnam'),
+(30, 'Da Nang', 'Bach Dang Street 30, Da Nang 55000, Vietnam'),
+(30, 'Hai Phong', 'Dien Bien Phu Street 40, Hai Phong 18000, Vietnam'),
+(30, 'Can Tho', 'Ngo Quyen Street 50, Can Tho 90000, Vietnam'),
+
+(31, 'Libreville', 'Boulevard Triomphal 10, Libreville, Gabon'),
+(31, 'Port-Gentil', 'Avenue du Commerce 20, Port-Gentil, Gabon'),
+(31, 'Franceville', 'Boulevard de lIndependance 30, Franceville, Gabon'),
+(31, 'Oyem', 'Rue du Marche 40, Oyem, Gabon'),
+(31, 'Moanda', 'Avenue des Ecoles 50, Moanda, Gabon'),
+
+(32, 'Port-au-Prince', 'Rue du Centre 10, Port-au-Prince, Haiti'),
+(32, 'Cap-Haitien', 'Boulevard du Cap 20, Cap-Haitien, Haiti'),
+(32, 'Gonaives', 'Rue des Heros 30, Gonaives, Haiti'),
+(32, 'Saint-Marc', 'Rue de la Liberte 40, Saint-Marc, Haiti'),
+(32, 'Petion-Ville', 'Rue Panamericaine 50, Petion-Ville, Haiti'),
+
+(33, 'Accra', 'Independence Avenue 10, Accra, Ghana'),
+(33, 'Kumasi', 'Prempeh II Street 20, Kumasi, Ghana'),
+(33, 'Tamale', 'Abudu Road 30, Tamale, Ghana'),
+(33, 'Sekondi-Takoradi', 'Beach Road 40, Sekondi-Takoradi, Ghana'),
+(33, 'Cape Coast', 'Pedu Junction 50, Cape Coast, Ghana'),
+
+(34, 'Athens', 'Syntagma Square 10, Athens 105 63, Greece'),
+(34, 'Thessaloniki', 'Aristotelous Square 20, Thessaloniki 546 24, Greece'),
+(34, 'Patras', 'Agiou Nikolaou Street 30, Patras 262 22, Greece'),
+(34, 'Heraklion', '25th August Street 40, Heraklion 712 02, Greece'),
+(34, 'Larissa', 'Kentrikis Plateias 50, Larissa 412 22, Greece'),
+
+(35, 'St. Georges', 'Granby Street 10, St. Georges, Grenada'),
+(35, 'Gouyave', 'Church Street 20, Gouyave, Grenada'),
+(35, 'Grenville', 'Main Street 30, Grenville, Grenada'),
+(35, 'Victoria', 'Hillsborough Street 40, Victoria, Grenada'),
+(35, 'Sauteurs', 'Bay Street 50, Sauteurs, Grenada'),
+
+(36, 'Tbilisi', 'Rustaveli Avenue 10, Tbilisi 0108, Georgia'),
+(36, 'Batumi', 'Memed Abashidze Avenue 20, Batumi 6010, Georgia'),
+(36, 'Kutaisi', 'Tamar Mepe Street 30, Kutaisi 4600, Georgia'),
+(36, 'Rustavi', 'Kostava Street 40, Rustavi 3700, Georgia'),
+(36, 'Zugdidi', 'David Aghmashenebeli Street 50, Zugdidi 2100, Georgia'),
+
+(37, 'Copenhagen', 'Stroget 10, Copenhagen 1550, Denmark'),
+(37, 'Aarhus', 'Sondergade 20, Aarhus 8000, Denmark'),
+(37, 'Odense', 'Vestergade 30, Odense 5000, Denmark'),
+(37, 'Aalborg', 'Boulevarden 40, Aalborg 9000, Denmark'),
+(37, 'Esbjerg', 'Torvegade 50, Esbjerg 6700, Denmark'),
+
+(38, 'Tbilisi', 'Rustaveli Avenue 10, Tbilisi 0108, Georgia'),
+(38, 'Batumi', 'Memhed Abashidze Avenue 20, Batumi 6010, Georgia'),
+(38, 'Kutaisi', 'Tamar Mepe Street 30, Kutaisi 4600, Georgia'),
+(38, 'Rustavi', 'Kostava Street 40, Rustavi 3700, Georgia'),
+(38, 'Zugdidi', 'David Aghmashenebeli Street 50, Zugdidi 2100, Georgia'),
+
+(39, 'Roseau', 'Bayfront Street 10, Roseau, Dominica'),
+(39, 'Portsmouth', 'Bay Street 20, Portsmouth, Dominica'),
+(39, 'Marigot', 'Main Road 30, Marigot, Dominica'),
+(39, 'Berekua', 'Church Street 40, Berekua, Dominica'),
+(39, 'Mahaut', 'High Street 50, Mahaut, Dominica'),
+
+(40, 'Santo Domingo', 'Avenida George Washington 10, Santo Domingo, Dominican Republic'),
+(40, 'Santiago', 'Calle del Sol 20, Santiago, Dominican Republic'),
+(40, 'La Romana', 'Avenida Libertad 30, La Romana, Dominican Republic'),
+(40, 'San Pedro de Macoris', 'Calle Duarte 40, San Pedro de Macoris, Dominican Republic'),
+(40, 'Puerto Plata', 'Calle Beller 50, Puerto Plata, Dominican Republic'),
+
+(41, 'Cairo', '15 Talaat Harb St, Downtown'),  
+(41, 'Alexandria', '24 Saad Zaghloul Sq, Mansheya'),  
+(41, 'Giza', '12 Pyramid Rd, Nazlet El-Semman'),  
+(41, 'Luxor', 'Karnak Temple St, Al Karnak'),  
+(41, 'Sharm El Sheikh', 'Peace Rd, Hadabet Om El Sid'),  
+
+(42, 'Lusaka', '23 Independence Ave, Central Business District'),  
+(42, 'Ndola', '8 President Ave, Northrise'),  
+(42, 'Kitwe', '14 Freedom Way, Parklands'),  
+(42, 'Livingstone', 'Mosi-oa-Tunya Rd, Tourist Area'),  
+(42, 'Kabwe', '32 Railway Station St, Town Centre'),  
+
+(43, 'Harare', '57 Jason Moyo Ave, Central Business District'),  
+(43, 'Bulawayo', '8th Ave, between Fife St and Main St'),  
+(43, 'Mutare', '37 Herbert Chitepo St, Downtown'),  
+(43, 'Gweru', '5 Robert Mugabe Way, City Centre'),  
+(43, 'Kwekwe', '12 Fifth St, Industrial Area'),  
+
+(44, 'Mumbai', '34 Marine Drive, Nariman Point'),  
+(44, 'Delhi', '12 Connaught Place, New Delhi'),  
+(44, 'Bangalore', '7 MG Road, Shivaji Nagar'),  
+(44, 'Chennai', '25 Mount Road, Anna Salai'),  
+(44, 'Kolkata', '1 Park Street, Park Street Area'),  
+
+(45, 'Jakarta', '12 Jalan Thamrin, Central Jakarta'),  
+(45, 'Surabaya', '45 Jalan Tunjungan, Genteng'),  
+(45, 'Bandung', '8 Jalan Asia Afrika, Braga'),  
+(45, 'Medan', '22 Jalan Pemuda, Medan Petisah'),  
+(45, 'Bali', '19 Jalan Raya Kuta, Badung'),  
+
+(46, 'Amman', '23 Rainbow St, Jabal Amman'),  
+(46, 'Aqaba', '12 King Hussein St, Aqaba City'),  
+(46, 'Irbid', '5 University St, Irbid City Centre'),  
+(46, 'Petra', 'Visitor Centre Rd, Wadi Musa'),  
+(46, 'Madaba', '8 Apostle St, City Centre'),  
+
+(47, 'Dublin', '15 OConnell St, North City'),  
+(47, 'Cork', '22 Patrick St, City Centre'),  
+(47, 'Galway', '8 Shop St, Latin Quarter'),  
+(47, 'Limerick', '12 OConnell Ave, City Centre'),  
+(47, 'Waterford', '5 The Quay, City Centre'),  
+
+(48, 'Reykjavik', '22 Laugavegur, Downtown'),  
+(48, 'Akureyri', '5 Hafnarstræti, City Centre'),  
+(48, 'Keflavik', '12 Vatnsnesvegur, Town Centre'),  
+(48, 'Husavik', '8 Asbru, Harbour Area'),  
+(48, 'Selfoss', '3 Austurvegur, Town Centre'),  
+
+(49, 'Madrid', '12 Gran Via, Centro'),  
+(49, 'Barcelona', '34 La Rambla, Ciutat Vella'),  
+(49, 'Valencia', '5 Calle Colon, City Centre'),  
+(49, 'Seville', '22 Avenida de la Constitucion, Casco Antiguo'),  
+(49, 'Bilbao', '8 Gran Via de Don Diego Lopez de Haro, Abando'),  
+
+(50, 'Rome', '12 Via del Corso, Centro Storico'),  
+(50, 'Milan', '5 Via Dante, City Centre'),  
+(50, 'Venice', '22 Calle Larga XXII Marzo, San Marco'),  
+(50, 'Florence', '8 Via de Tornabuoni, City Centre'),  
+(50, 'Naples', '3 Via Toledo, Centro Storico'), 
+
+(51, 'Praia', 'Avenida Amilcar Cabral 23, Plateau'),
+(51, 'Mindelo', 'Rua de Lisboa 12, Centro'),
+(51, 'Santa Maria', 'Rua 5 de Julho 8, Centro'),
+(51, 'Assomada', 'Rua da Liberdade 15, Cidade'),
+(51, 'Porto Novo', 'Avenida Marginal 7, Centro'),
+
+(52, 'Almaty', 'Abay Avenue 56, Almaty'),
+(52, 'Nur-Sultan', 'Kabanbay Batyr Avenue 22, Astana'),
+(52, 'Shymkent', 'Tauke Khan Avenue 34, Shymkent'),
+(52, 'Aktobe', 'Aiteke Bi Street 18, Aktobe'),
+(52, 'Karaganda', 'Bukhar Zhyrau Avenue 45, Karaganda'),
+
+(53, 'Toronto', '100 Queen Street West, Downtown'),
+(53, 'Vancouver', '200 Granville Street, Downtown'),
+(53, 'Montreal', '150 Saint-Catherine Street West, Downtown'),
+(53, 'Calgary', '700 6th Avenue SW, Downtown'),
+(53, 'Ottawa', '50 OConnor Street, Downtown'),
+
+(54, 'Doha', 'Corniche Road 25, West Bay'),
+(54, 'Al Wakrah', 'Al Wakrah Road 12, City Center'),
+(54, 'Al Khor', 'Al Khor Coastal Road 8, Al Khor'),
+(54, 'Lusail', 'Marina Promenade 3, Lusail'),
+(54, 'Al Rayyan', 'Al Rayyan Road 17, Al Rayyan'),
+
+(55, 'Nairobi', 'Kenyatta Avenue 32, CBD'),
+(55, 'Mombasa', 'Moi Avenue 45, Mombasa'),
+(55, 'Kisumu', 'Oginga Odinga Road 18, Kisumu'),
+(55, 'Nakuru', 'Kenyatta Avenue 12, Nakuru'),
+(55, 'Eldoret', 'Uganda Road 24, Eldoret'),
+
+(56, 'Nicosia', 'Makariou Avenue 15, Nicosia'),
+(56, 'Limassol', 'Anexartisias Street 28, Limassol'),
+(56, 'Larnaca', 'Zenon Kitieos Street 10, Larnaca'),
+(56, 'Paphos', 'Apostolou Pavlou Avenue 5, Paphos'),
+(56, 'Ayia Napa', 'Kryou Nerou Avenue 3, Ayia Napa'),
+
+(57, 'Bishkek', 'Chui Avenue 120, Bishkek'),
+(57, 'Osh', 'Lenin Street 45, Osh'),
+(57, 'Karakol', 'Gagarin Street 18, Karakol'),
+(57, 'Jalal-Abad', 'Toktogul Street 32, Jalal-Abad'),
+(57, 'Naryn', 'Lenin Street 12, Naryn'),
+
+(58, 'Beijing', 'Chang an Avenue 1, Dongcheng'),
+(58, 'Shanghai', 'Nanjing Road 233, Huangpu'),
+(58, 'Guangzhou', 'Tianhe Road 208, Tianhe'),
+(58, 'Shenzhen', 'Shennan Road 5002, Futian'),
+(58, 'Chengdu', 'Renmin South Road 4, Qingyang'),
+
+(59, 'Pyongyang', 'Sungri Street 1, Central District'),
+(59, 'Hamhung', 'Yonggwang Street 15, Hamhung'),
+(59, 'Chongjin', 'Haean Street 8, Chongjin'),
+(59, 'Nampo', 'Haeun Street 12, Nampo'),
+(59, 'Wonsan', 'Songdowon Street 5, Wonsan'),
+
+(60, 'Seoul', 'Sejong-daero 110, Jung-gu'),
+(60, 'Busan', 'Jungang-daero 214, Dong-gu'),
+(60, 'Incheon', 'Jemullyang-ro 230, Namdong-gu'),
+(60, 'Daegu', 'Gukchaebosang-ro 200, Jung-gu'),
+(60, 'Daejeon', 'Dunsan-daero 169, Seo-gu'),
+
+(61, 'San Jose', 'Avenida Central 125, Barrio Amon'),
+(61, 'Alajuela', 'Calle 5 entre avenidas 2 y 4, Centro'),
+(61, 'Liberia', 'Calle Real 45, Distrito Central'),
+(61, 'Puntarenas', 'Paseo de los Turistas 80, Puntarenas Centro'),
+(61, 'Limon', 'Avenida 3 entre calles 4 y 6, Barrio Limoncito'),
+
+(62, 'Abidjan', 'Boulevard de la Republique 25, Plateau'),
+(62, 'Yamoussoukro', 'Avenue President Houphouet-Boigny 12, Quartier Administratif'),
+(62, 'Bouake', 'Rue du Commerce 45, Centre Ville'),
+(62, 'San Pedro', 'Boulevard de lIndependance 8, Quartier des Affaires'),
+(62, 'Korhogo', 'Avenue des Ecoles 15, Secteur 3'),
+
+(63, 'Havana', 'Calle 23 156, Vedado'),
+(63, 'Santiago de Cuba', 'Calle Aguilera 510, Centro Historico'),
+(63, 'Camaguey', 'Calle Republica 472, Centro'),
+(63, 'Holguin', 'Calle Libertad 198, Centro Ciudad'),
+(63, 'Santa Clara', 'Calle Independencia 56, entre Colon y Maceo'),
+
+(64, 'Willemstad', 'Breedestraat 25, Punda'),
+(64, 'Sint Michiel', 'Caracasbaaiweg 12, Sint Michiel'),
+(64, 'Westpunt', 'Weg Naar Westpunt 8, Westpunt'),
+(64, 'Jan Thiel', 'Jan Thielweg 5, Jan Thiel'),
+(64, 'Santa Rosa', 'Santa Rosaweg 3, Santa Rosa'),
+
+(65, 'Vientiane', 'Rue Setthathirath 45, Chanthabouly District'),
+(65, 'Luang Prabang', 'Sisavangvong Road 25, Luang Prabang'),
+(65, 'Pakse', 'Road 13 12, Pakse District'),
+(65, 'Savannakhet', 'Oudomsin Road 8, Savannakhet'),
+(65, 'Thakhek', 'Khouvieng Road 5, Thakhek'),
+
+(66, 'Riga', 'Brivibas iela 45, Centra rajons'),
+(66, 'Daugavpils', 'Rigas iela 12, Daugavpils'),
+(66, 'Liepaja', 'Kuršu iela 8, Liepaja'),
+(66, 'Jelgava', 'Liela iela 5, Jelgava'),
+(66, 'Jurmala', 'Jomas iela 23, Jurmala'),
+
+(67, 'Maseru', 'Kingsway 45, Central Maseru'),
+(67, 'Teyateyaneng', 'Main Road 12, TY'),
+(67, 'Mafeteng', 'Market Street 8, Mafeteng'),
+(67, 'Hlotse', 'Leribe Road 5, Hlotse'),
+(67, 'Mohales Hoek', 'Main Street 3, Mohales Hoek'),
+
+(68, 'Vilnius', 'Gedimino prospektas 25, Vilnius'),
+(68, 'Kaunas', 'Laisves aleja 45, Kaunas'),
+(68, 'Klaipeda', 'Turgaus gatve 12, Klaipeda'),
+(68, 'Siauliai', 'Vilniaus gatve 8, Siauliai'),
+(68, 'Panevezys', 'Respublikos gatve 5, Panevezys'),
+
+(69, 'Luxembourg', 'Grand Rue 25, Ville Haute'),
+(69, 'Esch-sur-Alzette', 'Rue de lAlzette 12, Esch-sur-Alzette'),
+(69, 'Differdange', 'Avenue Charlotte 8, Differdange'),
+(69, 'Dudelange', 'Rue du Commerce 5, Dudelange'),
+(69, 'Ettelbruck', 'Place de la Liberation 3, Ettelbruck'),
+
+(70, 'Port Louis', 'Sir William Newton Street 25, Port Louis'),
+(70, 'Curepipe', 'Royal Road 45, Curepipe'),
+(70, 'Quatre Bornes', 'Queen Mary Avenue 12, Quatre Bornes'),
+(70, 'Rose Hill', 'Moka Road 8, Rose Hill'),
+(70, 'Vacoas', 'Saint Jean Road 5, Vacoas'),
+
+(71, 'Nouakchott', 'Avenue Gamal Abdel Nasser 12, Tevragh Zeina'),
+(71, 'Nouadhibou', 'Avenue de lIndependance 8, Centre Ville'),
+(71, 'Rosso', 'Rue du Marche 5, Quartier Commercial'),
+(71, 'Kiffa', 'Avenue des Douanes 3, Centre Ville'),
+(71, 'Zouerate', 'Rue de la Mine 7, Cite Miniere'),
+
+(72, 'Funchal', 'Rua da Carreira 23, Centro'),
+(72, 'Porto Santo', 'Avenida Dr. Manuel Gregorio Pestana 5, Vila Baleira'),
+(72, 'Machico', 'Rua do Ribeirinho 12, Centro'),
+(72, 'Câmara de Lobos', 'Rua da Praça 7, Centro'),
+(72, 'Santana', 'Rua do Comércio 3, Centro'),
+
+(73, 'Kuala Lumpur', 'Jalan Sultan Ismail 50, Bukit Bintang'),
+(73, 'Penang', 'Jalan Penang 25, George Town'),
+(73, 'Johor Bahru', 'Jalan Wong Ah Fook 8, City Centre'),
+(73, 'Malacca', 'Jalan Hang Tuah 12, Bandar Hilir'),
+(73, 'Ipoh', 'Jalan Sultan Idris Shah 18, Old Town'),
+
+(74, 'Bamako', 'Avenue de lIndependance 45, Commune III'),
+(74, 'Sikasso', 'Rue du Commerce 12, Centre Ville'),
+(74, 'Mopti', 'Quartier Komoguel 8, Mopti Ville'),
+(74, 'Segou', 'Avenue Al Quoods 5, Segou Ville'),
+(74, 'Gao', 'Rue de la Mosquee 3, Gao Ville'),
+
+(75, 'Male', 'Ameeru Ahmed Magu 15, Henveiru'),
+(75, 'Addu City', 'Hithadhoo Main Road 8, Hithadhoo'),
+(75, 'Fuvahmulah', 'Dhadimagu Kilhi Road 5, Fuvahmulah'),
+(75, 'Kulhudhuffushi', 'Haa Dhaalu Road 12, Kulhudhuffushi'),
+(75, 'Thinadhoo', 'Gaafu Dhaalu Road 7, Thinadhoo'),
+
+(76, 'Valletta', 'Republic Street 25, Valletta'),
+(76, 'Sliema', 'Tower Road 12, Sliema'),
+(76, 'St. Julians', 'St. Georges Road 8, Paceville'),
+(76, 'Mdina', 'Villegaignon Street 5, Mdina'),
+(76, 'Gozo', 'Independence Square 3, Victoria'),
+
+(77, 'Mexico City', 'Paseo de la Reforma 365, Juarez'),
+(77, 'Guadalajara', 'Avenida Vallarta 1255, Centro'),
+(77, 'Monterrey', 'Avenida Constitución 500, Centro'),
+(77, 'Cancun', 'Boulevard Kukulcan Km 8.5, Zona Hotelera'),
+(77, 'Tijuana', 'Avenida Revolucion 850, Zona Centro'),
+
+(78, 'Chisinau', 'Stefan cel Mare Boulevard 45, Centru'),
+(78, 'Balti', 'Stefan cel Mare Street 28, Centru'),
+(78, 'Tiraspol', '25 October Street 15, Centru'),
+(78, 'Cahul', 'Independentei Street 12, Centru'),
+(78, 'Orhei', 'Vasile Alecsandri Street 8, Centru'),
+
+(79, 'Monaco', 'Avenue des Beaux-Arts 5, Monte-Carlo'),
+(79, 'Monaco-Ville', 'Place du Palais 1, Monaco-Ville'),
+(79, 'La Condamine', 'Boulevard Albert 1er 12, La Condamine'),
+(79, 'Fontvieille', 'Avenue des Ligures 8, Fontvieille'),
+(79, 'Larvotto', 'Avenue Princesse Grace 15, Larvotto'),
+
+(80, 'Ulaanbaatar', 'Peace Avenue 45, Sukhbaatar District'),
+(80, 'Darkhan', 'Central Street 12, Darkhan'),
+(80, 'Erdenet', 'Mining Street 8, Erdenet'),
+(80, 'Khovd', 'Main Street 5, Khovd'),
+(80, 'Ulaangom', 'Central Square 3, Ulaangom'),
+
+(81, 'Casablanca', 'Boulevard Mohammed V 125, Centre Ville'),
+(81, 'Rabat', 'Avenue Mohammed VI 45, Agdal'),
+(81, 'Marrakech', 'Avenue Mohammed V 89, Gueliz'),
+(81, 'Fes', 'Boulevard Hassan II 32, Ville Nouvelle'),
+(81, 'Tangier', 'Avenue Pasteur 18, Ville Nouvelle'),
+
+(82, 'Windhoek', 'Independence Avenue 45, Central District'),
+(82, 'Swakopmund', 'Tobias Hainyeko Street 12, Central'),
+(82, 'Walvis Bay', '5th Road 8, Industrial Area'),
+(82, 'Oshakati', 'Oshivelo Street 5, Oshakati'),
+(82, 'Rundu', 'Dr. Libertina Amathila Avenue 3, Rundu'),
+
+(83, 'Kathmandu', 'Durbar Marg 25, Kathmandu'),
+(83, 'Pokhara', 'Lakeside Road 12, Pokhara'),
+(83, 'Lalitpur', 'Pulchowk Road 8, Lalitpur'),
+(83, 'Bharatpur', 'Narayangadh Road 5, Bharatpur'),
+(83, 'Birgunj', 'Adarsh Nagar Road 3, Birgunj'),
+
+(84, 'Niamey', 'Avenue de la Republique 45, Plateau'),
+(84, 'Zinder', 'Rue du Marche 12, Zinder'),
+(84, 'Maradi', 'Avenue de lIndependance 8, Maradi'),
+(84, 'Tahoua', 'Boulevard des Ecoles 5, Tahoua'),
+(84, 'Agadez', 'Rue du Sultanat 3, Agadez'),
+
+(85, 'Lagos', 'Marina Road 45, Lagos Island'),
+(85, 'Abuja', 'Ahmadu Bello Way 12, Central District'),
+(85, 'Kano', 'Murtala Mohammed Way 8, Kano'),
+(85, 'Ibadan', 'University Road 5, Ibadan'),
+(85, 'Port Harcourt', 'Aba Road 3, Port Harcourt'),
+
+(86, 'Auckland', 'Queen Street 45, Auckland CBD'),
+(86, 'Wellington', 'Lambton Quay 12, Wellington'),
+(86, 'Christchurch', 'Colombo Street 8, Christchurch'),
+(86, 'Hamilton', 'Victoria Street 5, Hamilton'),
+(86, 'Dunedin', 'George Street 3, Dunedin'),
+
+(87, 'Oslo', 'Karl Johans gate 25, Sentrum'),
+(87, 'Bergen', 'Torgallmenningen 12, Bergen'),
+(87, 'Stavanger', 'Olav V gate 8, Stavanger'),
+(87, 'Trondheim', 'Nordre gate 5, Trondheim'),
+(87, 'Drammen', 'Bragernes torg 3, Drammen'),
+
+(88, 'Dubai', 'Sheikh Zayed Road 125, Downtown'),
+(88, 'Abu Dhabi', 'Corniche Road 45, Al Khalidiya'),
+(88, 'Sharjah', 'King Faisal Street 12, Sharjah'),
+(88, 'Ajman', 'Sheikh Rashid bin Humaid Street 8, Ajman'),
+(88, 'Ras Al Khaimah', 'Sheikh Mohammed bin Salem Road 5, RAK'),
+
+(89, 'Muscat', 'Sultan Qaboos Street 45, Ruwi'),
+(89, 'Salalah', '23rd July Street 12, Salalah'),
+(89, 'Sohar', 'Al Batinah Street 8, Sohar'),
+(89, 'Nizwa', 'Souq Street 5, Nizwa'),
+(89, 'Sur', 'Al Ayjah Road 3, Sur'),
+
+(90, 'Karachi', 'Shahrah-e-Faisal 125, Karachi'),
+(90, 'Lahore', 'The Mall Road 45, Lahore'),
+(90, 'Islamabad', 'Jinnah Avenue 12, Blue Area'),
+(90, 'Peshawar', 'Arbab Road 8, Peshawar'),
+(90, 'Quetta', 'Jinnah Road 5, Quetta'),
+
+(91, 'Koror', 'Main Road 45, Koror'),
+(91, 'Melekeok', 'Capitol Hill Road 12, Melekeok'),
+(91, 'Airai', 'Airport Road 8, Airai'),
+(91, 'Ngaraard', 'Ngaraard Road 5, Ngaraard'),
+(91, 'Peleliu', 'Peleliu Road 3, Peleliu'),
+
+(92, 'Panama City', 'Via Espana 125, Bella Vista'),
+(92, 'Colon', 'Calle 11 45, Colon'),
+(92, 'David', 'Avenue Central 12, David'),
+(92, 'Santiago', 'Via Interamericana 8, Santiago'),
+(92, 'Bocas del Toro', 'Calle 3 5, Bocas Town'),
+
+(93, 'Port Moresby', 'Champion Parade 45, Downtown'),
+(93, 'Lae', 'Markham Road 12, Lae'),
+(93, 'Madang', 'Coast Watchers Avenue 8, Madang'),
+(93, 'Mount Hagen', 'Highlands Highway 5, Mount Hagen'),
+(93, 'Goroka', 'Okuk Highway 3, Goroka'),
+
+(94, 'Asuncion', 'Avenida Mariscal Lopez 125, Asuncion'),
+(94, 'Ciudad del Este', 'Avenida Adrian Jara 45, Ciudad del Este'),
+(94, 'Encarnacion', 'Avenida Irrazabal 12, Encarnacion'),
+(94, 'Pedro Juan Caballero', 'Calle Internacional 8, Pedro Juan Caballero'),
+(94, 'Concepcion', 'Avenida Pinedo 5, Concepcion'),
+
+(95, 'Lisbon', 'Avenida da Liberdade 25, Lisbon'),
+(95, 'Porto', 'Rua de Santa Catarina 45, Porto'),
+(95, 'Braga', 'Avenida Central 12, Braga'),
+(95, 'Coimbra', 'Rua Ferreira Borges 8, Coimbra'),
+(95, 'Faro', 'Rua de Santo Antonio 5, Faro'),
+
+(96, 'Moscow', 'Tverskaya Street 15, Central District'),
+(96, 'Saint Petersburg', 'Nevsky Prospect 45, Central District'),
+(96, 'Novosibirsk', 'Krasny Prospekt 12, Novosibirsk'),
+(96, 'Yekaterinburg', 'Lenina Avenue 8, Yekaterinburg'),
+(96, 'Kazan', 'Baumana Street 5, Kazan'),
+
+(97, 'Bucharest', 'Calea Victoriei 125, Sector 1'),
+(97, 'Cluj-Napoca', 'Strada Memorandumului 45, Cluj-Napoca'),
+(97, 'Timisoara', 'Bulevardul Revolutiei 12, Timisoara'),
+(97, 'Iasi', 'Strada Stefan cel Mare 8, Iasi'),
+(97, 'Constanta', 'Bulevardul Tomis 5, Constanta'),
+
+(98, 'San Salvador', 'Alameda Roosevelt 45, San Salvador'),
+(98, 'Santa Ana', 'Avenida Independencia 12, Santa Ana'),
+(98, 'San Miguel', 'Calle Gerardo Barrios 8, San Miguel'),
+(98, 'Sonsonate', 'Avenida Morazan 5, Sonsonate'),
+(98, 'La Libertad', 'Calle El Tunco 3, La Libertad'),
+
+(99, 'Riyadh', 'Olaya Street 125, Olaya'),
+(99, 'Jeddah', 'Tahlia Street 45, Jeddah'),
+(99, 'Mecca', 'Ibrahim Al Khalil Street 12, Mecca'),
+(99, 'Medina', 'King Faisal Road 8, Medina'),
+(99, 'Dammam', 'King Abdullah Street 5, Dammam'),
+
+(100, 'Singapore', 'Orchard Road 25, Downtown Core'),
+(100, 'Jurong East', 'Jurong Gateway Road 12, Jurong East'),
+(100, 'Tampines', 'Tampines Central 8, Tampines'),
+(100, 'Woodlands', 'Woodlands Avenue 5, Woodlands'),
+(100, 'Sengkang', 'Sengkang Square 3, Sengkang'),
+
+(101, 'Bratislava', 'Hviezdoslavovo namestie 25, Stare Mesto'),
+(101, 'Kosice', 'Hlavna ulica 45, Kosice'),
+(101, 'Presov', 'Hlavna ulica 12, Presov'),
+(101, 'Zilina', 'Namestie SNP 8, Zilina'),
+(101, 'Banska Bystrica', 'Namestie SNP 5, Banska Bystrica'),
+
+(102, 'Ljubljana', 'Slovenska cesta 45, Center'),
+(102, 'Maribor', 'Gosposka ulica 12, Maribor'),
+(102, 'Celje', 'Krekov trg 8, Celje'),
+(102, 'Koper', 'Pristaniska ulica 5, Koper'),
+(102, 'Novo Mesto', 'Glavni trg 3, Novo Mesto'),
+
+(103, 'Mogadishu', 'Maka Al Mukarama Road 25, Hodan'),
+(103, 'Hargeisa', 'Ahmed Dhagah Street 12, Hargeisa'),
+(103, 'Bosaso', 'Al Uruba Street 8, Bosaso'),
+(103, 'Kismayo', 'Jamhuriya Road 5, Kismayo'),
+(103, 'Baidoa', 'Wadajir Road 3, Baidoa'),
+
+(104, 'Khartoum', 'Al Gamhuria Street 45, Khartoum'),
+(104, 'Omdurman', 'Al Arbaeen Street 12, Omdurman'),
+(104, 'Port Sudan', 'Red Sea Street 8, Port Sudan'),
+(104, 'Kassala', 'Kassala Main Road 5, Kassala'),
+(104, 'Nyala', 'Al Wahda Street 3, Nyala'),
+
+(105, 'Dushanbe', 'Rudaki Avenue 125, Dushanbe'),
+(105, 'Khujand', 'Sharq Street 45, Khujand'),
+(105, 'Kulob', 'Somoni Street 12, Kulob'),
+(105, 'Bokhtar', 'Istiqlol Street 8, Bokhtar'),
+(105, 'Istaravshan', 'Firdavsi Street 5, Istaravshan'),
+
+(106, 'Bangkok', 'Sukhumvit Road 45, Khlong Toei'),
+(106, 'Chiang Mai', 'Tha Phae Road 12, Mueang Chiang Mai'),
+(106, 'Phuket', 'Thanon Rat-U-Thit 8, Patong'),
+(106, 'Pattaya', 'Beach Road 5, Pattaya'),
+(106, 'Krabi', 'Maharaj Road 3, Krabi'),
+
+(107, 'Taipei', 'Zhongxiao East Road 125, Xinyi District'),
+(107, 'Taichung', 'Taiwan Boulevard 45, Xitun District'),
+(107, 'Kaohsiung', 'Ziqiang 3rd Road 12, Lingya District'),
+(107, 'Tainan', 'Zhonghua East Road 8, East District'),
+(107, 'Hsinchu', 'Guangfu Road 5, East District'),
+
+(108, 'Dar es Salaam', 'Samora Avenue 45, Dar es Salaam'),
+(108, 'Dodoma', 'Jamhuri Street 12, Dodoma'),
+(108, 'Arusha', 'Sokoine Road 8, Arusha'),
+(108, 'Mwanza', 'Kenyatta Road 5, Mwanza'),
+(108, 'Zanzibar City', 'Creek Road 3, Stone Town'),
+
+(109, 'Lome', 'Boulevard du 13 Janvier 45, Lome'),
+(109, 'Sokode', 'Avenue de la Liberation 12, Sokode'),
+(109, 'Kara', 'Rue du Marche 8, Kara'),
+(109, 'Atakpame', 'Boulevard des Armes 5, Atakpame'),
+(109, 'Dapaong', 'Avenue de lIndependance 3, Dapaong'),
+
+(110, 'Ashgabat', 'Magtymguly Avenue 125, Ashgabat'),
+(110, 'Turkmenabat', 'Gurbansoltan eje Street 45, Turkmenabat'),
+(110, 'Dasoguz', 'Azadi Street 12, Dasoguz'),
+(110, 'Mary', 'Gorogly Street 8, Mary'),
+(110, 'Balkanabat', 'Shypak Street 5, Balkanabat'),
+
+(111, 'Istanbul', 'Istiklal Caddesi 125, Beyoglu'),
+(111, 'Ankara', 'Ataturk Bulvari 45, Cankaya'),
+(111, 'Izmir', 'Kordon Boyu 12, Alsancak'),
+(111, 'Antalya', 'Cumhuriyet Caddesi 8, Kaleici'),
+(111, 'Bursa', 'Ataturk Caddesi 5, Osmangazi'),
+
+(112, 'Kampala', 'Kampala Road 45, Central Division'),
+(112, 'Entebbe', 'Main Street 12, Entebbe'),
+(112, 'Jinja', 'Main Street 8, Jinja'),
+(112, 'Mbale', 'Republic Street 5, Mbale'),
+(112, 'Gulu', 'Churchill Road 3, Gulu'),
+
+(113, 'Tashkent', 'Amir Temur Street 125, Yunusabad'),
+(113, 'Samarkand', 'Registan Street 45, Samarkand'),
+(113, 'Bukhara', 'Bakhauddin Nakshbandi Street 12, Bukhara'),
+(113, 'Khiva', 'Islam Khodja Street 8, Khiva'),
+(113, 'Fergana', 'Navoi Street 5, Fergana'),
+
+(114, 'Kyiv', 'Khreshchatyk Street 25, Pechersk'),
+(114, 'Lviv', 'Svobody Avenue 45, Lviv'),
+(114, 'Odesa', 'Deribasivska Street 12, Odesa'),
+(114, 'Kharkiv', 'Sumska Street 8, Kharkiv'),
+(114, 'Dnipro', 'Dmytra Yavornytskoho Avenue 5, Dnipro'),
+
+(115, 'Montevideo', 'Avenida 18 de Julio 125, Centro'),
+(115, 'Punta del Este', 'Avenida Gorlero 45, Punta del Este'),
+(115, 'Salto', 'Uruguay Street 12, Salto'),
+(115, 'Paysandu', 'Artigas Street 8, Paysandu'),
+(115, 'Maldonado', 'Sarandi Street 5, Maldonado'),
+
+(116, 'Manila', 'Roxas Boulevard 45, Malate'),
+(116, 'Cebu City', 'Osmena Boulevard 12, Cebu City'),
+(116, 'Davao City', 'Roxas Avenue 8, Davao City'),
+(116, 'Quezon City', 'Commonwealth Avenue 5, Quezon City'),
+(116, 'Makati', 'Ayala Avenue 3, Makati'),
+
+(117, 'Helsinki', 'Mannerheimintie 25, Helsinki'),
+(117, 'Espoo', 'Keilaranta 12, Espoo'),
+(117, 'Tampere', 'Hameenkatu 8, Tampere'),
+(117, 'Vantaa', 'Tikkurilantie 5, Vantaa'),
+(117, 'Turku', 'Aurakatu 3, Turku'),
+
+(118, 'Paris', 'Avenue des Champs-Elysees 125, 8th arrondissement'),
+(118, 'Marseille', 'La Canebiere 45, Marseille'),
+(118, 'Lyon', 'Rue de la Republique 12, Lyon'),
+(118, 'Toulouse', 'Place du Capitole 8, Toulouse'),
+(118, 'Nice', 'Promenade des Anglais 5, Nice'),
+
+(119, 'Zagreb', 'Ilica 45, Zagreb'),
+(119, 'Split', 'Riva 12, Split'),
+(119, 'Dubrovnik', 'Stradun 8, Dubrovnik'),
+(119, 'Rijeka', 'Korzo 5, Rijeka'),
+(119, 'Osijek', 'Europska avenija 3, Osijek'),
+
+(120, 'Bangui', 'Avenue des Martyrs 45, Bangui'),
+(120, 'Bimbo', 'Route Nationale 3 12, Bimbo'),
+(120, 'Berberati', 'Avenue de lIndependance 8, Berberati'),
+(120, 'Bouar', 'Route Nationale 1 5, Bouar'),
+(120, 'Bambari', 'Route Nationale 6 3, Bambari'),
+
+(121, 'N Djamena', 'Avenue Charles de Gaulle 45, N Djamena'),
+(121, 'Moundou', 'Avenue du President Tombalbaye 12, Moundou'),
+(121, 'Sarh', 'Avenue de lIndependance 8, Sarh'),
+(121, 'Abeche', 'Route Nationale 1 5, Abeche'),
+(121, 'Kelo', 'Route Nationale 6 3, Kelo'),
+
+(122, 'Prague', 'Wenceslas Square 45, New Town'),
+(122, 'Brno', 'Masarykova Street 12, Brno'),
+(122, 'Ostrava', 'Masaryk Square 8, Ostrava'),
+(122, 'Plzen', 'Republic Square 5, Plzen'),
+(122, 'Liberec', 'Namesti Dr. E. Benese 3, Liberec'),
+
+(123, 'Santiago', 'Avenida Libertador Bernardo OHiggins 125, Santiago'),
+(123, 'Valparaiso', 'Avenida Argentina 45, Valparaiso'),
+(123, 'Concepcion', 'Barros Arana Avenue 12, Concepcion'),
+(123, 'Antofagasta', 'Avenida Brasil 8, Antofagasta'),
+(123, 'Puerto Montt', 'Avenida Diego Portales 5, Puerto Montt'),
+
+(124, 'Zurich', 'Bahnhofstrasse 25, Zurich'),
+(124, 'Geneva', 'Rue du Rhone 45, Geneva'),
+(124, 'Basel', 'Freie Strasse 12, Basel'),
+(124, 'Lausanne', 'Rue de Bourg 8, Lausanne'),
+(124, 'Bern', 'Marktgasse 5, Bern'),
+
+(125, 'Stockholm', 'Drottninggatan 45, Stockholm'),
+(125, 'Gothenburg', 'Avenyn 12, Gothenburg'),
+(125, 'Malmo', 'Sodergatan 8, Malmo'),
+(125, 'Uppsala', 'Sankt Olofsgatan 5, Uppsala'),
+(125, 'Vasteras', 'Stora gatan 3, Vasteras'),
+
+(126, 'Quito', 'Avenida Amazonas 125, Quito'),
+(126, 'Guayaquil', 'Avenida 9 de Octubre 45, Guayaquil'),
+(126, 'Cuenca', 'Calle Larga 12, Cuenca'),
+(126, 'Manta', 'Avenida Malecon 8, Manta'),
+(126, 'Ambato', 'Cevallos Street 5, Ambato'),
+
+(127, 'Malabo', 'Avenida Hassan II 45, Malabo'),
+(127, 'Bata', 'Carretera del Aeropuerto 12, Bata'),
+(127, 'Evinayong', 'Avenida de la Independencia 8, Evinayong'),
+(127, 'Luba', 'Carretera de Luba 5, Luba'),
+(127, 'Mongomo', 'Avenida de la Paz 3, Mongomo'),
+
+(128, 'Tallinn', 'Viru Street 25, Tallinn'),
+(128, 'Tartu', 'Raekoja plats 12, Tartu'),
+(128, 'Narva', 'Peterburi tee 8, Narva'),
+(128, 'Parnu', 'Rue 5, Parnu'),
+(128, 'Kohtla-Jarve', 'Keskallee 3, Kohtla-Jarve'),
+
+(129, 'Pretoria', 'Church Street 45, Pretoria'),
+(129, 'Cape Town', 'Adderley Street 12, Cape Town'),
+(129, 'Durban', 'West Street 8, Durban'),
+(129, 'Johannesburg', 'Main Street 5, Johannesburg'),
+(129, 'Port Elizabeth', 'Govan Mbeki Avenue 3, Port Elizabeth'),
+
+(130, 'Juba', 'University Road 45, Juba'),
+(130, 'Malakal', 'Market Street 12, Malakal'),
+(130, 'Wau', 'Freedom Road 8, Wau'),
+(130, 'Yambio', 'Main Street 5, Yambio'),
+(130, 'Aweil', 'Hospital Road 3, Aweil'),
+
+(131, 'Tokyo', 'Ginza Street 5-5-5, Chuo-ku'),
+(131, 'Osaka', 'Midosuji Boulevard 1-1-1, Kita-ku'),
+(131, 'Kyoto', 'Kawaramachi-dori 2-2-2, Shimogyo-ku'),
+(131, 'Yokohama', 'Nihon-odori 3-3-3, Naka-ku'),
+(131, 'Sapporo', 'Odori Nishi 4-4-4, Chuo-ku');
+
+drop table if exists  #Item
+
+create table #Item                                                                       
+(
+Id_Item                    bigint          not null identity (1,1), 
+ID_product_measurement     bigint          not null,                                   
+ID_TypeItem                bigint          not null,                                   
+ID_Species_Item            bigint          not null,                                   
+Id_Item_Status             bigint          not null,                                   
+Article_number             nvarchar(300)   null,                                       
+Name_Item                  nvarchar(500)   null,                                       
+Image_Item                 varbinary(max)  null,                                       
+Manufacturer               nvarchar(500)   null,                                       
+Country                    nvarchar(200)   null,                                       
+City                       nvarchar(200)   null,                                       
+Adress                     nvarchar(800)   null,                                       
+Mail                       nvarchar(250)   null,                                       
+Phone                      nvarchar(30)    null,                                       
+Logo                       varbinary(max)  null,                                       
+Date_Created               datetime        not null,                
+Quantity                   int             null,                                       
+[Description]              nvarchar(4000)  null
+)
 
 
 declare @i int = 1
-declare @Id_Item_Status bigint 
-declare @Article_number nvarchar(300)
-declare @Country nvarchar(200)
+ 
+declare @ID_product_measurement bigint
+declare @ID_TypeItem			bigint
+declare @ID_Species_Item		bigint
+declare @Id_Item_Status         bigint 
+declare @Article_number         nvarchar(300)
+declare @Name_Item				nvarchar(500)     
+declare @Name_Manufacturer	    nvarchar(200)
+
+declare @ID_Country             bigint
+declare @Country                nvarchar(200)
+declare @City                   nvarchar(200)
+declare @Address                nvarchar(800)
+declare @RandomLogin            nvarchar(max)
+declare @TypePhoneRandom        nvarchar(50)
+declare @RandomDate             DateTime
+
 while @i <= 4454
    begin
-      set @Id_Item_Status = (select top 1 Id_Item_Status from Item_Status order by NEWID())
-	  set @Article_number = (REPLACE(SUBSTRING(CONVERT(varchar(72), NEWID()), 1,CONVERT(int,(ROUND(5+rand()*25,0)))), '-', ''))
-	  set @Country = (select top 1 Name_Country from Country  order by NEWID())
-   --   insert into  Item(
-	  --ID_product_measurement,ID_TypeItem,ID_Species_Item,Id_Item_Status,Article_number,Name_Item,Image_Item,
-	  --Manufacturer,Country,City,Adress,Mail,Phone,Logo,Date_Created,Quantity,[Description]) values
-	  --(
-	  --)
+      select top 1 
+	  @ID_product_measurement = ID_product_measurement,
+	  @ID_TypeItem			  = ID_TypeItem			  ,
+	  @ID_Species_Item		  = ID_Species_Item		  ,
+	  @Name_Item			  = [Name]				  ,
+	  @Name_Manufacturer	  = Name_Manufacturer		 
+	  from #Item_TypeItem where  ID_Item_TypeItem = @i order by ID_Item_TypeItem;
+
+      set @Id_Item_Status = (select top 1 Id_Item_Status from Item_Status order by NEWID());
+	  set @Article_number = (REPLACE(SUBSTRING(CONVERT(varchar(72), NEWID()), 1,CONVERT(int,(ROUND(5+rand()*25,0)))), '-', ''));
+
+	   select top 1 
+	   @ID_Country = ID_Country,
+	   @Country = Name_Country	  
+	  from Country  order by NEWID();
+
+	  select top 1 
+	  @City     = City,
+	  @Address  = [address]
+	  from #country_addresses  where ID_Country = @ID_Country order by id_country;
+
+	  set @City = (select top 1 city from #country_addresses where ID_Country = @ID_Country order by NEWID());
+
+	  exec RandomLogin 5,10,  @RandomLogin output;
+	  set @RandomLogin = REPLACE(@RandomLogin, '@', '') + (case when cast(round(rand()*7,0) as nvarchar(10)) = 7 then REPLACE(SUBSTRING(CONVERT(varchar(36), NEWID()), 1, convert(int,ROUND(rand()*120,0))), '-', '') + '@yandex.ru'
+                                              when cast(round(rand()*7,0) as nvarchar(10)) = 7 then REPLACE(SUBSTRING(CONVERT(varchar(36), NEWID()), 1, convert(int,ROUND(rand()*120,0))), '-', '') + '@mail.ru'
+            	                              when cast(round(rand()*7,0) as nvarchar(10)) = 7 then REPLACE(SUBSTRING(CONVERT(varchar(36), NEWID()), 1, convert(int,ROUND(rand()*120,0))), '-', '') + '@mail.com'
+            	                              when cast(round(rand()*7,0) as nvarchar(10)) = 7 then REPLACE(SUBSTRING(CONVERT(varchar(36), NEWID()), 1, convert(int,ROUND(rand()*120,0))), '-', '') + '@gmail.com'
+            	                              when cast(round(rand()*7,0) as nvarchar(10)) = 7 then REPLACE(SUBSTRING(CONVERT(varchar(36), NEWID()), 1, convert(int,ROUND(rand()*120,0))), '-', '') + '@yahoo.com'
+            	                              when cast(round(rand()*7,0) as nvarchar(10)) = 7 then REPLACE(SUBSTRING(CONVERT(varchar(36), NEWID()), 1, convert(int,ROUND(rand()*120,0))), '-', '') + '@hotmail.com'
+            	                              when cast(round(rand()*7,0) as nvarchar(10)) = 7 then REPLACE(SUBSTRING(CONVERT(varchar(36), NEWID()), 1, convert(int,ROUND(rand()*120,0))), '-', '') + '@live.com'
+            	                              when cast(round(rand()*7,0) as nvarchar(10)) = 7 then REPLACE(SUBSTRING(CONVERT(varchar(36), NEWID()), 1, convert(int,ROUND(rand()*120,0))), '-', '') + '@icloud.com'
+            	                              when cast(round(rand()*7,0) as nvarchar(10)) = 7 then REPLACE(SUBSTRING(CONVERT(varchar(36), NEWID()), 1, convert(int,ROUND(rand()*120,0))), '-', '') + '@moore@mail.com'
+            	                              when cast(round(rand()*7,0) as nvarchar(10)) = 7 then REPLACE(SUBSTRING(CONVERT(varchar(36), NEWID()), 1, convert(int,ROUND(rand()*120,0))), '-', '') + '@tutanota.com'
+            	                              when cast(round(rand()*7,0) as nvarchar(10)) = 7 then REPLACE(SUBSTRING(CONVERT(varchar(36), NEWID()), 1, convert(int,ROUND(rand()*120,0))), '-', '') + '@mydomain.com'
+            	                              when cast(round(rand()*7,0) as nvarchar(10)) = 7 then REPLACE(SUBSTRING(CONVERT(varchar(36), NEWID()), 1, convert(int,ROUND(rand()*120,0))), '-', '') + '@dr.com'
+            	                              when cast(round(rand()*7,0) as nvarchar(10)) = 7 then REPLACE(SUBSTRING(CONVERT(varchar(36), NEWID()), 1, convert(int,ROUND(rand()*120,0))), '-', '') + '@live.co.uk'
+            	                              when cast(round(rand()*7,0) as nvarchar(10)) = 7 then REPLACE(SUBSTRING(CONVERT(varchar(36), NEWID()), 1, convert(int,ROUND(rand()*120,0))), '-', '') + '@sharklasers.com'
+            	                              when cast(round(rand()*7,0) as nvarchar(10)) = 7 then REPLACE(SUBSTRING(CONVERT(varchar(36), NEWID()), 1, convert(int,ROUND(rand()*120,0))), '-', '') + '@uol.com.br'
+                                         ELSE N'@yandex.ru' END);
+	   exec RandomPhone 1, @TypePhoneRandom output;
+	   exec RandomDateNew  '20240101','20250501', @RandomDate output;
+
+      insert into  #Item(
+	  ID_product_measurement,ID_TypeItem,ID_Species_Item,Id_Item_Status,Article_number,Name_Item,Image_Item,
+	  Manufacturer,Country,City,Adress,Mail,Phone,Logo,Date_Created,Quantity,[Description]) values
+	  (
+	  @ID_product_measurement ,
+	  @ID_TypeItem			  ,
+	  @ID_Species_Item		  ,
+	  @Id_Item_Status         ,
+	  @Article_number         ,
+	  @Name_Item			  ,	
+	  null                    ,
+	  @Name_Manufacturer	  ,  	  
+	  @Country                ,
+	  @City                   ,
+	  @Address                ,
+	  @RandomLogin            ,
+	  @TypePhoneRandom        ,
+	  null                    ,
+	  @RandomDate             ,
+	  null                    ,
+	  null
+	  )
+	  print ' Добавлено строк' +  ' - число   ' + convert(nvarchar(10),@i);
       set @i = @i + 1
    end 
 
+   insert into Item(ID_product_measurement,ID_TypeItem,ID_Species_Item,Id_Item_Status,Article_number,Name_Item,Image_Item,Manufacturer,Country,City,Adress,Mail,Phone,Logo,Date_Created,Quantity,[Description]) 
+   select 
+   ID_product_measurement,ID_TypeItem,ID_Species_Item,Id_Item_Status,Article_number,Name_Item,Image_Item,Manufacturer,Country,City,Adress,Mail,Phone,Logo,Date_Created,Quantity,[Description]
+   from #Item order by Id_Item
+   
+   --select * from #Item_TypeItem order by ID_Item_TypeItem
+   --select * from #country_addresses order by id_country
+   --select * from #Item 
 
+   drop table if exists #Item_TypeItem
+   drop table if exists #country_addresses
+   drop table if exists #Item
 --rollback
 commit
 go
 
-select * from Branch
-
-declare @Country nvarchar(200)
-set @Country = (select top 1 Name_Country from Country  order by NEWID())
-select @Country
-
---create table Item                                                                       --Товар
---(
---Id_Item                    bigint          not null identity (1,1) check(Id_Item !=0),              --ID Карточки товра
---ID_product_measurement     bigint          not null,                                                --ID Типа измерения товара  
---ID_TypeItem                bigint          not null,                                                --ID Типа товара
---ID_Species_Item            bigint          not null,                                                --ID Вида товара
---Id_Item_Status             bigint          not null,                                                --ID Статуса Товара
---Article_number             nvarchar(300)   null,                                                    --Артикул товара
---Name_Item                  nvarchar(500)   null,                                                    --Наименование товара
---Image_Item                 varbinary(max)  null,                                                    --Изображение товара
---Manufacturer               nvarchar(500)   null,                                                    --Производитель товара
---Country                    nvarchar(200)   null,                                                    --Страна  Производителя товара
---City                       nvarchar(200)   null,                                                    --Город  Производителя товара
---Adress                     nvarchar(800)   null,                                                    --Адрес Производителя товара
---Mail                       nvarchar(250)   null,                                                    --Электронная почта производителя товара 
---Phone                      nvarchar(30)    null,                                                    --Контактный телефон производителя товара
---Logo                       varbinary(max)  null,                                                    --Логотип производителя товара
---Date_Created               datetime        not null  default GetDate(),                             --Дата заведения карточки товара
---Quantity                   int             null,                                                    --Количество данного товара
---[Description]              nvarchar(4000)  null                                                     --Комментарий 
---constraint PK_Id_Item  primary key (Id_Item)
---) on Products_Group
---go
 
