@@ -108,22 +108,12 @@ INSERT INTO @TypeWeights VALUES
 ,(28,'Услуги по дизайну (графический, интерьерный)',(0.3)            )
 ,(29,'Услуги рекламы и маркетинга',(2.0)                             )
  
--- Взвешенный случайный выбор
-
---SELECT TOP 10000 
---    t.*,
---    ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS SelectionSequence
---INTO #RandomSelectedRows
---FROM Item t
---JOIN @TypeWeights w ON t.ID_TypeItem = w.Id_RowType
---ORDER BY -LOG(RAND()) / w.Weight; -- Алгоритм взвешенного случайного выбора
-
 
 
 DECLARE @i INT = 1;
 DECLARE @MaxSequence float = 0;
 
-WHILE @i <= 100000 
+WHILE @i <= 20000 
 BEGIN
     -- Получаем текущее максимальное значение Sequence
     SELECT @MaxSequence = ISNULL(MAX(SelectionSequence), 0) FROM #RandomSelectedRows;
@@ -175,5 +165,47 @@ SELECT
 FROM #RandomSelectedRows soh
 group by soh.id_item,ID_TypeItem
 order by soh.ID_TypeItem
+
+
+select 
+r.Id_Item
+,r.Name_Item
+,r.ID_product_measurement
+,t.Product_measurement_Name
+,r.ID_TypeItem
+,ti.TypeItemName
+,r.ID_Species_Item
+,s.SpeciesItemName
+from #RandomSelectedRows r 
+inner join item i on i.Id_Item = r.Id_Item 
+left join  Type_of_product_measurement t on t.ID_product_measurement = r.ID_product_measurement
+left join  TypeItem ti on ti.Id_TypeItem = r.ID_TypeItem
+left join  Species_Item s on s.ID_Species_Item = r.ID_Species_Item
+ where r.ID_product_measurement = 1
+ order by r.Id_Item
+
+--select * from #RandomSelectedRows
+--select * from Type_of_product_measurement	
+--select * from TypeItem	
+--select * from Species_Item
+
+select  
+r.Id_Item
+,r.Name_Item
+,r.ID_product_measurement
+,t.Product_measurement_Name
+,r.ID_TypeItem
+,ti.TypeItemName
+,r.ID_Species_Item
+,s.SpeciesItemName
+from item r
+left join  Type_of_product_measurement t on t.ID_product_measurement = r.ID_product_measurement
+left join  TypeItem ti on ti.Id_TypeItem = r.ID_TypeItem
+left join  Species_Item s on s.ID_Species_Item = r.ID_Species_Item
+ where r.ID_product_measurement = 1
+ order by r.Id_Item
+
+
+
 
 
