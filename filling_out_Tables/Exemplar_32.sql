@@ -3,6 +3,9 @@ go
 set nocount,xact_abort on;
 go
 
+
+/*
+
 /*
  --Если с самого начала создаётся на с ID равным = 1, то можно обновить таблицу с помощью процы, и заполнить таблицу.
 begin tran
@@ -93,27 +96,27 @@ INSERT INTO @TypeWeights VALUES
 ,(13,'Товары для дачи и сада',(0.5)								     )
 ,(14,'Художественные материалы',(1.0)								 )
 ,(15,'Товары для животных',(1.0)									 )
-,(16,'Услуги связи (интернет, телефон)',(0)						 )
-,(17,'Услуги транспортировки (такси, грузоперевозки)',(0)		     )
-,(18,'Образовательные услуги (курсы, тренинги)',(0)				 )
-,(19,'Медицинские услуги (консультации, лечение)',(0)			     )
-,(20,'Услуги по ремонту и обслуживанию',(0)						 )
-,(21,'Туристические услуги (экскурсии, туры)',(0)				     )
-,(22,'Услуги красоты (парикмахерские, спа)',(0)					 )
-,(23,'Финансовые услуги (банкинг, консалтинг)',(0)				 )
-,(24,'Юридические услуги (консультации, документооборот)',(0)	     )
-,(25,'Услуги проживания (гостиницы, аренда квартир)',(0)		     )
-,(26,'Бронирование билетов (самолеты, поезда, мероприятия)',(0)	 )
-,(27,'Услуги по организации мероприятий (свадьбы, корпоративы)',(0))
-,(28,'Услуги по дизайну (графический, интерьерный)',(0)            )
-,(29,'Услуги рекламы и маркетинга',(0)                             )
+,(16,'Услуги связи (интернет, телефон)',(0.2)						 )
+,(17,'Услуги транспортировки (такси, грузоперевозки)',(0.2)		     )
+,(18,'Образовательные услуги (курсы, тренинги)',(0.2)				 )
+,(19,'Медицинские услуги (консультации, лечение)',(0.2)			     )
+,(20,'Услуги по ремонту и обслуживанию',(0.2)						 )
+,(21,'Туристические услуги (экскурсии, туры)',(0.4)				     )
+,(22,'Услуги красоты (парикмахерские, спа)',(0.6)					 )
+,(23,'Финансовые услуги (банкинг, консалтинг)',(0.2)				 )
+,(24,'Юридические услуги (консультации, документооборот)',(0.1)	     )
+,(25,'Услуги проживания (гостиницы, аренда квартир)',(0.2)		     )
+,(26,'Бронирование билетов (самолеты, поезда, мероприятия)',(0.1)	 )
+,(27,'Услуги по организации мероприятий (свадьбы, корпоративы)',(0.2))
+,(28,'Услуги по дизайну (графический, интерьерный)',(0.2)            )
+,(29,'Услуги рекламы и маркетинга',(0.2)                             )
  
 
 
 DECLARE @i INT = 1;
 DECLARE @MaxSequence float = 0;
 
-WHILE @i <= 20000 
+WHILE @i <= 25000 
 BEGIN
     -- Получаем текущее максимальное значение Sequence
     SELECT @MaxSequence = ISNULL(MAX(SelectionSequence), 0) FROM #RandomSelectedRows;
@@ -146,8 +149,8 @@ BEGIN
         t.[Description],
         @MaxSequence + 1.0
     FROM Item t
-    JOIN @TypeWeights w ON t.ID_TypeItem = w.Id_RowType and w.Id_RowType <= 15
-    ORDER BY -LOG(RAND(CHECKSUM(NEWID()))) / w.Weight;
+    JOIN @TypeWeights w ON t.ID_TypeItem = w.Id_RowType --and w.Id_RowType <= 15
+    ORDER BY -LOG(RAND(CHECKSUM(NEWID())))/ w.Weight;
 	 
     
     SET @i = @i + 1;
@@ -156,7 +159,8 @@ BEGIN
     IF @i % 1000 = 0
         PRINT 'Processed ' + CAST(@i AS VARCHAR) + ' rows';
 END
-
+*/
+--select * from #RandomSelectedRows where ID_TypeItem >= 15
 
 drop table if exists #Exemplar
 
@@ -189,34 +193,21 @@ declare
 @Old_Price_no_NDS          decimal(10,2) ,
 @Refund                    bit           ,
 @Date_Refund               datetime      ,
+@Date_Refund_2             datetime      ,
 @Old_Price_NDS             decimal(10,2) ,
 @New_Price_NDS             decimal(10,2) ,
 @New_Price_no_NDS          decimal(10,2) ,
 @Date_Created_2            datetime      
 
 
-declare @NDS float
+declare @NDS               decimal(10,2)
+declare @date_Item         datetime
+declare @date_Item_raznica int
 
 declare
-@SelectionSequence       int            ,
-@Id_Item				 bigint        	,
-@ID_product_measurement	 bigint        	,
-@ID_TypeItem			 bigint        	,
-@ID_Species_Item		 bigint        	,
-@Id_Item_Status			 bigint        	,
-@Article_number			 nvarchar(300) 	,
-@Name_Item				 nvarchar(500) 	,
-@Image_Item				 varbinary(max)	,
-@Manufacturer			 nvarchar(500) 	,
-@Country				 nvarchar(200) 	,
-@City					 nvarchar(200) 	,
-@Adress					 nvarchar(800) 	,
-@Mail					 nvarchar(250) 	,
-@Phone					 nvarchar(30)  	,
-@Logo					 varbinary(max)	,
-@Date_Created			 datetime      	,
-@Quantity				 int           	,
-@Description		     nvarchar(4000)	,
+@SelectionSequence       int    ,
+@Id_Item				 bigint ,
+@ID_TypeItem             bigint ,
 @flag	                 int
 
 
@@ -227,11 +218,9 @@ declare @i_2 int = 0,@s_2  int = 0 , @n_2 varchar(40), @mess_2 varchar(8000), @e
 
 declare Mycur cursor local fast_forward for 
 
-select 
-u.SelectionSequence,u.Id_Item,u.ID_product_measurement,u.ID_TypeItem,u.ID_Species_Item,u.Id_Item_Status,u.Article_number,	
-u.Name_Item,u.Image_Item,u.Manufacturer,u.Country,u.City,u.Adress,u.Mail,u.Phone,u.Logo,	
-u.Date_Created,u.Quantity,u.[Description],0 flag
-from #RandomSelectedRows u order by u.SelectionSequence
+select top 300
+u.SelectionSequence,u.Id_Item,ID_TypeItem,0 flag
+from #RandomSelectedRows u order by u.SelectionSequence desc
 
 
 open Mycur
@@ -240,85 +229,104 @@ open Mycur
 
 fetch next from Mycur into 
 @SelectionSequence      
-,@Id_Item				
-,@ID_product_measurement	
-,@ID_TypeItem			
-,@ID_Species_Item		
-,@Id_Item_Status			
-,@Article_number			
-,@Name_Item				
-,@Image_Item				
-,@Manufacturer			
-,@Country				
-,@City					
-,@Adress					
-,@Mail					
-,@Phone					
-,@Logo					
-,@Date_Created			
-,@Quantity				
-,@Description		    
+,@Id_Item
+,@ID_TypeItem
 ,@flag	                                   
 while @@FETCH_STATUS = 0
      begin
 	    begin try
-		     if  (select ID_TypeItem from #RandomSelectedRows where @Id_Item = Id_Item and @SelectionSequence = SelectionSequence ) = 1
+		   /*Указываю порядок записи ID валюты, по типу товара*/
+		     if (@ID_TypeItem = 1)
 			     begin
 				      set @ID_Currency = 115			          
 			     end
-			 else if (select ID_TypeItem from #RandomSelectedRows where @Id_Item = Id_Item and @SelectionSequence = SelectionSequence ) > 1 and  
-			         (select ID_TypeItem from #RandomSelectedRows where @Id_Item = Id_Item and @SelectionSequence = SelectionSequence ) <= 15
+			 else if (@ID_TypeItem <= 15)
 				 begin 
 				      set @ID_Currency =  (select top 1 ID_Currency from Currency where ID_Currency in (6,5,115,36) order by NEWID())
 				 end
-			 else if (select ID_TypeItem from #RandomSelectedRows where @Id_Item = Id_Item and @SelectionSequence = SelectionSequence ) > 15
+			 else if (@ID_TypeItem > 15)
 			     begin
 				      set @ID_Currency =  (select top 1 ID_Currency from Currency   order by NEWID())
 				 end
-             
-			 if  (select ID_TypeItem from #RandomSelectedRows where @Id_Item = Id_Item and @SelectionSequence = SelectionSequence ) = 1
+           /*Указываю порядок записи стоимости товара, исходя  по типу товара*/
+			 if  (@ID_TypeItem = 1)
 			     begin
-				      set @Old_Price_no_NDS = round(rand()*999 +100,2)			          
+				      set @Old_Price_no_NDS =  convert(decimal(10,2),round(rand()*999 +100,2))			          
 			     end
-			 else if (select ID_TypeItem from #RandomSelectedRows where @Id_Item = Id_Item and @SelectionSequence = SelectionSequence ) > 1 and  
-			         (select ID_TypeItem from #RandomSelectedRows where @Id_Item = Id_Item and @SelectionSequence = SelectionSequence ) <= 15
+			 else if (@ID_TypeItem > 1) and (@ID_TypeItem <= 15)
 				 begin 
-				      set @Old_Price_no_NDS = round(rand()*555 +50,2)
+				      set @Old_Price_no_NDS = convert(decimal(10,2),round(rand()*555 +50,2))
 				 end
-			 else if (select ID_TypeItem from #RandomSelectedRows where @Id_Item = Id_Item and @SelectionSequence = SelectionSequence ) > 15
+			 else if (@ID_TypeItem  > 15)
 			     begin
-				      set @Old_Price_no_NDS = round(rand()*55555 +10000,0)
+				      set @Old_Price_no_NDS = convert(decimal(10,2),round(rand()*55555 +10000,0))
 				 end
 
 			 set @ID_Storage_location = (select top 1 ID_Storage_location from Storage_location order by NEWID())
-			 set @Serial_number = cast((select Round(rand()*10000000000000 + 1000000000000,0)) as nvarchar(500))
+			 set @Serial_number = cast(FORMAT(Round(rand()*10000000000000 + 1000000000000,0),'0') as nvarchar(500))
 			 set @ID_Condition_of_the_item = (select top 1 ID_Condition_of_the_item from Condition_of_the_item order by newid())
-			 set @Refund = round(rand()*1,0)
+			 set @Refund = convert(int,round(rand()*1,0))
 
-			 if exists (select * from #RandomSelectedRows where @Id_Item = Id_Item and @SelectionSequence = SelectionSequence and  @Refund = 1)
+			 /*Проверка, если есть указатель на возврат, то формируем дату*/
+			 if(@Refund = 1)
 			     begin 
-				     exec RandomDateNew  '20240101','20241101', @Date_Refund output
+				     exec RandomDateNew  '20240101','20250101', @Date_Refund output
+					        /*
+			                Проверка, если в таблице Item, дата  создания карточки товара , больше чем дата возврата, то находим разницу между датами и прибавляем к этой разнице 45 дней
+			                после чего вычисляем эту сумму дней из вновь сформированной даты @Date_Refund
+			                */
+			         if exists (select * from Item where Id_Item = @Id_Item  and Date_Created > @Date_Refund)
+			               begin 
+			                    set @date_Item =  (select Date_Created from Item where Id_Item = @Id_Item)
+			                    set @date_Item_raznica = (DATEDIFF(day,@Date_Refund,@date_Item)) + 45
+			                    set @Date_Refund =  DATEADD(day, @date_Item_raznica, @Date_Refund)
+			               end
 				 end
-			
-			 set @NDS = (select case when round(1+rand()*3,0) = 1 then 0.2
-			                         when round(1+rand()*3,0) = 2 then 0.1
-			                         when round(1+rand()*3,0) = 3 then 0.12
-			                         when round(1+rand()*3,0) = 4 then 0.05
-			                         else 0.1 end)
-             set @Old_Price_NDS = @Old_Price_no_NDS * @NDS
-			 set @New_Price_NDS = @Old_Price_NDS * 0.07
-			 set @New_Price_no_NDS = @Old_Price_no_NDS * 0.07
+			 /*Обнуляем вспомогательные переменные, которые нам понадобятся ниже в провеках*/
+			 set @date_Item   = null;
+			 set @date_Item_raznica  = null;
+			 
+			 /*расчёт сумм с НДС , и присвоение случайного НДС переменной @NDS*/
+			 set @NDS = (select case when round(1+rand()*3,0) = 1 then convert(decimal(10,2),20.00)
+			                         when round(1+rand()*3,0) = 2 then convert(decimal(10,2),10.00)
+			                         when round(1+rand()*3,0) = 3 then convert(decimal(10,2),12.00)
+			                         when round(1+rand()*3,0) = 4 then convert(decimal(10,2),5.00)
+			                         else convert(decimal(10,2),10.00) end)
+             set @Old_Price_NDS = (@NDS*@Old_Price_no_NDS/100) + @Old_Price_no_NDS
+			 set @New_Price_NDS = (7.00*@Old_Price_NDS/100) + @Old_Price_NDS
+			 set @New_Price_no_NDS = (7.00*@Old_Price_no_NDS/100) + @Old_Price_no_NDS
 
-			 if @Date_Refund is null
+			 /*Проверка, если в переменной @Date_Refund нет данных, и @Refund возврата не было, то формируем дату @Date_Created_2 "заведения экземляра в систему"*/
+			 if @Date_Refund is null and @Refund = 0
 			    begin 
-				    exec RandomDateNew  '20240101','20250501', @Date_Created_2 output
+				    
+					exec RandomDateNew  '20240101','20250601', @Date_Created_2 output
+					/*
+					Если сформированная @Date_Created_2 "заведения экземляра в систему", больше чем в таблице Item, дата  создания карточки товара,
+					то то находим разницу между датами и прибавляем к этой разнице 45 дней
+			        после чего вычисляем эту сумму дней из вновь сформированной даты @Date_Created_2
+					*/
+				    if exists (select * from Item where Id_Item = @Id_Item  and Date_Created > @Date_Created_2)
+			            begin 
+				              set @date_Item =  (select Date_Created from Item where Id_Item = @Id_Item)
+					          set @date_Item_raznica = (DATEDIFF(day,@Date_Created_2,@date_Item)) + 45
+				              set @Date_Created_2 =  DATEADD(day,@date_Item_raznica, @Date_Created_2)
+				        end
 				end 
 			  else
-			     begin
-				     set @Date_Refund = DATEADD(day, -5, @Date_Refund)
-				     exec RandomDateNew @Date_Refund,'20250501', @Date_Created_2 output
-				 end 
+			     begin	
+				     /*Проверка (или), взврат был, и сформирована уже дата возврата. То берём эту дату возврата и вычитаем из неё рандомное чило дней от 1 до 30 */
+				     set @Date_Refund_2 =  DATEADD(day, round(-rand()*30,0), @Date_Refund)
 
+					 /*Проверка, если дата возврата равняется после предыдущего формирования  даты @Date_Refund_2 с ней, то минусуем один день*/
+					 if @Date_Refund_2 = @Date_Refund
+					      begin
+						      set @Date_Refund_2 = DATEADD(day, -1, @Date_Refund_2)
+						  end					 
+				     exec RandomDateNew @Date_Refund_2,@Date_Refund, @Date_Created_2 output
+				 end 
+             
+			 /*Обнуляем дату возврата, и дату внесения экземпляра в систему*/
 
 		     insert into #Exemplar values 
 			 (
@@ -338,20 +346,20 @@ while @@FETCH_STATUS = 0
 			 @New_Price_no_NDS,
 			 @Date_Created_2,
 			 null,
-			 0
+			 @flag
 			 )
-
-			 if exists (select * from #Exemplar  as a where @Id_Item = Id_Item and @SelectionSequence = ID_Exemplar and flag = 0)
+			 set @Date_Refund = null;
+			 if exists (select a.flag from #Exemplar  as a where @Id_Item = a.Id_Item and @SelectionSequence = a.ID_Exemplar and a.flag = 0)
 					       begin 
 					            set @i_2 =  @i_2 + 1
-			                    update a set flag = 1 from #Exemplar  as a where @Id_Item = Id_Item and @SelectionSequence = ID_Exemplar and flag = 0 
+			                    update a set flag = 1 from #Exemplar  as a where @Id_Item = a.Id_Item and @SelectionSequence = a.ID_Exemplar and a.flag = 0 
 						   end
 
 			  select @s_2 = count(0) from #Exemplar where flag = 0
 			  set @n_2 = (select  
 			            case  t.flag  when 1 then ' 1  Значения изменены' when 0  then ' 0  Значения не изменялись' end  
 			            from #Exemplar t  where t.ID_Exemplar = @SelectionSequence)
-			  set @mess_2 = @n_2 + ' - > '  + ' Id_Item '  + Cast(@SelectionSequence as varchar)  + ' --> ' + ' - ' + Cast(@i_2 as varchar) + ' / ' + Cast(@s_2 as varchar)
+			  set @mess_2 = @n_2 + ' - > ' + ' ID_Exemplar '  + Cast(@SelectionSequence as varchar)  + ' Id_Item '  + Cast(@Id_Item as varchar)  + ' --> ' + ' - ' + Cast(@i_2 as varchar) + ' / ' + Cast(@s_2 as varchar)
 			  RAISERROR(@mess_2,0,0) WITH NOWAIT
 		end  try
 	 begin catch
@@ -370,24 +378,8 @@ while @@FETCH_STATUS = 0
 
 	 fetch next from Mycur into 
      @SelectionSequence      
-	 ,@Id_Item				
-	 ,@ID_product_measurement	
-	 ,@ID_TypeItem			
-	 ,@ID_Species_Item		
-	 ,@Id_Item_Status			
-	 ,@Article_number			
-	 ,@Name_Item				
-	 ,@Image_Item				
-	 ,@Manufacturer			
-	 ,@Country				
-	 ,@City					
-	 ,@Adress					
-	 ,@Mail					
-	 ,@Phone					
-	 ,@Logo					
-	 ,@Date_Created			
-	 ,@Quantity				
-	 ,@Description		    
+	 ,@Id_Item
+	 ,@ID_TypeItem
 	 ,@flag	                
    end
 close Mycur
@@ -448,7 +440,11 @@ deallocate Mycur
 --select * from Type_of_product_measurement	
 --select * from TypeItem	
 --select * from Species_Item
-
+/*
+select e.*, i.Date_Created,i.ID_TypeItem 
+from #Exemplar e 
+left join item i on i.id_item = e.id_item where  e.ID_Currency != 6 and e.ID_Currency != 115  and e.ID_Currency!= 5 and e.ID_Currency != 36
+*/
 /*
  create table Exemplar                                                                   --Экземпляр
 (
@@ -472,3 +468,41 @@ Date_Created              datetime        not null  default GetDate(),          
 constraint PK_ID_Exemplar              primary key (ID_Exemplar)
 )  on Products_Group
 */
+
+
+
+--declare
+--@Date_Refund               datetime      ,
+--@Date_Refund_2             datetime      ,
+--@Refund                    bit           ,
+--@Id_Item				   bigint  = 33,
+--@Date_Created_2            datetime     
+
+--declare @date_Item         datetime
+--declare @date_Item_raznica int
+
+--set @Refund = convert(int,round(rand()*1,0))
+-- if(@Refund = 1)
+--			     begin 
+--				     exec RandomDateNew  '20240101','20250101', @Date_Refund output
+--					 select @Date_Refund
+--					        /*
+--			                Проверка, если в таблице Item, дата  создания карточки товара , больше чем дата возврата, то находим разницу между датами и прибавляем к этой разнице 45 дней
+--			                после чего вычисляем эту сумму дней из вновь сформированной даты @Date_Refund
+--			                */
+--			         if exists (select * from Item where Id_Item = @Id_Item  and Date_Created > @Date_Refund)
+--			               begin 
+--			                    set @date_Item =  (select top 1 Date_Created from Item where Id_Item = @Id_Item)
+--			                    set @date_Item_raznica = (DATEDIFF(day,@Date_Refund,@date_Item)) + 45
+--			                    set @Date_Refund =  DATEADD(day, @date_Item_raznica, @Date_Refund)
+--			               end
+--				 end
+
+--				 select @Date_Refund        
+--						--,@Date_Refund_2      
+--						,@Refund             
+--						--,@Date_Created_2 
+--						,@date_Item        
+--						,@date_Item_raznica
+
+--						select Date_Created from Item where Id_Item = @Id_Item 
