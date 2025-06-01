@@ -178,29 +178,24 @@ JSON_Size_Volume          nvarchar(max)   null      check(isjson(JSON_Size_Volum
 New_Price_NDS             decimal(10,2)   null,                                               
 New_Price_no_NDS          decimal(10,2)   null,                                               
 Date_Created              datetime        null  default GetDate(),                            
-[Description]             nvarchar(4000)  null                                                    
+[Description]             nvarchar(4000)  null,
+flag                      int             null
 ) 
 declare
---@ROW_NUMBER                bigint        ,
---@ID_Exemplar               bigint        ,
---@Id_Item                   bigint        ,
-@ID_Currency               bigint        --,
---@ID_Storage_location       bigint        ,
---@KeySource                 bigint        ,
---@Serial_number             nvarchar(500) ,
---@ID_Condition_of_the_item  bigint        ,
---@Old_Price_no_NDS          decimal(10,2) ,
---@Refund                    bit           ,
---@Date_Refund               datetime      ,
---@Return_Note               nvarchar(4000),
---@Old_Price_NDS             decimal(10,2) ,
---@JSON_Size_Volume          nvarchar(max) ,
---@New_Price_NDS             decimal(10,2) ,
---@New_Price_no_NDS          decimal(10,2) ,
---@Date_Created              datetime      ,
---@Description               nvarchar(4000),
---@flag                      int           ;
+@ID_Currency               bigint        ,
+@ID_Storage_location       bigint        ,
+@Serial_number             nvarchar(500) ,
+@ID_Condition_of_the_item  bigint        ,
+@Old_Price_no_NDS          decimal(10,2) ,
+@Refund                    bit           ,
+@Date_Refund               datetime      ,
+@Old_Price_NDS             decimal(10,2) ,
+@New_Price_NDS             decimal(10,2) ,
+@New_Price_no_NDS          decimal(10,2) ,
+@Date_Created_2            datetime      
 
+
+declare @NDS float
 
 declare
 @SelectionSequence       int            ,
@@ -233,7 +228,6 @@ declare @i_2 int = 0,@s_2  int = 0 , @n_2 varchar(40), @mess_2 varchar(8000), @e
 declare Mycur cursor local fast_forward for 
 
 select 
---ROW_NUMBER()  over (order by  u.ID_Item) as 'ROW_NUMBER', 
 u.SelectionSequence,u.Id_Item,u.ID_product_measurement,u.ID_TypeItem,u.ID_Species_Item,u.Id_Item_Status,u.Article_number,	
 u.Name_Item,u.Image_Item,u.Manufacturer,u.Country,u.City,u.Adress,u.Mail,u.Phone,u.Logo,	
 u.Date_Created,u.Quantity,u.[Description],0 flag
@@ -279,19 +273,85 @@ while @@FETCH_STATUS = 0
 				 end
 			 else if (select ID_TypeItem from #RandomSelectedRows where @Id_Item = Id_Item and @SelectionSequence = SelectionSequence ) > 15
 			     begin
-				      set @ID_Currency =  (select top 1 ID_Currency from Currency  order by NEWID())
+				      set @ID_Currency =  (select top 1 ID_Currency from Currency   order by NEWID())
 				 end
+             
+			 if  (select ID_TypeItem from #RandomSelectedRows where @Id_Item = Id_Item and @SelectionSequence = SelectionSequence ) = 1
+			     begin
+				      set @Old_Price_no_NDS = round(rand()*999 +100,2)			          
+			     end
+			 else if (select ID_TypeItem from #RandomSelectedRows where @Id_Item = Id_Item and @SelectionSequence = SelectionSequence ) > 1 and  
+			         (select ID_TypeItem from #RandomSelectedRows where @Id_Item = Id_Item and @SelectionSequence = SelectionSequence ) <= 15
+				 begin 
+				      set @Old_Price_no_NDS = round(rand()*555 +50,2)
+				 end
+			 else if (select ID_TypeItem from #RandomSelectedRows where @Id_Item = Id_Item and @SelectionSequence = SelectionSequence ) > 15
+			     begin
+				      set @Old_Price_no_NDS = round(rand()*55555 +10000,0)
+				 end
+
+			 set @ID_Storage_location = (select top 1 ID_Storage_location from Storage_location order by NEWID())
+			 set @Serial_number = cast((select Round(rand()*10000000000000 + 1000000000000,0)) as nvarchar(500))
+			 set @ID_Condition_of_the_item = (select top 1 ID_Condition_of_the_item from Condition_of_the_item order by newid())
+			 set @Refund = round(rand()*1,0)
+
+			 if exists (select * from #RandomSelectedRows where @Id_Item = Id_Item and @SelectionSequence = SelectionSequence and  @Refund = 1)
+			     begin 
+				     exec RandomDateNew  '20240101','20241101', @Date_Refund output
+				 end
+			
+			 set @NDS = (select case when round(1+rand()*3,0) = 1 then 0.2
+			                         when round(1+rand()*3,0) = 2 then 0.1
+			                         when round(1+rand()*3,0) = 3 then 0.12
+			                         when round(1+rand()*3,0) = 4 then 0.05
+			                         else 0.1 end)
+             set @Old_Price_NDS = @Old_Price_no_NDS * @NDS
+			 set @New_Price_NDS = @Old_Price_NDS * 0.07
+			 set @New_Price_no_NDS = @Old_Price_no_NDS * 0.07
+
+			 if @Date_Refund is null
+			    begin 
+				    exec RandomDateNew  '20240101','20250501', @Date_Created_2 output
+				end 
+			  else
+			     begin
+				     set @Date_Refund = DATEADD(day, -5, @Date_Refund)
+				     exec RandomDateNew @Date_Refund,'20250501', @Date_Created_2 output
+				 end 
+
+
 		     insert into #Exemplar values 
 			 (
 			 @Id_Item,
-			 @ID_Currency
+			 @ID_Currency,
+			 @ID_Storage_location,
+			 null,
+			 @Serial_number,
+			 @ID_Condition_of_the_item,
+			 @Old_Price_no_NDS,
+			 @Refund,
+			 @Date_Refund,
+			 null,
+			 @Old_Price_NDS,
+			 null,
+			 @New_Price_NDS,
+			 @New_Price_no_NDS,
+			 @Date_Created_2,
+			 null,
+			 0
 			 )
+
+			 if exists (select * from #Exemplar  as a where @Id_Item = Id_Item and @SelectionSequence = ID_Exemplar and flag = 0)
+					       begin 
+					            set @i_2 =  @i_2 + 1
+			                    update a set flag = 1 from #Exemplar  as a where @Id_Item = Id_Item and @SelectionSequence = ID_Exemplar and flag = 0 
+						   end
 
 			  select @s_2 = count(0) from #Exemplar where flag = 0
 			  set @n_2 = (select  
 			            case  t.flag  when 1 then ' 1  Значения изменены' when 0  then ' 0  Значения не изменялись' end  
-			            from #Exemplar t  where t.[ROW_NUMBER] = @ROW_NUMBER)
-			  set @mess_2 = @n_2 + ' - > ' +  ' ROW_NUMBER ' + cast(@ROW_NUMBER as varchar)  + ' Id_Item '  + Cast(@Id_Item as varchar)  + ' --> ' + ' - ' + Cast(@i_2 as varchar) + ' / ' + Cast(@s_2 as varchar)
+			            from #Exemplar t  where t.ID_Exemplar = @SelectionSequence)
+			  set @mess_2 = @n_2 + ' - > '  + ' Id_Item '  + Cast(@SelectionSequence as varchar)  + ' --> ' + ' - ' + Cast(@i_2 as varchar) + ' / ' + Cast(@s_2 as varchar)
 			  RAISERROR(@mess_2,0,0) WITH NOWAIT
 		end  try
 	 begin catch
