@@ -4,7 +4,7 @@ set nocount,xact_abort on;
 go
 
 
-/*
+--/*
 
 /*
  --Если с самого начала создаётся на с ID равным = 1, то можно обновить таблицу с помощью процы, и заполнить таблицу.
@@ -34,13 +34,6 @@ select * from  Exemplar_audit
 delete from  Exemplar where ID_Exemplar < 999999
 */
 
---select * from Item
-
---select * from Type_of_product_measurement	
---select * from TypeItem	
---select * from Species_Item
-
-
 -- Создаем временную таблицу с весами для каждого типа
 
 drop table if exists  #RandomSelectedRows
@@ -65,9 +58,9 @@ Logo                       varbinary(max)  null,
 Date_Created               datetime        not null  default GetDate(),                   
 Quantity                   int             null,                                          
 [Description]              nvarchar(4000)  null,
-SelectionSequence          float             NULL -- Добавлен недостающий столбец
+SelectionSequence          float           NULL, -- Добавлен недостающий столбец
+flag                       int             null
 )
-
 
 
 DECLARE @TypeWeights TABLE (
@@ -75,8 +68,6 @@ DECLARE @TypeWeights TABLE (
     RowType nVARCHAR(150),
     Weight FLOAT
 );
-
-
 
 
 -- Задаем веса (чем больше число, тем чаще будет выбираться)
@@ -115,6 +106,7 @@ INSERT INTO @TypeWeights VALUES
 
 DECLARE @i INT = 1;
 DECLARE @MaxSequence float = 0;
+declare @flag_3 int = 0
 
 WHILE @i <= 25000 
 BEGIN
@@ -126,7 +118,7 @@ BEGIN
         Id_Item, ID_product_measurement, ID_TypeItem, ID_Species_Item, 
         Id_Item_Status, Article_number, Name_Item, Image_Item, 
         Manufacturer, Country, City, Adress, Mail, Phone, Logo, 
-        Date_Created, Quantity, [Description], SelectionSequence
+        Date_Created, Quantity, [Description], SelectionSequence, flag
     )
     SELECT TOP 1
         t.Id_Item,
@@ -147,7 +139,8 @@ BEGIN
         t.Date_Created,
         t.Quantity,
         t.[Description],
-        @MaxSequence + 1.0
+        @MaxSequence + 1.0,
+		@flag_3
     FROM Item t
     JOIN @TypeWeights w ON t.ID_TypeItem = w.Id_RowType --and w.Id_RowType <= 15
     ORDER BY -LOG(RAND(CHECKSUM(NEWID())))/ w.Weight;
@@ -159,8 +152,6 @@ BEGIN
     IF @i % 1000 = 0
         PRINT 'Processed ' + CAST(@i AS VARCHAR) + ' rows';
 END
-*/
---select * from #RandomSelectedRows where ID_TypeItem >= 15
 
 drop table if exists #Exemplar
 
@@ -218,8 +209,8 @@ declare @i_2 int = 0,@s_2  int = 0 , @n_2 varchar(40), @mess_2 varchar(8000), @e
 
 declare Mycur cursor local fast_forward for 
 
-select top 300
-u.SelectionSequence,u.Id_Item,ID_TypeItem,0 flag
+select 
+u.SelectionSequence,u.Id_Item,ID_TypeItem,flag
 from #RandomSelectedRows u order by u.SelectionSequence desc
 
 
@@ -346,19 +337,19 @@ while @@FETCH_STATUS = 0
 			 @New_Price_no_NDS,
 			 @Date_Created_2,
 			 null,
-			 @flag
+			 0
 			 )
 			 set @Date_Refund = null;
-			 if exists (select a.flag from #Exemplar  as a where @Id_Item = a.Id_Item and @SelectionSequence = a.ID_Exemplar and a.flag = 0)
+			 if exists (select a.flag from #RandomSelectedRows  as a where @Id_Item = a.Id_Item and @SelectionSequence = a.SelectionSequence and a.flag = 0)
 					       begin 
 					            set @i_2 =  @i_2 + 1
-			                    update a set flag = 1 from #Exemplar  as a where @Id_Item = a.Id_Item and @SelectionSequence = a.ID_Exemplar and a.flag = 0 
+			                    update a set flag = 1 from #RandomSelectedRows  as a where @Id_Item = Id_Item and @SelectionSequence = SelectionSequence and flag = 0 
 						   end
 
-			  select @s_2 = count(0) from #Exemplar where flag = 0
+			  select @s_2 = count(0) from #RandomSelectedRows where flag = 0
 			  set @n_2 = (select  
 			            case  t.flag  when 1 then ' 1  Значения изменены' when 0  then ' 0  Значения не изменялись' end  
-			            from #Exemplar t  where t.ID_Exemplar = @SelectionSequence)
+			            from #RandomSelectedRows t  where t.SelectionSequence = @SelectionSequence)
 			  set @mess_2 = @n_2 + ' - > ' + ' ID_Exemplar '  + Cast(@SelectionSequence as varchar)  + ' Id_Item '  + Cast(@Id_Item as varchar)  + ' --> ' + ' - ' + Cast(@i_2 as varchar) + ' / ' + Cast(@s_2 as varchar)
 			  RAISERROR(@mess_2,0,0) WITH NOWAIT
 		end  try
@@ -385,124 +376,111 @@ while @@FETCH_STATUS = 0
 close Mycur
 deallocate Mycur
 
----- Проверяем результаты
---SELECT 
--- soh.id_item
---,soh.ID_TypeItem
---,count(soh.id_item) as OrderCount
+
+
+insert into  Exemplar(
+Id_Item,ID_Currency,ID_Storage_location,KeySource,Serial_number,ID_Condition_of_the_item,Old_Price_no_NDS,Refund                
+,Date_Refund,Return_Note,Old_Price_NDS,JSON_Size_Volume,New_Price_NDS,New_Price_no_NDS,Date_Created,[Description]           
+)
+select 
+Id_Item,ID_Currency,ID_Storage_location,KeySource,Serial_number,ID_Condition_of_the_item,Old_Price_no_NDS,Refund,Date_Refund,Return_Note,Old_Price_NDS                    
+,JSON_Size_Volume,New_Price_NDS,New_Price_no_NDS,Date_Created,[Description]         
+from  #Exemplar order by ID_Exemplar,Id_Item
+
+
+/*Заполнение столбца Quantity в таблице Item из #RandomSelectedRows_2*/
+declare @i_3 int = 0,@s_3  int = 0 , @n_3 varchar(40), @mess_3 varchar(8000), @err_3 varchar(1000)
+
+declare
+@id_item_2	     bigint,
+@ID_TypeItem_2	 bigint,
+@OrderCount_2    int,
+@flag_2          int
+
+drop table if exists  #RandomSelectedRows_2
+
+SELECT 
+ soh.id_item
+,soh.ID_TypeItem
+,count(soh.id_item) as OrderCount
+,0 flag
+into #RandomSelectedRows_2
 --,replicate('|',count(soh.id_item)/4) as orderCount_Bar
---FROM #RandomSelectedRows soh
---group by soh.id_item,ID_TypeItem
---order by soh.ID_TypeItem
+FROM #RandomSelectedRows soh
+where soh.ID_TypeItem <= 15
+group by soh.id_item,ID_TypeItem
+order by soh.ID_TypeItem
 
+declare mycur_2 cursor local fast_forward for
 
---select 
---r.Id_Item
---,r.Name_Item
---,r.ID_product_measurement
---,t.Product_measurement_Name
---,r.ID_TypeItem
---,ti.TypeItemName
---,r.ID_Species_Item
---,s.SpeciesItemName
---from #RandomSelectedRows r 
---inner join item i on i.Id_Item = r.Id_Item 
---left join  Type_of_product_measurement t on t.ID_product_measurement = r.ID_product_measurement
---left join  TypeItem ti on ti.Id_TypeItem = r.ID_TypeItem
---left join  Species_Item s on s.ID_Species_Item = r.ID_Species_Item
--- --where r.ID_product_measurement = 1
--- order by r.Id_Item
+select * from #RandomSelectedRows_2
 
+open mycur_2
 
+fetch next from mycur_2 into 
+@id_item_2	  
+,@ID_TypeItem_2
+,@OrderCount_2 
+,@flag_2       
+while @@FETCH_STATUS = 0
+   begin
+      begin try	     
+		        update b
+				set Quantity = @OrderCount_2
+				from Item b
+				where id_Item = @id_item_2 and @ID_TypeItem_2 = ID_TypeItem
+		 
 
---select  
---r.Id_Item
---,r.Name_Item
---,r.ID_product_measurement
---,t.Product_measurement_Name
---,r.ID_TypeItem
---,ti.TypeItemName
---,r.ID_Species_Item
---,s.SpeciesItemName
---from item r
---left join  Type_of_product_measurement t on t.ID_product_measurement = r.ID_product_measurement
---left join  TypeItem ti on ti.Id_TypeItem = r.ID_TypeItem
---left join  Species_Item s on s.ID_Species_Item = r.ID_Species_Item
--- --where r.ID_product_measurement = 1
--- order by r.Id_Item
+		  if exists (select a.flag from #RandomSelectedRows_2  as a where @Id_Item_2 = a.Id_Item and @ID_TypeItem_2 = ID_TypeItem and a.flag = 0)
+				begin 
+				     set @i_3 =  @i_3 + 1
+			         update a set flag = 1 from #RandomSelectedRows_2  as a where @Id_Item_2 = a.Id_Item  and @ID_TypeItem_2 = ID_TypeItem and a.flag = 0 
+				end
+
+		  select @s_3 = count(0) from #RandomSelectedRows_2 where flag = 0
+			  set @n_3 = (select  
+			            case  t.flag  when 1 then ' 1  Значения изменены' when 0  then ' 0  Значения не изменялись' end  
+			            from #RandomSelectedRows_2 t  where t.id_item = @id_item_2)
+			  set @mess_3 = @n_3 + ' - > ' + ' Order_Count_Item '  + Cast(@OrderCount_2 as varchar)  + ' Id_Item '  + Cast(@id_item_2 as varchar)  + ' --> ' + ' - ' + Cast(@i_3 as varchar) + ' / ' + Cast(@s_3 as varchar)
+			  RAISERROR(@mess_3,0,0) WITH NOWAIT			  
+	  end try
+	  begin catch 
+	      if XACT_STATE() in  (1,-1)
+		      begin 
+			     ROLLBACK TRAN
+			  end
+		  SELECT 
+		  	ERROR_NUMBER() AS ErrorNumber,
+		  	ERROR_SEVERITY() AS ErrorSeverity,
+		  	ERROR_STATE() as ErrorState,
+		  	ERROR_PROCEDURE() as ErrorProcedure,
+		  	ERROR_LINE() as ErrorLine,
+		  	ERROR_MESSAGE() as ErrorMessage;
+		
+	  end catch
+	  fetch next from mycur_2 into 
+	  @id_item_2	  
+     ,@ID_TypeItem_2
+     ,@OrderCount_2 
+     ,@flag_2  
+   end
+close mycur_2
+deallocate mycur_2 
+
+drop table if exists #RandomSelectedRows
+drop table if exists #RandomSelectedRows_2
+drop table if exists #Exemplar
 
  --select * from Item
+ --select * from Exemplar
  --select * from Currency where ID_Currency in (6,5,115,36)
  --select * from Storage_location
  --select * from Condition_of_the_item
 
- --select * from #RandomSelectedRows
+ -- select * from Exemplar
+--select * from #RandomSelectedRows
 --select * from Type_of_product_measurement	
 --select * from TypeItem	
 --select * from Species_Item
-/*
-select e.*, i.Date_Created,i.ID_TypeItem 
-from #Exemplar e 
-left join item i on i.id_item = e.id_item where  e.ID_Currency != 6 and e.ID_Currency != 115  and e.ID_Currency!= 5 and e.ID_Currency != 36
-*/
-/*
- create table Exemplar                                                                   --Экземпляр
-(
-ID_Exemplar               bigint          not null   identity (1,1)  check(ID_Exemplar != 0),     -- ID Экземпляра
-Id_Item                   bigint          not null,                                               -- ID Карточки товара
-ID_Currency               bigint          not null,											      -- ID Валюта, цены на экземпляр
-ID_Storage_location       bigint          not null,                                               -- ID Место хранение экземпляра
-KeySource                 bigint          null,                                                   -- Источник ключа с другими БД или сервисами
-Serial_number             nvarchar(500)   not null,                                               -- Серийный номер экземпляра товара
-ID_Condition_of_the_item  bigint          not null,                                               -- ID Текущего состояния экземпляра
-Old_Price_no_NDS          decimal(10,2)   not null,                                               -- Цена без НДС экземпляра
-Refund                    bit             not null,                                               -- Был ли возврат данного экземпляра или нет. 0/1
-Date_Refund               datetime        null,                                                   -- Дата возврата
-Return_Note               nvarchar(4000)  null,                                                   -- Записка(Примечание) о возврате
-Old_Price_NDS             decimal(10,2)   not null,                                               -- Цена экземпляра с НДС
-JSON_Size_Volume          nvarchar(max)   null      check(isjson(JSON_Size_Volume)>0),            -- Данный JSON параметры самого экземпляра
-New_Price_NDS             decimal(10,2)   not null,                                               -- Цена экземпляра с НДС после начисления коммисии  за  сервис
-New_Price_no_NDS          decimal(10,2)   not null,                                               -- Цена экземпляра без НДС после начисления коммисии  за  сервис
-Date_Created              datetime        not null  default GetDate(),                            -- Дата внесения экземпляра в систему
-[Description]             nvarchar(4000)  null                                                    -- Комментарий
-constraint PK_ID_Exemplar              primary key (ID_Exemplar)
-)  on Products_Group
-*/
 
-
-
---declare
---@Date_Refund               datetime      ,
---@Date_Refund_2             datetime      ,
---@Refund                    bit           ,
---@Id_Item				   bigint  = 33,
---@Date_Created_2            datetime     
-
---declare @date_Item         datetime
---declare @date_Item_raznica int
-
---set @Refund = convert(int,round(rand()*1,0))
--- if(@Refund = 1)
---			     begin 
---				     exec RandomDateNew  '20240101','20250101', @Date_Refund output
---					 select @Date_Refund
---					        /*
---			                Проверка, если в таблице Item, дата  создания карточки товара , больше чем дата возврата, то находим разницу между датами и прибавляем к этой разнице 45 дней
---			                после чего вычисляем эту сумму дней из вновь сформированной даты @Date_Refund
---			                */
---			         if exists (select * from Item where Id_Item = @Id_Item  and Date_Created > @Date_Refund)
---			               begin 
---			                    set @date_Item =  (select top 1 Date_Created from Item where Id_Item = @Id_Item)
---			                    set @date_Item_raznica = (DATEDIFF(day,@Date_Refund,@date_Item)) + 45
---			                    set @Date_Refund =  DATEADD(day, @date_Item_raznica, @Date_Refund)
---			               end
---				 end
-
---				 select @Date_Refund        
---						--,@Date_Refund_2      
---						,@Refund             
---						--,@Date_Created_2 
---						,@date_Item        
---						,@date_Item_raznica
-
---						select Date_Created from Item where Id_Item = @Id_Item 
+go
