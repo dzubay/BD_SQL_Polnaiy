@@ -4880,30 +4880,40 @@ declare @Buyer_The_resident        bit;
 go
 
 insert into  Condition_of_the_item(Name_Condition_of_the_item,SysNameConditionTypeOfTheItem,[Description]) values 
-('Продан', 'SysNameConditionTypeOfTheItem_Sold', null)
-,('Просрочен', 'SysNameConditionTypeOfTheItem_Expired', null)
-,('Задублирован', 'SysNameConditionTypeOfTheItem_Duplicated', null)
-,('На отгрузке', 'SysNameConditionTypeOfTheItem_Shipping', null)
-,('На складе', 'SysNameConditionTypeOfTheItem_InStock', null)
-,('Ожидает возврата', 'SysNameConditionTypeOfTheItem_AwaitingReturn', null)
-,('Потерян', 'SysNameConditionTypeOfTheItem_Lost', null)
-,('На проверке', 'SysNameConditionTypeOfTheItem_UnderInspection', null)
-,('Ожидает отгрузки', 'SysNameConditionTypeOfTheItem_AwaitingShipment', null)
-,('Зарезервирован', 'SysNameConditionTypeOfTheItem_Reserved', null)
-,('В пути', 'SysNameConditionTypeOfTheItem_InTransit', null)
-,('Бракованный', 'SysNameConditionTypeOfTheItem_Defective', null)
-,('Возвращён пользователем', 'SysNameConditionTypeOfTheItem_ReturnedByCustomer', null)
-,('Уценён', 'SysNameConditionTypeOfTheItem_Discounted', null)
-,('Продан в рассрочку', 'SysNameConditionTypeOfTheItem_SoldInInstallments', null)
-,('Не полностью оплачен по рассрочке', 'SysNameConditionTypeOfTheItem_PartiallyPaidInstallment', null)
-,('Испорчен', 'SysNameConditionTypeOfTheItem_Damaged', null)
-,('Срок годности просрочен', 'SysNameConditionTypeOfTheItem_ExpiredShelfLife', null)
-,('Ожидает на пункте выдачи', 'SysNameConditionTypeOfTheItem_AwaitingPickup', null)
-,('Ожидает курьера', 'SysNameConditionTypeOfTheItem_AwaitingCourier', null)
-,('Черновик', 'SysNameConditionTypeOfTheItem_Draft', null)
-,('Редактируется', 'SysNameConditionTypeOfTheItem_Editing', null)
-,('Найдены несоответствия в карточке товара', 'SysNameConditionTypeOfTheItem_ProductCardMismatch', null)
-,('Перерасчёт цен', 'SysNameConditionTypeOfTheItem_PriceRecalculation', null);
+('Продан', 'SysNameConditionTypeOfTheItem_Sold', null),
+('Просрочен', 'SysNameConditionTypeOfTheItem_Expired', null),
+('Задублирован', 'SysNameConditionTypeOfTheItem_Duplicated', null),
+('На отгрузке', 'SysNameConditionTypeOfTheItem_Shipping', null),
+('На складе', 'SysNameConditionTypeOfTheItem_InStock', null),
+('Ожидает возврата', 'SysNameConditionTypeOfTheItem_AwaitingReturn', null),
+('Потерян', 'SysNameConditionTypeOfTheItem_Lost', null),
+('На проверке', 'SysNameConditionTypeOfTheItem_UnderInspection', null),
+('Ожидает отгрузки', 'SysNameConditionTypeOfTheItem_AwaitingShipment', null),
+('Зарезервирован', 'SysNameConditionTypeOfTheItem_Reserved', null),
+('В пути', 'SysNameConditionTypeOfTheItem_InTransit', null),
+('Бракованный', 'SysNameConditionTypeOfTheItem_Defective', null),
+('Возвращён пользователем', 'SysNameConditionTypeOfTheItem_ReturnedByCustomer', null),
+('Уценён', 'SysNameConditionTypeOfTheItem_Discounted', null),
+('Продан в рассрочку', 'SysNameConditionTypeOfTheItem_SoldInInstallments', null),
+('Не полностью оплачен по рассрочке', 'SysNameConditionTypeOfTheItem_PartiallyPaidInstallment', null),
+('Испорчен', 'SysNameConditionTypeOfTheItem_Damaged', null),
+('Срок годности просрочен', 'SysNameConditionTypeOfTheItem_ExpiredShelfLife', null),
+('Ожидает на пункте выдачи', 'SysNameConditionTypeOfTheItem_AwaitingPickup', null),
+('Ожидает курьера', 'SysNameConditionTypeOfTheItem_AwaitingCourier', null),
+('Черновик', 'SysNameConditionTypeOfTheItem_Draft', null),
+('Редактируется', 'SysNameConditionTypeOfTheItem_Editing', null),
+('Найдены несоответствия в карточке товара', 'SysNameConditionTypeOfTheItem_ProductCardMismatch', null),
+('Перерасчёт цен', 'SysNameConditionTypeOfTheItem_PriceRecalculation', null),
+('Услуга активна', 'SysNameConditionTypeOfTheItem_Active', NULL),
+('Услуга ожидает активации', 'SysNameConditionTypeOfTheItem_PendingActivation', NULL),
+('Услуга приостановлена', 'SysNameConditionTypeOfTheItem_Suspended', NULL),
+('Услуга завершена', 'SysNameConditionTypeOfTheItem_Completed', NULL),
+('Услуга отменена', 'SysNameConditionTypeOfTheItem_Canceled', NULL),
+('Услуга в процессе выполнения', 'SysNameConditionTypeOfTheItem_InProgress', NULL),
+('Услуга просрочена', 'SysNameConditionTypeOfTheItem_Overdue', NULL),
+('Услуга возвращена', 'SysNameConditionTypeOfTheItem_Refunded', NULL),
+('Услуга оплачена', 'SysNameConditionTypeOfTheItem_Paid', NULL),
+('Услуга не оплачена', 'SysNameConditionTypeOfTheItem_NotPaid', NULL);
 
 
 declare @Condition_of_the_items int;
@@ -10919,8 +10929,8 @@ BEGIN
         @MaxSequence + 1.0,
 		@flag_3
     FROM Item t
-    JOIN @TypeWeights w ON t.ID_TypeItem = w.Id_RowType --and w.Id_RowType <= 15
-    ORDER BY -LOG(RAND(CHECKSUM(NEWID())))/ w.Weight;
+    JOIN @TypeWeights w ON t.ID_TypeItem = w.Id_RowType
+    ORDER BY -LOG(RAND(CHECKSUM(NEWID())))/ w.Weight;   --Логика вероятности выбора нужного типа
 	 
     
     SET @i = @i + 1;
@@ -11032,7 +11042,23 @@ while @@FETCH_STATUS = 0
 
 			 set @ID_Storage_location = (select top 1 ID_Storage_location from Storage_location order by NEWID())
 			 set @Serial_number = cast(FORMAT(Round(rand()*10000000000000 + 1000000000000,0),'0') as nvarchar(500))
-			 set @ID_Condition_of_the_item = (select top 1 ID_Condition_of_the_item from Condition_of_the_item order by newid())
+			 
+			 /*
+			 Проверка, для присвоения статуса экземпляров, учитывая тип товара. для типов <= 15, указывает статус от 1 до 24 включительно,
+			 и для типов >15, будут добавляться статусы от 25 до 34
+			 */
+			 if (@ID_TypeItem <= 15)
+			    begin
+			        set @ID_Condition_of_the_item = (select top 1 ID_Condition_of_the_item from Condition_of_the_item 
+					                                 where ID_Condition_of_the_item between 1 and 24 order by newid())
+				end
+			 else if (@ID_TypeItem > 15)
+			    begin
+				    set @ID_Condition_of_the_item = (select top 1 ID_Condition_of_the_item from Condition_of_the_item 
+					                                 where ID_Condition_of_the_item between 25 and 34 order by newid())
+				end
+
+
 			 set @Refund = convert(int,round(rand()*1,0))
 
 			 /*Проверка, если есть указатель на возврат, то формируем дату*/
@@ -11247,6 +11273,11 @@ deallocate mycur_2
 drop table if exists #RandomSelectedRows
 drop table if exists #RandomSelectedRows_2
 drop table if exists #Exemplar
+
+
+declare @Exemplar_count int;
+set @Exemplar_count = (select count(ID_Exemplar) as Exemplar from Exemplar)
+print 'Заполнена таблица dbo.Exemplar. Общее количество заполненных строк --> ' +  cast(@Exemplar_count as nvarchar(5))
 go
 
 commit

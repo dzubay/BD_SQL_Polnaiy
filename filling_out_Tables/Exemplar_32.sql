@@ -255,7 +255,22 @@ while @@FETCH_STATUS = 0
 
 			 set @ID_Storage_location = (select top 1 ID_Storage_location from Storage_location order by NEWID())
 			 set @Serial_number = cast(FORMAT(Round(rand()*10000000000000 + 1000000000000,0),'0') as nvarchar(500))
-			 set @ID_Condition_of_the_item = (select top 1 ID_Condition_of_the_item from Condition_of_the_item order by newid())
+
+			 /*
+			 Проверка, для присвоения статуса экземпляров, учитывая тип товара. для типов <= 15, указывает статус от 1 до 24 включительно,
+			 и для типов >15, будут добавляться статусы от 25 до 34
+			 */
+			 if (@ID_TypeItem <= 15)
+			    begin
+			        set @ID_Condition_of_the_item = (select top 1 ID_Condition_of_the_item from Condition_of_the_item 
+					                                 where ID_Condition_of_the_item between 1 and 24 order by newid())
+				end
+			 else if (@ID_TypeItem > 15)
+			    begin
+				    set @ID_Condition_of_the_item = (select top 1 ID_Condition_of_the_item from Condition_of_the_item 
+					                                 where ID_Condition_of_the_item between 25 and 34 order by newid())
+				end
+
 			 set @Refund = convert(int,round(rand()*1,0))
 
 			 /*Проверка, если есть указатель на возврат, то формируем дату*/
