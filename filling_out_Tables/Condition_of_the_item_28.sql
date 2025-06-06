@@ -27,6 +27,16 @@
 ,Редактируется
 ,Найдены несоответствия в карточке товара
 ,Перерасчёт цен
+,Услуга активна
+,Услуга ожидает активации
+,Услуга приостановлена
+,Услуга завершена
+,Услуга отменена
+,Услуга в процессе выполнения
+,Услуга просрочена
+,Услуга возвращена
+,Услуга оплачена
+,Услуга не оплачена
 Сделай пожалуйста всё в три столбца, названия в одинарных кавычках, и через запятую, третий столбец заканчивается на null,
 перый столбец должен быть наименования статусов , который я приложил выше.
 и возьми каждую строчку в скобки.
@@ -84,6 +94,16 @@ insert into  Condition_of_the_item(Name_Condition_of_the_item,SysNameConditionTy
 ('Черновик', 'SysNameConditionTypeOfTheItem_Draft', null),
 ('Редактируется', 'SysNameConditionTypeOfTheItem_Editing', null),
 ('Найдены несоответствия в карточке товара', 'SysNameConditionTypeOfTheItem_ProductCardMismatch', null),
-('Перерасчёт цен', 'SysNameConditionTypeOfTheItem_PriceRecalculation', null);
+('Перерасчёт цен', 'SysNameConditionTypeOfTheItem_PriceRecalculation', null),
+('Услуга активна', 'SysNameConditionTypeOfTheItem_Active', NULL),
+('Услуга ожидает активации', 'SysNameConditionTypeOfTheItem_PendingActivation', NULL),
+('Услуга приостановлена', 'SysNameConditionTypeOfTheItem_Suspended', NULL),
+('Услуга завершена', 'SysNameConditionTypeOfTheItem_Completed', NULL),
+('Услуга отменена', 'SysNameConditionTypeOfTheItem_Canceled', NULL),
+('Услуга в процессе выполнения', 'SysNameConditionTypeOfTheItem_InProgress', NULL),
+('Услуга просрочена', 'SysNameConditionTypeOfTheItem_Overdue', NULL),
+('Услуга возвращена', 'SysNameConditionTypeOfTheItem_Refunded', NULL),
+('Услуга оплачена', 'SysNameConditionTypeOfTheItem_Paid', NULL),
+('Услуга не оплачена', 'SysNameConditionTypeOfTheItem_NotPaid', NULL);
 --rollback
 commit
