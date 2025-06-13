@@ -396,7 +396,7 @@ commit;
 */
 declare @Currency_Rate_2024_1 table (id bigint,Currency_Rate_new decimal(5,2),Valid_from datetime,Valid_to datetime)
 declare @i int = 1
-   while @i < 20000
+   while @i <= 150000
        begin 
 	       
 	       WITH RandomValues AS (
@@ -453,7 +453,7 @@ join (select id,count(Currency_Rate_new) as 'сумма'from @Currency_Rate_2024
 
 /* Формируем с случайною дату и время для начальной даты отчёта с которых будет начинаться все ставки */
 declare @RandomDate datetime  
-exec RandomDateTimeNew '20240101','20250101', @RandomDate output  
+exec RandomDateTimeNew '20230601','20230801', @RandomDate output  
 
 
 
@@ -474,7 +474,7 @@ declare @i_2 int = 0,@s  int = 0 , @n varchar(40), @mess varchar(8000), @err var
 
 declare mycur cursor local fast_forward  for
 
-select * from #Currency_Rate order by ID_Currency_Rate,id
+select * from #Currency_Rate where [row_number] = 1 order by ID_Currency_Rate,id
 
 open mycur
 fetch next from mycur into
