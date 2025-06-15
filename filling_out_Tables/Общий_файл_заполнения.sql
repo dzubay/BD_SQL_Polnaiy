@@ -11055,7 +11055,14 @@ while @@FETCH_STATUS = 0
 				end
 
 
-			 set @Refund = convert(int,round(rand()*1,0))
+			 if @ID_Condition_of_the_item in (32,13)
+			       begin
+			           set @Refund = 1
+                   end
+             else
+			       begin
+				       set @Refund = 0
+				   end
 
 			 /*Проверка, если есть указатель на возврат, то формируем дату*/
 			 if(@Refund = 1)

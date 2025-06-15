@@ -44,7 +44,7 @@ begin tran
 --12 Бракованный								 	--12 В ожидании отправки			  26,27,20
 --13 Возвращён пользователем					 	--13 На проверке SOX				  2,3,6,7,8,12,14,17,31,27,23
 --14 Уценён										    --14 Отменён					      9,11,16,19,20,23,29,2,17,3,34,31,27  
---15 Продан в рассрочку                             --15 Возврат					      32,13,16	 
+--15 Продан в рассрочку                             --15 Возврат					      32,13	 
 --16 Не полностью оплачен по рассрочке			 
 --17 Испорчен									 
 --18 Срок годности просрочен					 
@@ -99,7 +99,7 @@ insert into #Orders_status values
 (12,'26,27,20'),
 (13,'2,3,6,7,8,12,14,17,31,27,23'),
 (14,'9,11,16,19,20,23,29,2,17,3,34,31,27'),
-(15,'32,13,16');
+(15,'32,13');
 
 
 
@@ -232,27 +232,27 @@ group by ID_product_measurement
 
 
 
---select
---ROW_NUMBER() over (order by a.ID_Exemplar asc) as 'Нумерация'
---,rank() over (partition by a.ID_Exemplar order by a_2.id_status_order) as 'Нумерация_по_идентификатору'
---,a.ID_Exemplar
---,a.ID_Condition_of_the_item
---,a.[Наименование_статуса_экземпляра]
---,a_2.all_status
---,a_2.id_status_order
---,a_3.Name
---,a.ID_product_measurement	
---,a.[Тип_измерения_товара]
---,a.Дата_создания_карточки_товара
---,a.Дата_заведения_экземпляра_в_систему
---,a.Дата_возврата
---,a.ID_Currency
---,a.Наименование_валюты_на_русском
-----into #t_2
---from All_Data_Exemplar as a
---left join #Orders_status_2 as a_2 on a_2.all_status = a.ID_Condition_of_the_item
---left join Orders_status as a_3         on a_3.Id_Status  = a_2.id_status_order    --Убираем экземпляры у которых статус не позволяет быть в заказах
---where a_2.all_status  is null
+select
+ROW_NUMBER() over (order by a.ID_Exemplar asc) as 'Нумерация'
+,rank() over (partition by a.ID_Exemplar order by a_2.id_status_order) as 'Нумерация_по_идентификатору'
+,a.ID_Exemplar
+,a.ID_Condition_of_the_item
+,a.[Наименование_статуса_экземпляра]
+,a_2.all_status
+,a_2.id_status_order
+,a_3.Name
+,a.ID_product_measurement	
+,a.[Тип_измерения_товара]
+,a.Дата_создания_карточки_товара
+,a.Дата_заведения_экземпляра_в_систему
+,a.Дата_возврата
+,a.ID_Currency
+,a.Наименование_валюты_на_русском
+--into #t_2
+from All_Data_Exemplar as a
+left join #Orders_status_2 as a_2 on a_2.all_status = a.ID_Condition_of_the_item
+left join Orders_status as a_3         on a_3.Id_Status  = a_2.id_status_order    --Убираем экземпляры у которых статус не позволяет быть в заказах
+where a_2.all_status  is null
 
 
 
@@ -437,6 +437,20 @@ fetch next from Cur into
 while @@FETCH_STATUS = 0
      begin
 	    begin try
+		     
+			 if @ID_product_measurement = 5
+			     begin 
+				     if @id_status_order = 15 and @Дата_возврата is not null
+					    begin
+						    
+						end
+				 end 
+
+		     insert into #Orders(ID_status,ID_TypeOrders,ID_Currency,ID_OrderAssignment,ID_OrderCategory,[Date]              
+			 ,Payment_Date,Amount,AmountCurr,AmountNDS,AmountCurrNDS,Num,[Description],flag) values
+			 (
+
+			 )
 		    
 			 --if exists (select a.flag from #RandomSelectedRows_2  as a where @Id_Item_2 = a.Id_Item and @ID_TypeItem_2 = ID_TypeItem and a.flag = 0)
 			 --begin 
@@ -480,22 +494,49 @@ deallocate Cur
 
 
 
+select * from #t_3
 
 
+select  
+ ID_Exemplar
+,ID_Condition_of_the_item
+,Наименование_статуса_экземпляра
+,all_status
+,id_status_order	
+,[Name]	
+,ID_product_measurement	
+,Тип_измерения_товара	
+,Дата_создания_карточки_товара	
+,Дата_заведения_экземпляра_в_систему	
+,Дата_возврата	
+,ID_Currency	
+,Наименование_валюты_на_русском
+,Цена_без_НДС_экземпляра	
+,Цена_экземпляра_с_НДС	
+,Цена_экземпляра_с_НДС_после_начисления_коммисии_за_сервис	
+,Цена_экземпляра_без_НДС_после_начисления_коммисии_за_сервис
+from #t_3 
+where 1 = 1 
+--and ID_product_measurement = 5 
+--and id_status_order = 15
+and all_status in (32,13,16)
 
-
+order by ID_Exemplar
 
 
 
 		 --select top 1 ID_status_orders,Name_orders
 		 --from #Orders_prioritet 
 		 --order by -log(rand(CHECKSUM(newid())))/ Prioritet
+---select * from Condition_of_the_item
 
+select * from All_Data_Exemplar  
+where 1=1 
+--and ID_Exemplar = 265
+and ID_Condition_of_the_item in (32,13,16)
 
---select * from All_Data_Exemplar
-
-
-					
+select * from Exemplar
+where  ID_Condition_of_the_item in (32,13,16)					
 /*
 create table Orders                                                                 --Заказ
 (
