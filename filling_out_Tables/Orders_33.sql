@@ -115,6 +115,8 @@ while @i <= 15
 	    set @i = @i + 1
 	  end
 
+
+/*
 drop table if exists  #Orders_prioritet;
 
 create table #Orders_prioritet 
@@ -186,84 +188,314 @@ from
 		  ) as a 
      group by  a.Name_orders,a.ID_status_orders) as a_2
 
-
---select 
---distinct  ID_product_measurement,Тип_измерения_товара
---from 
---All_Data_Exemplar where 
-
-
---select * from All_Data_Exemplar where  ID_product_measurement = 4
-
---select * from #Orders_prioritet_2 order by ID_orders
-
 --select * from #Orders_status_2
 
---select * from Exemplar
+--select * from #Orders_prioritet_2
+
+*/
+
+select 
+a.ID_Currency	
+,a.[Колличество_по_одной_валюте]		
+,a_2.[Самая_минимальная_дата]	
+,a_2.[Самая_максимальная дата]
+from
+(
+  select
+  ID_Currency, 
+  count(ID_Currency_Rate) as 'Колличество_по_одной_валюте'
+  from Currency_Rate
+  group by ID_Currency) as a
+join 
+(
+  select 
+  ID_Currency
+  ,min(Valid_from) as 'Самая_минимальная_дата'
+  ,max(Valid_to) as 'Самая_максимальная дата'
+  from  Currency_Rate as a_2 
+  group  by ID_Currency
+) as a_2 on a_2.ID_Currency = a.ID_Currency 
+
+
+select 
+a.ID_product_measurement
+,a.[Количество экземпляров]
+,sum(a.[Количество экземпляров]) over (order by a.[Количество экземпляров] ) as 'Пошаговое_суммирование'
+from 
+(
+select 
+ID_product_measurement
+,count(ID_Exemplar) as 'Количество экземпляров'
+from All_Data_Exemplar
+group by ID_product_measurement
+) as a
+
+
 
 --select
---c_2.*
---,e.ID_Exemplar
---,e.Old_Price_no_NDS                 as 'Цена_без_НДС_экземпляра'
---,e.Old_Price_NDS					as 'Цена_экземпляра_с_НДС'
---,e.New_Price_NDS					as 'Цена_экземпляра_с_НДС_после_начисления_коммисии_за_сервис'
---,e.New_Price_no_NDS					as 'Цена_экземпляра_без_НДС_после_начисления_коммисии_за_сервис'
---,e.Date_Refund                      as 'Дата_возврата'
---,e.Date_Created                     as 'Дата_заведения_экземпляра_в_систему'
---,e.ID_Condition_of_the_item
---,e_2.Name_Condition_of_the_item     as 'Наименование_статуса_экземпляра'
---,e.Id_Item             
---,e_3.Name_Item                      as 'Наименование_карточки_товара'
---,e_3.Manufacturer                   as 'Наименование_производителя'
---,e_3.Country                        as 'Страна_производителя'
---,e_3.City							as 'Город_производителя'
---,e_3.Adress							as 'Адрес_производителя'
---,e.ID_Currency
---,c.Full_name_rus                    as 'Наименование_валюты_на_русском'
---,e_3.Quantity                       as 'Количество_товара'
---,e_3.Date_Created                   as 'Дата_создания_карточки_товара'
---,e_3.ID_product_measurement    
---,t.Product_measurement_Name         as 'Тип_измерения_товара'
---,e_3.ID_TypeItem
---,t_2.TypeItemName                   as 'Тип_товара'
---,e_3.ID_Species_Item
---,t_3.SpeciesItemName                as 'Вид_товара'
---,e_3.Id_Item_Status
---,i.ItemStatus                       as 'Наименование_статуса_товара'
---,e.ID_Storage_location          
---,s.Name                             as 'Наименование_места_хранения'
---,s.ID_Type_Storage_location
---,s_2.Name_Type_Storage_location     as 'Наименование_типа_места_хранения'
---,s.Id_Status
---,s_3.TypeStoragelocationName        as 'Статус_места_хранения'
---,s.Id_Country
---,co.Name_Country                    as 'Наименование_страны_места_хранения'
---,s.City                             as 'Город_места_хранения'
---,s.Adress                           as 'Адрес_места_хранения'
---from Exemplar  e
---left join Condition_of_the_item as e_2          on e_2.ID_Condition_of_the_item = e.ID_Condition_of_the_item 
---left join item as e_3                           on e_3.ID_item                  = e.ID_item 
---left join Currency as c                         on c.ID_Currency                = e.ID_Currency
---left join Type_of_product_measurement as t      on t.ID_product_measurement     = e_3.ID_product_measurement
---left join TypeItem as t_2                       on t_2.Id_TypeItem              = e_3.ID_TypeItem
---left join Species_Item as t_3                   on t_3.ID_Species_Item          = e_3.ID_Species_Item 
---left join Item_status as i                      on i.Id_Item_Status             = e_3.Id_Item_Status
---left join Storage_location as s                 on s.ID_Storage_location        = e.ID_Storage_location
---left join Type_Storage_location as s_2          on s_2.ID_Type_Storage_location = s.ID_Type_Storage_location
---left join Storage_location_status as s_3        on s_3.Id_Status                = s.Id_Status
---left join Country as co                         on co.Id_Country                = s.Id_Country
---left join #Orders_status_2 as c_2               on c_2.all_status               = e.ID_Condition_of_the_item
+--ROW_NUMBER() over (order by a.ID_Exemplar asc) as 'Нумерация'
+--,rank() over (partition by a.ID_Exemplar order by a_2.id_status_order) as 'Нумерация_по_идентификатору'
+--,a.ID_Exemplar
+--,a.ID_Condition_of_the_item
+--,a.[Наименование_статуса_экземпляра]
+--,a_2.all_status
+--,a_2.id_status_order
+--,a_3.Name
+--,a.ID_product_measurement	
+--,a.[Тип_измерения_товара]
+--,a.Дата_создания_карточки_товара
+--,a.Дата_заведения_экземпляра_в_систему
+--,a.Дата_возврата
+--,a.ID_Currency
+--,a.Наименование_валюты_на_русском
+----into #t_2
+--from All_Data_Exemplar as a
+--left join #Orders_status_2 as a_2 on a_2.all_status = a.ID_Condition_of_the_item
+--left join Orders_status as a_3         on a_3.Id_Status  = a_2.id_status_order    --Убираем экземпляры у которых статус не позволяет быть в заказах
+--where a_2.all_status  is null
+
+
+
+
+
+
+drop table if exists #t
+
+select
+ROW_NUMBER() over (order by a.ID_Exemplar asc) as 'Нумерация'
+,rank() over (partition by a.ID_Exemplar order by a_2.id_status_order) as 'Нумерация_по_идентификатору'
+,a.ID_Exemplar
+,a.ID_Condition_of_the_item
+,a.[Наименование_статуса_экземпляра]
+,a_2.all_status
+,a_2.id_status_order
+,a_3.Name
+,a.ID_product_measurement	
+,a.[Тип_измерения_товара]
+,a.Дата_создания_карточки_товара
+,a.Дата_заведения_экземпляра_в_систему
+,a.Дата_возврата
+,a.ID_Currency
+,a.Наименование_валюты_на_русском
+,a.Цена_без_НДС_экземпляра	
+,a.Цена_экземпляра_с_НДС	
+,a.Цена_экземпляра_с_НДС_после_начисления_коммисии_за_сервис	
+,a.Цена_экземпляра_без_НДС_после_начисления_коммисии_за_сервис
+into #t
+from All_Data_Exemplar as a
+left join #Orders_status_2 as a_2 on a_2.all_status = a.ID_Condition_of_the_item
+join Orders_status as a_3         on a_3.Id_Status  = a_2.id_status_order    --Убираем экземпляры у которых статус не позволяет быть в заказах
+where ID_product_measurement  = 5
+
+drop table if exists #t_2
+
+select
+ROW_NUMBER() over (order by a.ID_Exemplar asc) as 'Нумерация'
+,rank() over (partition by a.ID_Exemplar order by a_2.id_status_order) as 'Нумерация_по_идентификатору'
+,a.ID_Exemplar
+,a.ID_Condition_of_the_item
+,a.[Наименование_статуса_экземпляра]
+,a_2.all_status
+,a_2.id_status_order
+,a_3.Name
+,a.ID_product_measurement	
+,a.[Тип_измерения_товара]
+,a.Дата_создания_карточки_товара
+,a.Дата_заведения_экземпляра_в_систему
+,a.Дата_возврата
+,a.ID_Currency
+,a.Наименование_валюты_на_русском
+,a.Цена_без_НДС_экземпляра	
+,a.Цена_экземпляра_с_НДС	
+,a.Цена_экземпляра_с_НДС_после_начисления_коммисии_за_сервис	
+,a.Цена_экземпляра_без_НДС_после_начисления_коммисии_за_сервис
+into #t_2
+from All_Data_Exemplar as a
+left join #Orders_status_2 as a_2 on a_2.all_status = a.ID_Condition_of_the_item
+join Orders_status as a_3         on a_3.Id_Status  = a_2.id_status_order    --Убираем экземпляры у которых статус не позволяет быть в заказах
+where ID_product_measurement  != 5
+
+
+
+drop index if exists index_t_cla on #t
+drop index if exists index_t_cla_2 on #t_2
+
+create clustered index index_t_cla on #t([Нумерация])
+create clustered index index_t_cla_2 on #t_2([Нумерация])
+
+
+drop table if exists #t_3
+
+select
+* 
+into #t_3
+from
+(
+select * from
+(select 
+t.*
+, ROW_NUMBER() OVER (PARTITION BY t.ID_Exemplar ORDER BY  NEWID()) as 'Случайная_нумерация'
+from #t t) as t_1
+where t_1.[Случайная_нумерация] = 1
+union all
+select * from
+(select 
+t.*
+, ROW_NUMBER() OVER (PARTITION BY t.ID_Exemplar ORDER BY  NEWID()) as 'Случайная_нумерация'
+from #t_2 t) as t_1
+where t_1.[Случайная_нумерация] = 1
+) as a
+
+
+
+declare @i_2 int = 0, @s  int = 0 , @n varchar(40), @mess varchar(8000), @err varchar(1000)
+
+create table #Orders                                       
+(
+ID_Orders          bigint          not null identity (1,1),
+ID_status          bigint          not null,
+ID_TypeOrders      bigint          not null,
+ID_Currency        bigint          not null,
+ID_OrderAssignment BIGINT          NOT NULL,
+ID_OrderCategory   BIGINT          NOT NULL,
+Date               datetime        not null,
+Payment_Date       datetime        null,    
+Amount             decimal(15,2)   null,    
+AmountCurr         decimal(15,2)   null,    
+AmountNDS          decimal(15,2)   null,    
+AmountCurrNDS      decimal(15,2)   null,    
+Num                nvarchar(50)    not null,
+[Description]      nvarchar(4000)  null, 
+flag               int             null
+);
+
+declare
+@ID_Exemplar                                                  bigint
+,@ID_Condition_of_the_item                                    bigint
+,@Наименование_статуса_экземпляра                             nvarchar(300)
+,@all_status                                                  bigint
+,@id_status_order                                             bigint
+,@Name	                                                      nvarchar(300)
+,@ID_product_measurement	                                  bigint
+,@Тип_измерения_товара                                        nvarchar(50)	 
+,@Дата_создания_карточки_товара                               datetime
+,@Дата_заведения_экземпляра_в_систему                         datetime	
+,@Дата_возврата	                                              datetime
+,@ID_Currency                                                 bigint	
+,@Наименование_валюты_на_русском                              nvarchar(200)
+,@Цена_без_НДС_экземпляра	                                  decimal(15,2)
+,@Цена_экземпляра_с_НДС	                                      decimal(15,2)
+,@Цена_экземпляра_с_НДС_после_начисления_коммисии_за_сервис	  decimal(15,2)
+,@Цена_экземпляра_без_НДС_после_начисления_коммисии_за_сервис decimal(15,2)
+
+
+
+declare Cur cursor  local fast_forward for
+
+select  
+ ID_Exemplar
+,ID_Condition_of_the_item
+,Наименование_статуса_экземпляра
+,all_status
+,id_status_order	
+,[Name]	
+,ID_product_measurement	
+,Тип_измерения_товара	
+,Дата_создания_карточки_товара	
+,Дата_заведения_экземпляра_в_систему	
+,Дата_возврата	
+,ID_Currency	
+,Наименование_валюты_на_русском
+,Цена_без_НДС_экземпляра	
+,Цена_экземпляра_с_НДС	
+,Цена_экземпляра_с_НДС_после_начисления_коммисии_за_сервис	
+,Цена_экземпляра_без_НДС_после_начисления_коммисии_за_сервис
+from #t_3 
+--where  Дата_возврата is not null and ID_product_measurement = 5
+order by ID_Exemplar
+
+open Cur
+
+fetch next from Cur into
+    @ID_Exemplar                                                 
+	,@ID_Condition_of_the_item                                   
+	,@Наименование_статуса_экземпляра                            
+	,@all_status                                                 
+	,@id_status_order                                            
+	,@Name	                                                     
+	,@ID_product_measurement	                                 
+	,@Тип_измерения_товара                                       
+	,@Дата_создания_карточки_товара                              
+	,@Дата_заведения_экземпляра_в_систему                        
+	,@Дата_возврата	                                             
+	,@ID_Currency                                                
+	,@Наименование_валюты_на_русском                             
+	,@Цена_без_НДС_экземпляра	                                 
+	,@Цена_экземпляра_с_НДС	                                     
+	,@Цена_экземпляра_с_НДС_после_начисления_коммисии_за_сервис	 
+	,@Цена_экземпляра_без_НДС_после_начисления_коммисии_за_сервис
+while @@FETCH_STATUS = 0
+     begin
+	    begin try
+		    
+			 --if exists (select a.flag from #RandomSelectedRows_2  as a where @Id_Item_2 = a.Id_Item and @ID_TypeItem_2 = ID_TypeItem and a.flag = 0)
+			 --begin 
+			 --     set @i_3 =  @i_3 + 1
+			 --        update a set flag = 1 from #RandomSelectedRows_2  as a where @Id_Item_2 = a.Id_Item  and @ID_TypeItem_2 = ID_TypeItem and a.flag = 0 
+			 --end
+
+			 --select @s = count(0) from #RandomSelectedRows_2 where flag = 0
+			 -- set @n = (select  
+			 --           case  t.flag  when 1 then ' 1  Значения изменены' when 0  then ' 0  Значения не изменялись' end  
+			 --           from #RandomSelectedRows_2 t  where t.id_item = @id_item_2)
+			 -- set @mess = @n + ' - > ' + ' Order_Count_Item '  + Cast(@OrderCount_2 as varchar)  + ' Id_Item '  + Cast(@id_item_2 as varchar)  + ' --> ' + ' - ' + Cast(@i_2 as varchar) + ' / ' + Cast(@s as varchar)
+			 -- RAISERROR(@mess,0,0) WITH NOWAIT
+		end try
+
+		begin catch
+
+		end catch
+	  
+	    fetch next from Cur into
+		@ID_Exemplar                                                 
+		,@ID_Condition_of_the_item                                   
+		,@Наименование_статуса_экземпляра                            
+		,@all_status                                                 
+		,@id_status_order                                            
+		,@Name	                                                     
+		,@ID_product_measurement	                                 
+		,@Тип_измерения_товара                                       
+		,@Дата_создания_карточки_товара                              
+		,@Дата_заведения_экземпляра_в_систему                        
+		,@Дата_возврата	                                             
+		,@ID_Currency                                                
+		,@Наименование_валюты_на_русском                             
+		,@Цена_без_НДС_экземпляра	                                 
+		,@Цена_экземпляра_с_НДС	                                     
+		,@Цена_экземпляра_с_НДС_после_начисления_коммисии_за_сервис	 
+		,@Цена_экземпляра_без_НДС_после_начисления_коммисии_за_сервис
+	 end
+close Cur
+deallocate Cur
+
+
+
+
+
+
+
+
+
+
+		 --select top 1 ID_status_orders,Name_orders
+		 --from #Orders_prioritet 
+		 --order by -log(rand(CHECKSUM(newid())))/ Prioritet
 
 
 --select * from All_Data_Exemplar
 
---select * from  #Orders_status_2 order by id_status_order,all_status
 
-
-					 
-
-
-
+					
 /*
 create table Orders                                                                 --Заказ
 (

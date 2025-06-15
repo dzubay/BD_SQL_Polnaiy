@@ -3,10 +3,6 @@ go
 set nocount,xact_abort on;
 go
 
-begin tran 
-
-
-
 insert into  Orders_status(Name,SysTypeOrderStatusName,Description)
 values 
 ('Завершена', 'SysTypeOrderStatusName_Completed', null)
@@ -28,7 +24,7 @@ values
 
 declare @Orders_status int;
 set @Orders_status = (select count(Id_Status) as Id_Status from Orders_status)
-print 'Заполнена таблица dbo.Orders_status. Общее количество заполненных строк --> ' +  cast(@Orders_status as nvarchar(5))
+print 'Заполнена таблица dbo.Orders_status. Общее количество заполненных строк --> ' +  cast(@Orders_status as nvarchar(500))
 go
 
 insert into  Buyer_status(Name,SysTypeBuyerStatusName,Description) values 
@@ -47,7 +43,7 @@ insert into  Buyer_status(Name,SysTypeBuyerStatusName,Description) values
 
 declare @Buyer_status int;
 set @Buyer_status = (select count(Id_Status) as Id_Status from Buyer_status)
-print 'Заполнена таблица dbo.Buyer_status. Общее количество заполненных строк --> ' +  cast(@Buyer_status as nvarchar(5))
+print 'Заполнена таблица dbo.Buyer_status. Общее количество заполненных строк --> ' +  cast(@Buyer_status as nvarchar(500))
 go
 
 insert into  Transaction_status(TypeTransactionName,SysTypeTransactionName,Description) values 
@@ -78,7 +74,7 @@ insert into  Transaction_status(TypeTransactionName,SysTypeTransactionName,Descr
 
 declare @Transaction_status int;
 set @Transaction_status = (select count(ID_Transaction_status) as ID_Transaction_status from Transaction_status)
-print 'Заполнена таблица dbo.Transaction_status. Общее количество заполненных строк --> ' +  cast(@Transaction_status as nvarchar(5))
+print 'Заполнена таблица dbo.Transaction_status. Общее количество заполненных строк --> ' +  cast(@Transaction_status as nvarchar(500))
 
 go
 
@@ -95,7 +91,7 @@ Insert into TypeOrders(TypeOrdersName,TypeOrdersSysName,[Description]) values
 
 declare @TypeOrders int;
 set @TypeOrders = (select count(ID_TypeOrders) as ID_TypeOrders from TypeOrders)
-print 'Заполнена таблица dbo.TypeOrders. Общее количество заполненных строк --> ' +  cast(@TypeOrders as nvarchar(5))
+print 'Заполнена таблица dbo.TypeOrders. Общее количество заполненных строк --> ' +  cast(@TypeOrders as nvarchar(500))
 
 go
 
@@ -124,7 +120,7 @@ insert into  Order_Assignment(OrderAssignmentName,OrderAssignmentNameEng,OrderAs
 
 declare @Order_Assignment int;
 set @Order_Assignment = (select count(ID_OrderAssignment) as ID_OrderAssignment from Order_Assignment)
-print 'Заполнена таблица dbo.Order_Assignment. Общее количество заполненных строк --> ' +  cast(@Order_Assignment as nvarchar(5))
+print 'Заполнена таблица dbo.Order_Assignment. Общее количество заполненных строк --> ' +  cast(@Order_Assignment as nvarchar(500))
 
 
 go
@@ -137,7 +133,7 @@ insert into Order_category(OrderCategoryName,Abbreviation,OrderCategorySysName,[
 
 declare @Order_category int;
 set @Order_category = (select count(ID_OrderCategory) as ID_OrderCategory from Order_category)
-print 'Заполнена таблица dbo.Order_category. Общее количество заполненных строк --> ' +  cast(@Order_category as nvarchar(5))
+print 'Заполнена таблица dbo.Order_category. Общее количество заполненных строк --> ' +  cast(@Order_category as nvarchar(500))
 
 go
 
@@ -164,7 +160,7 @@ insert into  Storage_location_status(TypeStoragelocationName,SysTypeStoragelocat
 
 declare @Storage_location_status int;
 set @Storage_location_status = (select count(Id_Status) as Id_Status from Storage_location_status)
-print 'Заполнена таблица dbo.Storage_location_status. Общее количество заполненных строк --> ' +  cast(@Storage_location_status as nvarchar(5))
+print 'Заполнена таблица dbo.Storage_location_status. Общее количество заполненных строк --> ' +  cast(@Storage_location_status as nvarchar(500))
 
 go
 
@@ -183,7 +179,7 @@ insert into  Type_Storage_location(Name_Type_Storage_location,SysNameTypeStorage
 
 declare @Type_Storage_location int;
 set @Type_Storage_location = (select count(ID_Type_Storage_location) as ID_Type_Storage_location from Type_Storage_location)
-print 'Заполнена таблица dbo.Type_Storage_location. Общее количество заполненных строк --> ' +  cast(@Type_Storage_location as nvarchar(5))
+print 'Заполнена таблица dbo.Type_Storage_location. Общее количество заполненных строк --> ' +  cast(@Type_Storage_location as nvarchar(500))
 
 go
 
@@ -207,7 +203,7 @@ insert into  Buyer_Type(Name,SysTypeBuyerTypeName,Description) values
 
 declare @Buyer_Type int;
 set @Buyer_Type = (select count(Id_Buyer_Type) as Id_Buyer_Type from Buyer_Type)
-print 'Заполнена таблица dbo.Buyer_Type. Общее количество заполненных строк --> ' +  cast(@Buyer_Type as nvarchar(5))
+print 'Заполнена таблица dbo.Buyer_Type. Общее количество заполненных строк --> ' +  cast(@Buyer_Type as nvarchar(500))
 
 go
 
@@ -369,7 +365,7 @@ insert into  Currency(Full_name_rus,Full_name_eng,Abbreviation_rus,Abbreviation_
 
 declare @Currency int;
 set @Currency = (select count(ID_Currency) as ID_Currency from Currency)
-print 'Заполнена таблица dbo.Currency. Общее количество заполненных строк --> ' +  cast(@Currency as nvarchar(5))
+print 'Заполнена таблица dbo.Currency. Общее количество заполненных строк --> ' +  cast(@Currency as nvarchar(500))
 
 go
 
@@ -385,7 +381,7 @@ insert into  Type_of_product_measurement(Product_measurement_Name,SysProductMeas
 
 declare @Type_of_product_measurement int;
 set @Type_of_product_measurement = (select count(ID_product_measurement) as ID_product_measurement from Type_of_product_measurement)
-print 'Заполнена таблица dbo.Type_of_product_measurement. Общее количество заполненных строк --> ' +  cast(@Type_of_product_measurement as nvarchar(5))
+print 'Заполнена таблица dbo.Type_of_product_measurement. Общее количество заполненных строк --> ' +  cast(@Type_of_product_measurement as nvarchar(500))
 
 go
 
@@ -422,7 +418,7 @@ insert into  TypeItem(TypeItemName,SysTypeItemName,Description) values
 
 declare @TypeItem int;
 set @TypeItem = (select count(Id_TypeItem) as Id_TypeItem from TypeItem)
-print 'Заполнена таблица dbo.TypeItem. Общее количество заполненных строк --> ' +  cast(@TypeItem as nvarchar(5))
+print 'Заполнена таблица dbo.TypeItem. Общее количество заполненных строк --> ' +  cast(@TypeItem as nvarchar(500))
 
 go
 
@@ -452,7 +448,7 @@ insert into  Species_Item(SpeciesItemName,SysSpeciesItemName,Description) values
 
 declare @Species_Item int;
 set @Species_Item = (select count(ID_Species_Item) as ID_Species_Item from Species_Item)
-print 'Заполнена таблица dbo.Species_Item. Общее количество заполненных строк --> ' +  cast(@Species_Item as nvarchar(5))
+print 'Заполнена таблица dbo.Species_Item. Общее количество заполненных строк --> ' +  cast(@Species_Item as nvarchar(500))
 
 go
 
@@ -472,7 +468,7 @@ insert into  Item_status(ItemStatus,SysItemStatusName,Description) values
 
 declare @Item_status int;
 set @Item_status = (select count(Id_Item_Status) as Id_Item_Status from Item_status)
-print 'Заполнена таблица dbo.Item_status. Общее количество заполненных строк --> ' +  cast(@Item_status as nvarchar(5))
+print 'Заполнена таблица dbo.Item_status. Общее количество заполненных строк --> ' +  cast(@Item_status as nvarchar(500))
 
 go
 
@@ -551,7 +547,7 @@ declare @GetDate datetime = GetDate();
 
 declare @Connection_Buyer int;
 set @Connection_Buyer = (select count(ID_Connection_Buyer) as ID_Connection_Buyer from Connection_Buyer)
-print 'Заполнена таблица dbo.Connection_Buyer. Общее количество заполненных строк --> ' +  cast(@Connection_Buyer as nvarchar(5))
+print 'Заполнена таблица dbo.Connection_Buyer. Общее количество заполненных строк --> ' +  cast(@Connection_Buyer as nvarchar(500))
 
 go
 
@@ -685,7 +681,7 @@ declare @Buyer_The_resident        bit;
 
 declare @Buyer int;
 set @Buyer = (select count(Id_buyer) as Id_buyer from Buyer)
-print 'Заполнена таблица dbo.Buyer. Общее количество заполненных строк --> ' +  cast(@Buyer as nvarchar(5))
+print 'Заполнена таблица dbo.Buyer. Общее количество заполненных строк --> ' +  cast(@Buyer as nvarchar(500))
 
 go
 INSERT INTO dbo.Country (Name_Country, Name_English, Cod_Country_Phone) VALUES
@@ -824,7 +820,7 @@ INSERT INTO dbo.Country (Name_Country, Name_English, Cod_Country_Phone) VALUES
 
 declare @Country int;
 set @Country = (select count(id_Country) as id_Country from Country)
-print 'Заполнена таблица dbo.Country. Общее количество заполненных строк --> ' +  cast(@Country as nvarchar(5))
+print 'Заполнена таблица dbo.Country. Общее количество заполненных строк --> ' +  cast(@Country as nvarchar(500))
 
 
 
@@ -1025,7 +1021,7 @@ END;
 
 declare @Passport int;
 set @Passport = (select count(ID_Passport) as ID_Passport from Passport)
-print 'Заполнена таблица dbo.Passport. Общее количество заполненных строк --> ' +  cast(@Passport as nvarchar(5))
+print 'Заполнена таблица dbo.Passport. Общее количество заполненных строк --> ' +  cast(@Passport as nvarchar(500))
 
 go
 
@@ -1040,7 +1036,7 @@ values
 
 declare @Status_Employee int;
 set @Status_Employee = (select count(ID_Status_Employee) as ID_Status_Employee from Status_Employee)
-print 'Заполнена таблица dbo.Status_Employee. Общее количество заполненных строк --> ' +  cast(@Status_Employee as nvarchar(5))
+print 'Заполнена таблица dbo.Status_Employee. Общее количество заполненных строк --> ' +  cast(@Status_Employee as nvarchar(500))
 go
 
 declare @i int  = 0;
@@ -1111,7 +1107,7 @@ declare @i int  = 0;
 
   declare @Connection_String int;
   set @Connection_String = (select count(ID_Connection_String) as ID_Connection_String from Connection_String)
-  print 'Заполнена таблица dbo.Connection_String. Общее количество заполненных строк --> ' +  cast(@Connection_String as nvarchar(5))
+  print 'Заполнена таблица dbo.Connection_String. Общее количество заполненных строк --> ' +  cast(@Connection_String as nvarchar(500))
 
   go
 
@@ -1958,7 +1954,7 @@ deallocate mycur
 
 declare @Branch int;
 set @Branch = (select count(ID_Branch) as ID_Branch from Branch)
-print 'Заполнена таблица dbo.Branch. Общее количество заполненных строк --> ' +  cast(@Branch as nvarchar(5))
+print 'Заполнена таблица dbo.Branch. Общее количество заполненных строк --> ' +  cast(@Branch as nvarchar(500))
 
 
 go
@@ -2088,7 +2084,7 @@ insert into  Department (Name_Department,ID_Branch,Department_Code)
 
 declare @Department int;
 set @Department = (select count(id_Department) as id_Department from Department)
-print 'Заполнена таблица dbo.Department. Общее количество заполненных строк --> ' +  cast(@Department as nvarchar(5))
+print 'Заполнена таблица dbo.Department. Общее количество заполненных строк --> ' +  cast(@Department as nvarchar(500))
 
 go
 
@@ -4918,7 +4914,7 @@ insert into  Condition_of_the_item(Name_Condition_of_the_item,SysNameConditionTy
 
 declare @Condition_of_the_items int;
 set @Condition_of_the_items = (select count(ID_Condition_of_the_item) as Id_Status from Condition_of_the_item)
-print 'Заполнена таблица dbo.Condition_of_the_item. Общее количество заполненных строк --> ' +  cast(@Condition_of_the_items as nvarchar(5))
+print 'Заполнена таблица dbo.Condition_of_the_item. Общее количество заполненных строк --> ' +  cast(@Condition_of_the_items as nvarchar(500))
 
 go
 
@@ -5416,7 +5412,7 @@ drop table if exists #Currency_Rate_2
 
 declare @Currency_Rate int;
 set @Currency_Rate = (select count(ID_Currency_Rate) as ID_Currency_Rate from Currency_Rate)
-print 'Заполнена таблица dbo.Currency_Rate. Общее количество заполненных строк --> ' +  cast(@Currency_Rate as nvarchar(5))
+print 'Заполнена таблица dbo.Currency_Rate. Общее количество заполненных строк --> ' +  cast(@Currency_Rate as nvarchar(500))
 
 go
 
@@ -10820,7 +10816,7 @@ while @i <= 4454
 
    declare @Item int;
    set @Item = (select count(ID_Item) as ID_Iteme from Item)
-   print 'Заполнена таблица dbo.Item. Общее количество заполненных строк --> ' +  cast(@Item as nvarchar(5))
+   print 'Заполнена таблица dbo.Item. Общее количество заполненных строк --> ' +  cast(@Item as nvarchar(500))
 go
 
 drop table if exists  #RandomSelectedRows
@@ -11277,8 +11273,6 @@ drop table if exists #Exemplar
 
 declare @Exemplar_count int;
 set @Exemplar_count = (select count(ID_Exemplar) as Exemplar from Exemplar)
-print 'Заполнена таблица dbo.Exemplar. Общее количество заполненных строк --> ' +  cast(@Exemplar_count as nvarchar(5))
+print 'Заполнена таблица dbo.Exemplar. Общее количество заполненных строк --> ' +  cast(@Exemplar_count as nvarchar(500))
 go
 
-commit
---rollback
