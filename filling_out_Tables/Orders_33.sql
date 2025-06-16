@@ -232,27 +232,27 @@ group by ID_product_measurement
 
 
 
-select
-ROW_NUMBER() over (order by a.ID_Exemplar asc) as 'Нумерация'
-,rank() over (partition by a.ID_Exemplar order by a_2.id_status_order) as 'Нумерация_по_идентификатору'
-,a.ID_Exemplar
-,a.ID_Condition_of_the_item
-,a.[Наименование_статуса_экземпляра]
-,a_2.all_status
-,a_2.id_status_order
-,a_3.Name
-,a.ID_product_measurement	
-,a.[Тип_измерения_товара]
-,a.Дата_создания_карточки_товара
-,a.Дата_заведения_экземпляра_в_систему
-,a.Дата_возврата
-,a.ID_Currency
-,a.Наименование_валюты_на_русском
---into #t_2
-from All_Data_Exemplar as a
-left join #Orders_status_2 as a_2 on a_2.all_status = a.ID_Condition_of_the_item
-left join Orders_status as a_3         on a_3.Id_Status  = a_2.id_status_order    --Убираем экземпляры у которых статус не позволяет быть в заказах
-where a_2.all_status  is null
+--select
+--ROW_NUMBER() over (order by a.ID_Exemplar asc) as 'Нумерация'
+--,rank() over (partition by a.ID_Exemplar order by a_2.id_status_order) as 'Нумерация_по_идентификатору'
+--,a.ID_Exemplar
+--,a.ID_Condition_of_the_item
+--,a.[Наименование_статуса_экземпляра]
+--,a_2.all_status
+--,a_2.id_status_order
+--,a_3.Name
+--,a.ID_product_measurement	
+--,a.[Тип_измерения_товара]
+--,a.Дата_создания_карточки_товара
+--,a.Дата_заведения_экземпляра_в_систему
+--,a.Дата_возврата
+--,a.ID_Currency
+--,a.Наименование_валюты_на_русском
+----into #t_2
+--from All_Data_Exemplar as a
+--left join #Orders_status_2 as a_2 on a_2.all_status = a.ID_Condition_of_the_item
+--left join Orders_status as a_3         on a_3.Id_Status  = a_2.id_status_order    --Убираем экземпляры у которых статус не позволяет быть в заказах
+--where a_2.all_status  is null
 
 
 
@@ -316,7 +316,7 @@ join Orders_status as a_3         on a_3.Id_Status  = a_2.id_status_order    --�
 where ID_product_measurement  != 5
 
 
-
+/* Для правильной сортировки */
 drop index if exists index_t_cla on #t
 drop index if exists index_t_cla_2 on #t_2
 
@@ -345,6 +345,136 @@ t.*
 from #t_2 t) as t_1
 where t_1.[Случайная_нумерация] = 1
 ) as a
+
+/*
+Выборка групировка по дням , учитывая статус заказа 15 и групмровка групп экземпляров по Дате_возврата, со статусами экземпляров 32, 13  
+то есть собирвем в одну кипу экземляры которые могут быть в одном заказе по времени возврата
+*/
+
+drop table if exists #t_4;
+
+WITH BaseGroups AS (
+    SELECT 
+        CONVERT(date, Дата_возврата) AS Дата,
+        CASE 
+            WHEN Наименование_статуса_экземпляра IN ('Возвращён пользователем', 'Услуга возвращена') THEN 'Возвращён пользователем + Услуга возвращена'
+            ELSE Наименование_статуса_экземпляра
+        END AS Группа_статусов,
+        id_status_order AS Статус_заказа,
+        COUNT(ID_Exemplar) AS Количество_экземпляров,
+        SUM(Цена_без_НДС_экземпляра) AS Цена_без_НДС_экземпляра,
+		SUM(Цена_экземпляра_с_НДС) AS Общая_стоимость_с_НДС,
+		SUM(Цена_экземпляра_с_НДС_после_начисления_коммисии_за_сервис) AS Цена_экземпляра_с_НДС_после_начисления_коммисии_за_сервис,
+		SUM(Цена_экземпляра_без_НДС_после_начисления_коммисии_за_сервис) AS Цена_экземпляра_без_НДС_после_начисления_коммисии_за_сервис
+    FROM #t_3
+    GROUP BY GROUPING SETS (
+        (CONVERT(date, Дата_возврата), 
+        CASE WHEN Наименование_статуса_экземпляра IN ('Возвращён пользователем', 'Услуга возвращена') THEN 'Возвращён пользователем + Услуга возвращена'
+		ELSE Наименование_статуса_экземпляра END,				    
+        id_status_order
+        ),
+
+        (CONVERT(date, Дата_возврата), id_status_order),
+        (CONVERT(date, Дата_возврата))
+    )
+)
+SELECT 
+    bg.Дата,
+    bg.Группа_статусов,
+    bg.Статус_заказа,
+    bg.Количество_экземпляров,
+    ids.Список_ID,
+	bg.Цена_без_НДС_экземпляра,
+    bg.Общая_стоимость_с_НДС,
+	bg.Цена_экземпляра_с_НДС_после_начисления_коммисии_за_сервис,
+	bg.Цена_экземпляра_без_НДС_после_начисления_коммисии_за_сервис
+	into #t_4
+FROM BaseGroups bg
+OUTER APPLY (
+    SELECT STRING_AGG(CAST(t.ID_Exemplar AS VARCHAR), ', ') AS Список_ID
+    FROM #t_3 t
+    WHERE 
+        (bg.Дата IS NULL OR CONVERT(date, t.Дата_возврата) = bg.Дата)
+        AND (bg.Группа_статусов IS NULL OR 
+             CASE WHEN t.Наименование_статуса_экземпляра IN ('Возвращён пользователем', 'Услуга возвращена') THEN 'Возвращён пользователем + Услуга возвращена' 
+                  ELSE t.Наименование_статуса_экземпляра END = bg.Группа_статусов)
+        AND (bg.Статус_заказа IS NULL OR t.id_status_order = bg.Статус_заказа)		
+) ids
+where  Статус_заказа = 15
+ORDER BY 
+    bg.Дата,
+    bg.Группа_статусов,
+    bg.Статус_заказа;
+
+
+/*Убираем ненужные строки с NULL, ну и за одно  пронумеровываем их, не особо важно, но не стал заморачиваться*/
+	drop table if exists #t_5
+	 
+    select
+	row_number() over (partition by t.Группа_статусов order by t.Дата) as 'Нумирация'
+	,t.* 
+	into #t_5
+	from(
+	select *
+	from #t_4  t
+	where Статус_заказа = 15 and Количество_экземпляров = 1 and Группа_статусов is not null
+	Union all
+	select * 
+	from #t_4  
+	where Статус_заказа = 15 and Количество_экземпляров > 1 and Группа_статусов is not null
+	) as t order by t.Дата,t.Количество_экземпляров
+
+
+/*Теперь дополнительно к каждой нумерации сформированных кип, добавляем эти же ID экземпляров и услуг, что бы сформировать по каждой кипе заказ, и по каждому заказу в таблицу Orders_data строки,
+к какому заказу относится, тот или иной экземпляр */
+   drop table if exists  #Razgrupirovka
+
+   create table #Razgrupirovka 
+   (
+   Нумирация	int              null
+   ,ID          bigint           null
+   )
+
+   declare @Summ int = (select count(Нумирация) from #t_5)
+
+   declare @e int = 1,   @Id_5 nvarchar(500)
+   declare @e_1 int = 1, @Id_6 nvarchar(500),@kolichestvo int = 0
+   declare @tab table (nomer int, id bigint)
+
+   while @e <= @Summ
+      begin
+	    set @Id_5 = (select Список_ID from #t_5 where Нумирация = @e)
+		set @kolichestvo = (select Количество_экземпляров from #t_5 where Нумирация = @e) 
+
+		if @kolichestvo = 1
+		     begin 
+		       	insert into #Razgrupirovka(Нумирация,ID)
+		        select @e,*  from STRING_SPLIT(@Id_5,',')
+				
+		     end
+        else
+		     begin	
+			     delete from @tab;
+			     
+			     
+			     set @Id_6 = (select Список_ID from #t_5 where Нумирация = @e )
+
+				 insert into @tab
+			     select @e,* from STRING_SPLIT(@Id_6,',')
+
+                 insert into #Razgrupirovka(Нумирация,ID) 
+				 select * from @tab    
+				 
+			 end 
+		 set @e = @e + 1
+	  end
+
+
+--select t.*, t_2.* 
+--from  #t_5  t 
+--left join  #Razgrupirovka t_2 on t.Нумирация = t_2.Нумирация
+
+
 
 
 
@@ -442,15 +572,15 @@ while @@FETCH_STATUS = 0
 			     begin 
 				     if @id_status_order = 15 and @Дата_возврата is not null
 					    begin
-						    
+						     insert into #Orders(ID_status,ID_TypeOrders,ID_Currency,ID_OrderAssignment,ID_OrderCategory,[Date]              
+			                 ,Payment_Date,Amount,AmountCurr,AmountNDS,AmountCurrNDS,Num,[Description],flag) values
+			                 (
+
+			                 )
 						end
 				 end 
 
-		     insert into #Orders(ID_status,ID_TypeOrders,ID_Currency,ID_OrderAssignment,ID_OrderCategory,[Date]              
-			 ,Payment_Date,Amount,AmountCurr,AmountNDS,AmountCurrNDS,Num,[Description],flag) values
-			 (
 
-			 )
 		    
 			 --if exists (select a.flag from #RandomSelectedRows_2  as a where @Id_Item_2 = a.Id_Item and @ID_TypeItem_2 = ID_TypeItem and a.flag = 0)
 			 --begin 
@@ -517,9 +647,10 @@ select
 ,Цена_экземпляра_без_НДС_после_начисления_коммисии_за_сервис
 from #t_3 
 where 1 = 1 
+and Дата_возврата is  null
 --and ID_product_measurement = 5 
 --and id_status_order = 15
-and all_status in (32,13,16)
+and all_status in (32,13)
 
 order by ID_Exemplar
 
@@ -533,10 +664,168 @@ order by ID_Exemplar
 select * from All_Data_Exemplar  
 where 1=1 
 --and ID_Exemplar = 265
-and ID_Condition_of_the_item in (32,13,16)
+and ID_Condition_of_the_item in (32,13)
 
 select * from Exemplar
-where  ID_Condition_of_the_item in (32,13,16)					
+where  ID_Condition_of_the_item in (32,13)	
+
+/*
+SELECT 
+    CONVERT(date, Дата_заведения_экземпляра_в_систему) AS Дата,
+    Наименование_статуса_экземпляра AS Статус,
+    COUNT(ID_Exemplar) AS Количество_экземпляров,
+    SUM(Цена_экземпляра_с_НДС) AS Общая_стоимость_с_НДС,
+    AVG(Цена_экземпляра_с_НДС) AS Средняя_стоимость_с_НДС
+FROM #t_3
+GROUP BY 
+    CONVERT(date, Дата_заведения_экземпляра_в_систему),
+    Наименование_статуса_экземпляра
+ORDER BY 
+    Дата,
+    Статус;
+
+SELECT 
+    CONVERT(date, Дата_заведения_экземпляра_в_систему) AS Дата,
+    CASE 
+        WHEN Наименование_статуса_экземпляра IN ('Статус1', 'Статус2') THEN 'Группа статусов 1-2'
+        ELSE Наименование_статуса_экземпляра
+    END AS Группа_статусов,
+    COUNT(ID_Exemplar) AS Количество_экземпляров
+FROM #t_3
+GROUP BY 
+    CONVERT(date, Дата_заведения_экземпляра_в_систему),
+    CASE 
+        WHEN Наименование_статуса_экземпляра IN ('Статус1', 'Статус2') THEN 'Группа статусов 1-2'
+        ELSE Наименование_статуса_экземпляра
+    END
+ORDER BY 
+    Дата,
+    Группа_статусов;
+
+
+
+SELECT 
+    CONVERT(date, Дата_заведения_экземпляра_в_систему) AS Дата,
+    Наименование_статуса_экземпляра AS Статус_экземпляра,
+    id_status_order AS Статус_заказа,
+    COUNT(ID_Exemplar) AS Количество_экземпляров,
+    SUM(Цена_экземпляра_с_НДС) AS Общая_стоимость_с_НДС,
+    AVG(Цена_экземпляра_с_НДС) AS Средняя_цена_с_НДС
+FROM #t_3
+GROUP BY 
+    CONVERT(date, Дата_заведения_экземпляра_в_систему),
+    Наименование_статуса_экземпляра,
+    id_status_order
+ORDER BY 
+    Дата,
+    Статус_экземпляра,
+    Статус_заказа;
+
+SELECT 
+    CONVERT(date, Дата_заведения_экземпляра_в_систему) AS Дата,
+    CASE 
+        WHEN Наименование_статуса_экземпляра IN ('В резерве', 'На проверке') THEN 'Резерв + Проверка'
+        ELSE Наименование_статуса_экземпляра
+    END AS Группа_статусов,
+    id_status_order AS Статус_заказа,
+    COUNT(ID_Exemplar) AS Количество_экземпляров,
+    SUM(Цена_экземпляра_с_НДС) AS Общая_стоимость_с_НДС
+FROM #t_3
+GROUP BY GROUPING SETS (
+    -- Вариант 1: Группировка по дате + общая группа статусов + статус заказа
+    (
+        CONVERT(date, Дата_заведения_экземпляра_в_систему),
+        CASE WHEN Наименование_статуса_экземпляра IN ('В резерве', 'На проверке') THEN 'Резерв + Проверка' ELSE Наименование_статуса_экземпляра END,
+        id_status_order
+    ),
+    
+    -- Вариант 2: Только по дате + статус заказа (без группировки статусов экземпляра)
+    (
+        CONVERT(date, Дата_заведения_экземпляра_в_систему),
+        id_status_order
+    ),
+    
+    -- Вариант 3: Только по дате (общее количество за день)
+    (
+        CONVERT(date, Дата_заведения_экземпляра_в_систему)
+    )
+)
+ORDER BY 
+    Дата,
+    Группа_статусов,
+    Статус_заказа;
+
+
+SELECT 
+    CONVERT(date, Дата_заведения_экземпляра_в_систему) AS Дата,
+    CASE 
+        WHEN Наименование_статуса_экземпляра IN ('В резерве', 'На проверке') THEN 'Резерв + Проверка'
+        ELSE Наименование_статуса_экземпляра
+    END AS Группа_статусов,
+    id_status_order AS Статус_заказа,
+    COUNT(ID_Exemplar) AS Количество_экземпляров,
+    STRING_AGG(CAST(ID_Exemplar AS VARCHAR), ', ') AS Список_ID,
+    SUM(Цена_экземпляра_с_НДС) AS Общая_стоимость_с_НДС
+FROM #t_3
+GROUP BY GROUPING SETS (
+    (
+        CONVERT(date, Дата_заведения_экземпляра_в_систему),
+        CASE WHEN Наименование_статуса_экземпляра IN ('В резерве', 'На проверке') THEN 'Резерв + Проверка' ELSE Наименование_статуса_экземпляра END,
+        id_status_order
+    ),
+    (
+        CONVERT(date, Дата_заведения_экземпляра_в_систему),
+        id_status_order
+    ),
+    (
+        CONVERT(date, Дата_заведения_экземпляра_в_систему)
+    )
+)
+ORDER BY 
+    Дата,
+    Группа_статусов,
+    Статус_заказа;
+
+*/
+
+/*
+--1	 Продан										 	--1	 Завершена                        1,28
+--2	 Просрочен									 	--2	 В ожидании						  27,4,5
+--3	 Задублирован								 	--3	 В ожидании оплаты				  34,5
+--4	 На отгрузке								    --4	 На уточнении у Контрагента		  2,6,12,14,26,17,5,31,27,23
+--5	 На складе									 	--5	 Бухгалтерский контроль			  5,24,27
+--6	 Ожидает возврата							 	--6	 Оплачен						  33,15,25 
+--7	 Потерян									 	--7	 На исправлении					  14,15,16,34,7,8,12,17,5,9,11,19,20,23,29,2,3,6,31,27
+--8	 На проверке								 	--8	 На проверки Аудиторов		      14,15,16,34,7,8,12,17,5,31
+--9	 Ожидает отгрузки							 	--9	 В движении						  30,11,25,4,19
+--10 Зарезервирован								    --10 На складе						  5,9,7
+--11 В пути										    --11 В сборке						  4,10
+--12 Бракованный								 	--12 В ожидании отправки			  26,27,20
+--13 Возвращён пользователем					 	--13 На проверке SOX				  2,3,6,7,8,12,14,17,31,27,23
+--14 Уценён										    --14 Отменён					      9,11,16,19,20,23,29,2,17,3,34,31,27  
+--15 Продан в рассрочку                             --15 Возврат					      32,13	 
+--16 Не полностью оплачен по рассрочке			 
+--17 Испорчен									 
+--18 Срок годности просрочен					 
+--19 Ожидает на пункте выдачи					 
+--20 Ожидает курьера							 
+--21 Черновик									 
+--22 Редактируется								 
+--23 Найдены несоответствия в карточке товара	 
+--24 Перерасчёт цен								 
+--25 Услуга активна								 
+--26 Услуга ожидает активации					 
+--27 Услуга приостановлена						 
+--28 Услуга завершена                              
+--29 Услуга отменена							 
+--30 Услуга в процессе выполнения				 
+--31 Услуга просрочена							 
+--32 Услуга возвращена							 
+--33 Услуга оплачена							 
+--34 Услуга не оплачена		
+*/
+
+
 /*
 create table Orders                                                                 --Заказ
 (
