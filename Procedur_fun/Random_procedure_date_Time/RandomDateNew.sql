@@ -14,9 +14,24 @@ declare @DataRezult datetime;
   /*Проверяем, чтобы начальная дата была меньше конечной даты*/
 if @StartDate >= @EndDate
   begin
-      print  N'@StartDate не должна ровняться с @EndDate.'; 	   
+      print  N'@StartDate не должна ровняться с @EndDate. --> RandomDateNew '; 	   
 	  RETURN;
-  end;
+  end
+else if (@StartDate is null)
+	   begin
+	        if (@StartDate is  null) and (@EndDate is  null)
+	             begin
+	               PRINT N'Обе даты содержат Null. --> RandomDateNew'; 
+	               RETURN;
+	             end
+	     PRINT N'@StartDate содержит Null. --> RandomDateNew';                                           
+         RETURN;
+	   end
+else if (@EndDate is null)
+   begin
+	   PRINT N'@EndDate содержит Null. --> RandomDateNew';                                           
+       RETURN;
+   end
 else 
   begin 
        /*Рассчитываем разницу в днях между датами*/

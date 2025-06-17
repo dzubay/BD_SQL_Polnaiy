@@ -283,7 +283,7 @@ while @@FETCH_STATUS = 0
 			 /*Проверка, если есть указатель на возврат, то формируем дату*/
 			 if(@Refund = 1)
 			     begin 
-				     exec RandomDateNew  '20240101','20250101', @Date_Refund output
+				     exec RandomDateTimeNew  '20240101','20250101', @Date_Refund output
 					        /*
 			                Проверка, если в таблице Item, дата  создания карточки товара , больше чем дата возврата, то находим разницу между датами и прибавляем к этой разнице 45 дней
 			                после чего вычисляем эту сумму дней из вновь сформированной даты @Date_Refund
@@ -313,7 +313,7 @@ while @@FETCH_STATUS = 0
 			 if @Date_Refund is null and @Refund = 0
 			    begin 
 				    
-					exec RandomDateNew  '20240101','20250601', @Date_Created_2 output
+					exec RandomDateTimeNew  '20240101','20250601', @Date_Created_2 output
 					/*
 					Если сформированная @Date_Created_2 "заведения экземляра в систему", больше чем в таблице Item, дата  создания карточки товара,
 					то то находим разницу между датами и прибавляем к этой разнице 45 дней
@@ -336,7 +336,7 @@ while @@FETCH_STATUS = 0
 					      begin
 						      set @Date_Refund_2 = DATEADD(day, -1, @Date_Refund_2)
 						  end					 
-				     exec RandomDateNew @Date_Refund_2,@Date_Refund, @Date_Created_2 output
+				     exec RandomDateTimeNew @Date_Refund_2,@Date_Refund, @Date_Created_2 output
 				 end 
              
 			 /*Обнуляем дату возврата, и дату внесения экземпляра в систему*/
