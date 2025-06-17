@@ -10819,6 +10819,11 @@ while @i <= 4454
    print 'Заполнена таблица dbo.Item. Общее количество заполненных строк --> ' +  cast(@Item as nvarchar(500))
 go
 
+
+
+
+
+
 drop table if exists  #RandomSelectedRows
 
 create table #RandomSelectedRows
@@ -10925,8 +10930,8 @@ BEGIN
         @MaxSequence + 1.0,
 		@flag_3
     FROM Item t
-    JOIN @TypeWeights w ON t.ID_TypeItem = w.Id_RowType
-    ORDER BY -LOG(RAND(CHECKSUM(NEWID())))/ w.Weight;   --Логика вероятности выбора нужного типа
+    JOIN @TypeWeights w ON t.ID_TypeItem = w.Id_RowType --and w.Id_RowType <= 15
+    ORDER BY -LOG(RAND(CHECKSUM(NEWID())))/ w.Weight;
 	 
     
     SET @i = @i + 1;
@@ -11038,7 +11043,7 @@ while @@FETCH_STATUS = 0
 
 			 set @ID_Storage_location = (select top 1 ID_Storage_location from Storage_location order by NEWID())
 			 set @Serial_number = cast(FORMAT(Round(rand()*10000000000000 + 1000000000000,0),'0') as nvarchar(500))
-			 
+
 			 /*
 			 Проверка, для присвоения статуса экземпляров, учитывая тип товара. для типов <= 15, указывает статус от 1 до 24 включительно,
 			 и для типов >15, будут добавляться статусы от 25 до 34
@@ -11053,8 +11058,7 @@ while @@FETCH_STATUS = 0
 				    set @ID_Condition_of_the_item = (select top 1 ID_Condition_of_the_item from Condition_of_the_item 
 					                                 where ID_Condition_of_the_item between 25 and 34 order by newid())
 				end
-
-
+             
 			 if @ID_Condition_of_the_item in (32,13)
 			       begin
 			           set @Refund = 1
@@ -11067,7 +11071,7 @@ while @@FETCH_STATUS = 0
 			 /*Проверка, если есть указатель на возврат, то формируем дату*/
 			 if(@Refund = 1)
 			     begin 
-				     exec RandomDateNew  '20240101','20250101', @Date_Refund output
+				     exec RandomDateTimeNew  '20240101','20250101', @Date_Refund output
 					        /*
 			                Проверка, если в таблице Item, дата  создания карточки товара , больше чем дата возврата, то находим разницу между датами и прибавляем к этой разнице 45 дней
 			                после чего вычисляем эту сумму дней из вновь сформированной даты @Date_Refund
@@ -11097,7 +11101,7 @@ while @@FETCH_STATUS = 0
 			 if @Date_Refund is null and @Refund = 0
 			    begin 
 				    
-					exec RandomDateNew  '20240101','20250601', @Date_Created_2 output
+					exec RandomDateTimeNew  '20240101','20250601', @Date_Created_2 output
 					/*
 					Если сформированная @Date_Created_2 "заведения экземляра в систему", больше чем в таблице Item, дата  создания карточки товара,
 					то то находим разницу между датами и прибавляем к этой разнице 45 дней
@@ -11120,7 +11124,7 @@ while @@FETCH_STATUS = 0
 					      begin
 						      set @Date_Refund_2 = DATEADD(day, -1, @Date_Refund_2)
 						  end					 
-				     exec RandomDateNew @Date_Refund_2,@Date_Refund, @Date_Created_2 output
+				     exec RandomDateTimeNew @Date_Refund_2,@Date_Refund, @Date_Created_2 output
 				 end 
              
 			 /*Обнуляем дату возврата, и дату внесения экземпляра в систему*/

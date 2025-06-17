@@ -1936,6 +1936,54 @@ end
 go
 
 
+
+create  procedure RandomDateNew
+(
+  @StartDate date,
+  @EndDate date,
+  @RandomDate datetime output
+)
+as
+begin
+
+declare @DateDayRaz int;
+declare @DataRezult datetime;
+ 
+  /*Проверяем, чтобы начальная дата была меньше конечной даты*/
+if @StartDate >= @EndDate
+  begin
+      print  N'@StartDate не должна ровняться с @EndDate. --> RandomDateNew '; 	   
+	  RETURN;
+  end
+else if (@StartDate is null)
+	   begin
+	        if (@StartDate is  null) and (@EndDate is  null)
+	             begin
+	               PRINT N'Обе даты содержат Null. --> RandomDateNew'; 
+	               RETURN;
+	             end
+	     PRINT N'@StartDate содержит Null. --> RandomDateNew';                                           
+         RETURN;
+	   end
+else if (@EndDate is null)
+   begin
+	   PRINT N'@EndDate содержит Null. --> RandomDateNew';                                           
+       RETURN;
+   end
+else 
+  begin 
+       /*Рассчитываем разницу в днях между датами*/
+       set @DateDayRaz = (SELECT DATEDIFF(DAY, @StartDate,@EndDate));
+	   /*Генерируем случайную дату в пределах заданного диапазона*/
+       set @DataRezult = (select dateadd(day,round(rand()* @DateDayRaz,0),@StartDate));
+	   set @RandomDate = @DataRezult
+  end;
+end;
+--exec RandomDateNew  '19440101','19440102', @RandomDate output
+
+
+go
+
 CREATE PROCEDURE RandomDateTimeNew  --процедура для формирования случайной даты и времени 
 (
   @StartDate DATE,
@@ -1954,19 +2002,35 @@ BEGIN
     /*Проверяем, чтобы начальная дата была меньше конечной даты*/
     IF @StartDate >= @EndDate
     BEGIN
-        PRINT N'@StartDate должна быть меньше @EndDate.';                                           
+        PRINT N'@StartDate должна быть меньше @EndDate. --> RandomDateTimeNew';                                           
         RETURN;
     END
+	else if (@StartDate is null)
+	   begin
+	        if (@StartDate is  null) and (@EndDate is  null)
+	             begin
+	               PRINT N'Обе даты содержат Null. --> RandomDateTimeNew'; 
+	               RETURN;
+	             end
+	     PRINT N'@StartDate содержит Null. --> RandomDateTimeNew';                                           
+         RETURN;
+	   end
+	else if (@EndDate is null)
+	   begin
+	     PRINT N'@EndDate содержит Null. --> RandomDateTimeNew';                                           
+         RETURN;
+	   end
+
     
     /*Рассчитываем разницу в днях между датами*/
     SET @DateDayRaz = DATEDIFF(DAY, @StartDate, @EndDate);
     
     /*Генерируем случайную дату в пределах заданного диапазона*/
-    SET @DataResult = DATEADD(DAY, ROUND(RAND() * @DateDayRaz, 0), @StartDate);
+    SET @DataResult = DATEADD(DAY, ABS(CHECKSUM(NEWID())) % (@DateDayRaz + 1), @StartDate);
 
     /*Генерируем случайное время от 00:00:00.000 до 23:59:59.999*/
     SET @RandomTime = DATEADD(MILLISECOND, 
-        ROUND(RAND() * 86400000, 0),    /*86400000 миллисекунд в дне*/
+        ABS(CHECKSUM(NEWID())) % 86400000,    /*86400000 миллисекунд в дне*/
         CAST('00:00:00.000' AS DATETIME)
     );
 
@@ -1987,44 +2051,133 @@ END;
 
 
 
-
 --exec RandomDateTimeNew '19410101','20200202', @RandomDate output
-
 go
 
-create  procedure RandomDateNew
+
+
+CREATE PROCEDURE RandomTimeNew  --процедура для формирования случайного времени
 (
-  @StartDate date,
-  @EndDate date,
-  @RandomDate datetime output
+  @StartDate DATEtime,
+  @EndDate DATEtime,
+  @RandomDateTime datetime output
 )
-as
-begin
+AS
+BEGIN
 
-declare @DateDayRaz int;
-declare @DataRezult datetime;
- 
-  /*Проверяем, чтобы начальная дата была меньше конечной даты*/
-if @StartDate >= @EndDate
-  begin
-      print  N'@StartDate не должна ровняться с @EndDate.'; 	   
-	  RETURN;
-  end;
-else 
-  begin 
-       /*Рассчитываем разницу в днях между датами*/
-       set @DateDayRaz = (SELECT DATEDIFF(DAY, @StartDate,@EndDate));
-	   /*Генерируем случайную дату в пределах заданного диапазона*/
-       set @DataRezult = (select dateadd(day,round(rand()* @DateDayRaz,0),@StartDate));
-	   set @RandomDate = @DataRezult
-  end;
-end;
+    DECLARE @RandomTime DATETIME;
+	Declare @TimeResult Datetime;
 
---exec RandomDateNew  '19440101','19440102', @RandomDate output
+
+    /*Проверяем, чтобы начальная дата была равна конечной даты*/
+    IF (@StartDate > @EndDate or @StartDate < @EndDate) 
+    BEGIN
+        PRINT N'@StartDate должна быть равна @EndDate. --> RandomTimeNew';                                           
+        RETURN;
+    END
+	else if (@StartDate is null)
+	   begin
+	        if (@StartDate is  null) and (@EndDate is  null)
+	             begin
+	               PRINT N'Обе даты содержат Null. --> RandomTimeNew'; 
+	               RETURN;
+	             end
+	     PRINT N'@StartDate содержит Null. --> RandomTimeNew';                                           
+         RETURN;
+	   end
+	else if (@EndDate is null)
+	   begin
+	     PRINT N'@EndDate содержит Null. --> RandomTimeNew';                                           
+         RETURN;
+	   end
+
+
+
+    /*Генерируем случайное время от 00:00:00.000 до 23:59:59.999*/
+    SET @RandomTime = DATEADD(MILLISECOND, 
+        ROUND(RAND() * 86400000, 0),    /*86400000 миллисекунд в дне*/
+        CAST('00:00:00.000' AS DATETIME)
+    );
+
+
+	set @TimeResult  = @StartDate + @RandomTime
+    /*Объединяем дату и время*/
+
+	/* Пример
+    SET @DataResult = DATEADD(SECOND, DATEPART(SECOND, @RandomTime), 
+	                                  DATEADD(MINUTE, DATEPART(MINUTE, @RandomTime), 
+							          DATEADD(HOUR, DATEPART(HOUR, @RandomTime), 
+									  DATEADD (MILLISECOND, DATEPART(MILLISECOND,@RandomTime), @DataResult))));
+	SELECT @DataResult;
+    */
+    set @RandomDateTime = @TimeResult
+
+END;
+
+/*
+declare @RandomDateTime datetime
+exec RandomTimeNew '20000101','20000101', @RandomDateTime output
+select @RandomDateTime
+*/
+go
+
+
+
+CREATE PROCEDURE GetRandomDateTimeBetween
+    @DateStart DATETIME,
+    @DateEnd DATETIME,
+    @RandomDateTime DATETIME OUTPUT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    -- Проверка, что DateEnd больше DateStart
+    IF @DateEnd <= @DateStart
+    BEGIN
+        RAISERROR('DateEnd must be greater than DateStart', 16, 1);
+        RETURN;
+    END
+    
+    -- Вычисляем разницу в секундах между датами
+    DECLARE @TotalSeconds INT;
+    SET @TotalSeconds = DATEDIFF(SECOND, @DateStart, @DateEnd);
+    
+    -- Проверка, что есть хотя бы 2 секунды разницы (чтобы можно было выбрать значение строго между)
+    IF @TotalSeconds <= 2
+    BEGIN
+        RAISERROR('The difference between dates must be at least 2 seconds', 16, 1);
+        RETURN;
+    END
+    
+    -- Генерируем случайное количество секунд (от 1 до TotalSeconds-1)
+    DECLARE @RandomSeconds INT;
+    SET @RandomSeconds = 1 + ABS(CAST(CAST(CRYPT_GEN_RANDOM(4) AS INT) AS BIGINT) % (@TotalSeconds - 1));
+    
+    -- Вычисляем случайную дату (DateStart + случайное количество секунд)
+    SET @RandomDateTime = DATEADD(SECOND, @RandomSeconds, @DateStart);
+    
+    -- Убираем миллисекунды
+    SET @RandomDateTime = DATEADD(MILLISECOND, -DATEPART(MILLISECOND, @RandomDateTime), @RandomDateTime);
+END;
+
+
+--DECLARE @StartDate DATETIME = '20200130';
+--DECLARE @EndDate DATETIME = '20230131';
+--DECLARE @Result DATETIME;
+
+--EXEC GetRandomDateTimeBetween 
+--    @DateStart = @StartDate,
+--    @DateEnd = @EndDate,
+--    @RandomDateTime = @Result OUTPUT;
+    
+--SELECT @Result AS RandomDateTime;
 
 go
 
-  go
+
+
+
+
     create procedure Proc_Random_FIO
     @gender int,
 	@Random_FIO nvarchar(200) output

@@ -478,21 +478,25 @@ ORDER BY
 		 set @e = @e + 1
 	  end
 
+drop table if exists #t_6
 
-select  t_2.*
+select 
+ t_2.Нумирация 
+,t.Статус_заказа
+,t.ID_Currency
+,t_2.ID
 ,t_3.Дата_создания_карточки_товара
-,t_3.Дата_заведения_экземпляра_в_систему
-,t.Нумирация	
-,cast(t.Дата as datetime) as 'Дата_возврата'	
-,t.ID_Currency	
-,t.Группа_статусов	
-,t.Статус_заказа	
+,t_3.Дата_заведения_экземпляра_в_систему	
+,cast(t.Дата as datetime) as 'Дата_возврата'		
+,t.Группа_статусов		
 ,t.Количество_экземпляров	
 ,t.Список_ID	
 ,t.Цена_без_НДС_экземпляра	
 ,t.Общая_стоимость_с_НДС	
 ,t.Цена_экземпляра_с_НДС_после_начисления_коммисии_за_сервис	
 ,t.Цена_экземпляра_без_НДС_после_начисления_коммисии_за_сервис
+,0 flag
+into #t_6
 from  #t_5  t 
 left join  #Razgrupirovka t_2 on t.Нумирация = t_2.Нумирация
 left join  All_Data_Exemplar t_3 on t_3.ID_Exemplar = t_2.ID
@@ -500,18 +504,37 @@ order by T_2.Нумирация
 
 
 
-select * from All_Data_Exemplar 
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------Заполнение временных таблиц, сформированные строки по заказам и экземплярам---------------------------------------------------------------------------------------------
+
 declare @i_2 int = 0, @s  int = 0 , @n varchar(40), @mess varchar(8000), @err varchar(1000)
+
+drop table if exists #Data_Orders
+
+create table  #Data_Orders
+(
+Id_Data_Orders         bigint           not null identity (1,1)
+,ID_Employee            bigint          not null
+,ID_Orders              bigint          not null
+,Id_buyer               bigint          not null
+,ID_Exemplar            bigint          not null
+,ID_Transaction         bigint          null
+,Date_Data_Orders       datetime        not null  default getdate()
+,[Description]          nvarchar(4000)  null
+);
+
+drop table if exists #Orders
 
 create table #Orders                                       
 (
-ID_Orders          bigint          not null identity (1,1),
+ID_Orders          bigint          not null,
 ID_status          bigint          not null,
 ID_TypeOrders      bigint          not null,
 ID_Currency        bigint          not null,
 ID_OrderAssignment BIGINT          NOT NULL,
-ID_OrderCategory   BIGINT          NOT NULL,
-Date               datetime        not null,
+ID_OrderCategory   BIGINT          NULL,
+Date               datetime        null,
 Payment_Date       datetime        null,    
 Amount             decimal(15,2)   null,    
 AmountCurr         decimal(15,2)   null,    
@@ -523,174 +546,229 @@ flag               int             null
 );
 
 declare
-@ID_Exemplar                                                  bigint
-,@ID_Condition_of_the_item                                    bigint
-,@Наименование_статуса_экземпляра                             nvarchar(300)
-,@all_status                                                  bigint
-,@id_status_order                                             bigint
-,@Name	                                                      nvarchar(300)
-,@ID_product_measurement	                                  bigint
-,@Тип_измерения_товара                                        nvarchar(50)	 
-,@Дата_создания_карточки_товара                               datetime
-,@Дата_заведения_экземпляра_в_систему                         datetime	
-,@Дата_возврата	                                              datetime
-,@ID_Currency                                                 bigint	
-,@Наименование_валюты_на_русском                              nvarchar(200)
-,@Цена_без_НДС_экземпляра	                                  decimal(15,2)
-,@Цена_экземпляра_с_НДС	                                      decimal(15,2)
-,@Цена_экземпляра_с_НДС_после_начисления_коммисии_за_сервис	  decimal(15,2)
-,@Цена_экземпляра_без_НДС_после_начисления_коммисии_за_сервис decimal(15,2)
+@Нумирация                                                      int           
+,@ID                                                            bigint		  
+,@Дата_создания_карточки_товара                                 datetime	  
+,@Дата_заведения_экземпляра_в_систему                           datetime	  
+,@Дата_возврата                                                 datetime	  
+,@ID_Currency	                                                bigint		  
+,@Группа_статусов	                                            nvarchar(500) 
+,@Статус_заказа	                                                bigint		  
+,@Количество_экземпляров	                                    int			  
+,@Список_ID	                                                    nvarchar(1000)
+,@Цена_без_НДС_экземпляра	                                    decimal(15,2) 
+,@Общая_стоимость_с_НДС	                                        decimal(15,2) 
+,@Цена_экземпляра_с_НДС_после_начисления_коммисии_за_сервис	    decimal(15,2) 
+,@Цена_экземпляра_без_НДС_после_начисления_коммисии_за_сервис   decimal(15,2) 
+,@flag                                                          int;
 
 
+declare 
+@ID_OrderAssignment bigint
+,@ID_OrderCategory  bigint
+,@Date              datetime, @RandomDateTime datetime, @RandomDate datetime
+,@Payment_Date      datetime
+,@date_raznica      datetime, @Date_Refund  datetime  
+,@RandomDate_2      datetime
+,@num               nvarchar(50)
 
 declare Cur cursor  local fast_forward for
 
-select  
- ID_Exemplar
-,ID_Condition_of_the_item
-,Наименование_статуса_экземпляра
-,all_status
-,id_status_order	
-,[Name]	
-,ID_product_measurement	
-,Тип_измерения_товара	
-,Дата_создания_карточки_товара	
-,Дата_заведения_экземпляра_в_систему	
-,Дата_возврата	
-,ID_Currency	
-,Наименование_валюты_на_русском
-,Цена_без_НДС_экземпляра	
-,Цена_экземпляра_с_НДС	
-,Цена_экземпляра_с_НДС_после_начисления_коммисии_за_сервис	
-,Цена_экземпляра_без_НДС_после_начисления_коммисии_за_сервис
-from #t_3 
---where  Дата_возврата is not null and ID_product_measurement = 5
-order by ID_Exemplar
+/*Формируем единственную строку по нумерации из одинвкоывого количества строк нумерации*/
+select 
+t_2.*
+from
+(select  distinct Нумирация from #t_6 ) as t
+outer apply (select top 1 * from #t_6 where Нумирация = t.Нумирация )  as t_2
 
 open Cur
 
 fetch next from Cur into
-    @ID_Exemplar                                                 
-	,@ID_Condition_of_the_item                                   
-	,@Наименование_статуса_экземпляра                            
-	,@all_status                                                 
-	,@id_status_order                                            
-	,@Name	                                                     
-	,@ID_product_measurement	                                 
-	,@Тип_измерения_товара                                       
-	,@Дата_создания_карточки_товара                              
-	,@Дата_заведения_экземпляра_в_систему                        
-	,@Дата_возврата	                                             
-	,@ID_Currency                                                
-	,@Наименование_валюты_на_русском                             
-	,@Цена_без_НДС_экземпляра	                                 
-	,@Цена_экземпляра_с_НДС	                                     
-	,@Цена_экземпляра_с_НДС_после_начисления_коммисии_за_сервис	 
-	,@Цена_экземпляра_без_НДС_после_начисления_коммисии_за_сервис
+ @Нумирация 
+ ,@Статус_заказа
+ ,@ID_Currency	
+ ,@ID                                                         
+ ,@Дата_создания_карточки_товара                              
+ ,@Дата_заведения_экземпляра_в_систему                        
+ ,@Дата_возврата                                                                                           
+ ,@Группа_статусов	                                          	                                             
+ ,@Количество_экземпляров	                                 
+ ,@Список_ID	                                                 
+ ,@Цена_без_НДС_экземпляра	                                 
+ ,@Общая_стоимость_с_НДС	                                     
+ ,@Цена_экземпляра_с_НДС_после_начисления_коммисии_за_сервис	 
+ ,@Цена_экземпляра_без_НДС_после_начисления_коммисии_за_сервис
+ ,@flag                                                       
 while @@FETCH_STATUS = 0
      begin
 	    begin try
 		     
-			 if @ID_product_measurement = 5
-			     begin 
-				     if @id_status_order = 15 and @Дата_возврата is not null
-					    begin
-						     insert into #Orders(ID_status,ID_TypeOrders,ID_Currency,ID_OrderAssignment,ID_OrderCategory,[Date]              
-			                 ,Payment_Date,Amount,AmountCurr,AmountNDS,AmountCurrNDS,Num,[Description],flag) values
-			                 (
+			 --DECLARE @Payment_Date DATETIME = '2023-01-01'; -- Пример даты
 
-			                 )
-						end
-				 end 
+    --        -- Прибавляем 23 часа, 59 минут, 59 секунд и 997 миллисекунд
+    --        SET @Payment_Date = DATEADD(MILLISECOND, -3, DATEADD(DAY, 1, CAST(FLOOR(CAST(@Payment_Date AS FLOAT)) AS DATETIME)));
+
+    --        SELECT @Payment_Date AS MaxTimeBeforeNextDay;
+
+			 --declare @RandomDateTime datetime
+    --        exec RandomDateTimeNew  '20240107','20240109', @RandomDateTime output
+    --         select @RandomDateTime
+
+			 set @ID_OrderAssignment = (select top 1 ID_OrderAssignment from Order_Assignment order by NEWID())
+			 set @ID_OrderCategory  = (select top 1 ID_OrderCategory from Order_category order by NEWID())
+			 
+			 set @RandomDate = null
+			 set @date = null
+			 set @RandomDateTime = null
+			 set @date_raznica = null
+			 set @Payment_Date = null
+			 /*
+			 Проверяем, если дата заведения экземпляра меньше дата возврата, то формируем 
+			 случаную дату с временем в диапозоне этих двух дат
+			 */
+			 if  (@Дата_заведения_экземпляра_в_систему < @Дата_возврата)
+			   begin
+			       
+			       exec GetRandomDateTimeBetween @Дата_заведения_экземпляра_в_систему,@Дата_возврата, @RandomDate output
 
 
-		    
-			 --if exists (select a.flag from #RandomSelectedRows_2  as a where @Id_Item_2 = a.Id_Item and @ID_TypeItem_2 = ID_TypeItem and a.flag = 0)
-			 --begin 
-			 --     set @i_3 =  @i_3 + 1
-			 --        update a set flag = 1 from #RandomSelectedRows_2  as a where @Id_Item_2 = a.Id_Item  and @ID_TypeItem_2 = ID_TypeItem and a.flag = 0 
-			 --end
+				   --if  (@Дата_возврата < @RandomDate)
+				   --   begin
+					  --     set @RandomDate = dateadd(HOUR, -1,@RandomDate)
+					  --end
+				   set @date = @RandomDate
 
-			 --select @s = count(0) from #RandomSelectedRows_2 where flag = 0
-			 -- set @n = (select  
-			 --           case  t.flag  when 1 then ' 1  Значения изменены' when 0  then ' 0  Значения не изменялись' end  
-			 --           from #RandomSelectedRows_2 t  where t.id_item = @id_item_2)
-			 -- set @mess = @n + ' - > ' + ' Order_Count_Item '  + Cast(@OrderCount_2 as varchar)  + ' Id_Item '  + Cast(@id_item_2 as varchar)  + ' --> ' + ' - ' + Cast(@i_2 as varchar) + ' / ' + Cast(@s as varchar)
-			 -- RAISERROR(@mess,0,0) WITH NOWAIT
+			   end
+			 else if  (@Дата_заведения_экземпляра_в_систему = @Дата_возврата)
+			    begin  /*Если эти даты равны, значит формируем случайное время и прибовляем к дате заведения экземпляра*/
+				   -- set @Дата_возврата = DATEADD(MILLISECOND, -3, DATEADD(DAY, 1, CAST(FLOOR(CAST(@Дата_возврата AS FLOAT)) AS DATETIME)));
+				    exec GetRandomDateTimeBetween @Дата_заведения_экземпляра_в_систему,@Дата_возврата, @RandomDateTime output
+			        set @date =  @RandomDateTime
+
+					exec GetRandomDateTimeBetween @date,@Дата_возврата, @RandomDateTime output
+					set @Payment_Date = @RandomDateTime
+
+				end
+             
+
+			 --/*Учитывая что дата возврата изначально указана без времени, мы прибовляем время к дате возврата*/
+			 --if  (@date > @Дата_возврата)
+			 --  begin
+			 --      set @Дата_возврата = DATEADD(MILLISECOND, -3, DATEADD(DAY, 1, CAST(FLOOR(CAST(@Дата_возврата AS FLOAT)) AS DATETIME)));
+		  --         /*
+				--   После того как дата возврата стала больше по времени , то формируем дату оплаты товара 
+				--   прибавив к дате создания заказа рандомное время из диапозона из 180 секунд
+				--   */
+				--   if (@date < @Дата_возврата)
+				--      begin
+				--	     set @date_raznica = (DATEDIFF(SECOND,@date,@Дата_возврата)) + cast(round(rand(180),0)as int)
+
+						 
+			 --            --set @Payment_Date =  DATEADD(SECOND, @date_raznica, @Payment_Date)
+				--		 set @Payment_Date =  @date_raznica + @Payment_Date
+				--	  end
+			 --  end
+			 
+			 if  (@date < @Дата_возврата)
+			    begin  
+				    exec RandomDateTimeNew @date,@Дата_возврата, @RandomDate_2 output
+
+			        set @Payment_Date =  @RandomDate_2
+				end
+             
+			 set @num = (select cast(round(rand(99999),0)as nvarchar(50)))
+
+			 insert into #Orders(ID_Orders,ID_status,ID_TypeOrders,ID_Currency,ID_OrderAssignment,ID_OrderCategory,[Date]
+			 ,Payment_Date,Amount,AmountCurr,AmountNDS,AmountCurrNDS,Num,[Description],flag) values
+			 (
+			  @Нумирация
+			  ,@Статус_заказа
+			  ,2                   -- Это тип "Возвратный заказ" - 2
+			  ,@ID_Currency
+			  ,@ID_OrderAssignment
+			  ,@ID_OrderCategory
+			  ,@date
+			  ,@Payment_Date
+			  ,@Цена_без_НДС_экземпляра
+			  ,@Цена_экземпляра_без_НДС_после_начисления_коммисии_за_сервис
+			  ,@Общая_стоимость_с_НДС	                                  
+			  ,@Цена_экземпляра_с_НДС_после_начисления_коммисии_за_сервис
+			  ,@num
+			  ,null
+			  ,@flag
+			 )
+
+			 if exists (select a.flag from #Orders  as a where @Нумирация = a.ID_Orders and a.flag = 0)
+			 begin 
+			      set @i_2 =  @i_2 + 1
+			         update a set flag = 1 from #Orders  as a where @Нумирация = a.ID_Orders  and a.flag = 0 
+			 end
+
+			 select @s = count(0) from #Orders where flag = 0
+			  set @n = (select  
+			            case  t.flag  when 1 then ' 1  Значения изменены' when 0  then ' 0  Значения не изменялись' end  
+			            from #Orders t  where @Нумирация = t.ID_Orders )
+			  set @mess = @n + ' - > ' + ' ID_Order '  + Cast(@Нумирация as varchar)  + ' --> ' + ' - ' + Cast(@i_2 as varchar) + ' / ' + Cast(@s as varchar)
+			  RAISERROR(@mess,0,0) WITH NOWAIT
 		end try
 
 		begin catch
-
+		       if xact_state() in (1, -1) 
+		          begin
+			        ROLLBACK TRAN
+			      end
+               SELECT 
+		        	ERROR_NUMBER() AS ErrorNumber,
+		        	ERROR_SEVERITY() AS ErrorSeverity,
+		        	ERROR_STATE() as ErrorState,
+		        	ERROR_PROCEDURE() as ErrorProcedure,
+		        	ERROR_LINE() as ErrorLine,
+		        	ERROR_MESSAGE() as ErrorMessage;
 		end catch
 	  
 	    fetch next from Cur into
-		@ID_Exemplar                                                 
-		,@ID_Condition_of_the_item                                   
-		,@Наименование_статуса_экземпляра                            
-		,@all_status                                                 
-		,@id_status_order                                            
-		,@Name	                                                     
-		,@ID_product_measurement	                                 
-		,@Тип_измерения_товара                                       
-		,@Дата_создания_карточки_товара                              
-		,@Дата_заведения_экземпляра_в_систему                        
-		,@Дата_возврата	                                             
-		,@ID_Currency                                                
-		,@Наименование_валюты_на_русском                             
-		,@Цена_без_НДС_экземпляра	                                 
-		,@Цена_экземпляра_с_НДС	                                     
-		,@Цена_экземпляра_с_НДС_после_начисления_коммисии_за_сервис	 
-		,@Цена_экземпляра_без_НДС_после_начисления_коммисии_за_сервис
+         @Нумирация  
+		 ,@Статус_заказа
+         ,@ID_Currency	
+		 ,@ID                                                         
+		 ,@Дата_создания_карточки_товара                              
+		 ,@Дата_заведения_экземпляра_в_систему                        
+		 ,@Дата_возврата                                              	                                             
+		 ,@Группа_статусов	                                         	                                             
+		 ,@Количество_экземпляров	                                 
+		 ,@Список_ID	                                                 
+		 ,@Цена_без_НДС_экземпляра	                                 
+		 ,@Общая_стоимость_с_НДС	                                     
+		 ,@Цена_экземпляра_с_НДС_после_начисления_коммисии_за_сервис	 
+		 ,@Цена_экземпляра_без_НДС_после_начисления_коммисии_за_сервис
+		 ,@flag                                                       
 	 end
 close Cur
 deallocate Cur
 
 
-
-select * from #t_3
-
-
-select  
- ID_Exemplar
-,ID_Condition_of_the_item
-,Наименование_статуса_экземпляра
-,all_status
-,id_status_order	
-,[Name]	
-,ID_product_measurement	
-,Тип_измерения_товара	
-,Дата_создания_карточки_товара	
-,Дата_заведения_экземпляра_в_систему	
-,Дата_возврата	
-,ID_Currency	
-,Наименование_валюты_на_русском
-,Цена_без_НДС_экземпляра	
-,Цена_экземпляра_с_НДС	
-,Цена_экземпляра_с_НДС_после_начисления_коммисии_за_сервис	
-,Цена_экземпляра_без_НДС_после_начисления_коммисии_за_сервис
-from #t_3 
-where 1 = 1 
-and Дата_возврата is  null
---and ID_product_measurement = 5 
---and id_status_order = 15
-and all_status in (32,13)
-
-order by ID_Exemplar
-
+select 
+o_2.Дата_заведения_экземпляра_в_систему	
+,o_2.Дата_возврата
+,o.*
+from  
+#Orders o
+inner join 
+(select 
+t_2.*
+from
+(select  distinct Нумирация from #t_6 ) as t
+outer apply (select top 1 * from #t_6 where Нумирация = t.Нумирация )  as t_2)
+as
+o_2 
+on o_2.Нумирация = o.ID_Orders
 
 
 		 --select top 1 ID_status_orders,Name_orders
 		 --from #Orders_prioritet 
 		 --order by -log(rand(CHECKSUM(newid())))/ Prioritet
----select * from Condition_of_the_item
+         --select * from Condition_of_the_item
 
-select * from All_Data_Exemplar  
-where 1=1 
---and ID_Exemplar = 265
-and ID_Condition_of_the_item in (32,13)
-
-select * from Exemplar
-where  ID_Condition_of_the_item in (32,13)	
 
 /*
 SELECT 
@@ -888,3 +966,4 @@ go
 
 */
 
+select * from TypeOrders
