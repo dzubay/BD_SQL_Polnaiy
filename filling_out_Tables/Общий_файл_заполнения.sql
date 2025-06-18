@@ -5082,7 +5082,7 @@ insert into @Currency_Rate_2024 values
 */
 declare @Currency_Rate_2024_1 table (id bigint,Currency_Rate_new decimal(5,2),Valid_from datetime,Valid_to datetime)
 declare @i int = 1
-   while @i <= 150000
+   while @i <= 100000
        begin 
 	       
 	       WITH RandomValues AS (
@@ -10821,9 +10821,6 @@ go
 
 
 
-
-
-
 drop table if exists  #RandomSelectedRows
 
 create table #RandomSelectedRows
@@ -11071,7 +11068,7 @@ while @@FETCH_STATUS = 0
 			 /*Проверка, если есть указатель на возврат, то формируем дату*/
 			 if(@Refund = 1)
 			     begin 
-				     exec RandomDateTimeNew  '20240101','20250101', @Date_Refund output
+				     exec RandomDateNew  '20240101','20250601', @Date_Refund output
 					        /*
 			                Проверка, если в таблице Item, дата  создания карточки товара , больше чем дата возврата, то находим разницу между датами и прибавляем к этой разнице 45 дней
 			                после чего вычисляем эту сумму дней из вновь сформированной даты @Date_Refund
@@ -11101,7 +11098,7 @@ while @@FETCH_STATUS = 0
 			 if @Date_Refund is null and @Refund = 0
 			    begin 
 				    
-					exec RandomDateTimeNew  '20240101','20250601', @Date_Created_2 output
+					exec RandomDateNew  '20240101','20250601', @Date_Created_2 output
 					/*
 					Если сформированная @Date_Created_2 "заведения экземляра в систему", больше чем в таблице Item, дата  создания карточки товара,
 					то то находим разницу между датами и прибавляем к этой разнице 45 дней
@@ -11116,17 +11113,26 @@ while @@FETCH_STATUS = 0
 				end 
 			  else
 			     begin	
-				     /*Проверка (или), взврат был, и сформирована уже дата возврата. То берём эту дату возврата и вычитаем из неё рандомное чило дней от 1 до 30 */
-				     set @Date_Refund_2 =  DATEADD(day, round(-rand()*30,0), @Date_Refund)
+				     /*Проверка (или), взврат был, и сформирована уже дата возврата. То берём эту дату возврата и вычитаем из неё рандомное число дней от 1 до 30 */
+				    -- set @Date_Refund_2 =  DATEADD(day, round(-rand()*30,0), @Date_Refund)
+					 set @Date_Created_2 = null;
+					 
 
-					 /*Проверка, если дата возврата равняется после предыдущего формирования  даты @Date_Refund_2 с ней, то минусуем один день*/
-					 if @Date_Refund_2 = @Date_Refund
+					 declare @date_Item_2 datetime
+					 set @date_Item_2 =  (select Date_Created from Item where Id_Item = @Id_Item)
+
+					 
+					 exec RandomDateNew  @date_Item_2,@Date_Refund, @Date_Created_2 output
+
+					 /*Если дата возврата, и дата создания карточки товара равны, то дату возврата указываем  в дату заведения экземпляра*/
+					 if @date_Item_2 = @Date_Refund
 					      begin
-						      set @Date_Refund_2 = DATEADD(day, -1, @Date_Refund_2)
-						  end					 
-				     exec RandomDateTimeNew @Date_Refund_2,@Date_Refund, @Date_Created_2 output
+						       set @Date_Created_2 = @Date_Refund
+						  end
+
 				 end 
              
+			 
 			 /*Обнуляем дату возврата, и дату внесения экземпляра в систему*/
 
 		     insert into #Exemplar values 
@@ -11150,6 +11156,7 @@ while @@FETCH_STATUS = 0
 			 0
 			 )
 			 set @Date_Refund = null;
+			 
 			 if exists (select a.flag from #RandomSelectedRows  as a where @Id_Item = a.Id_Item and @SelectionSequence = a.SelectionSequence and a.flag = 0)
 					       begin 
 					            set @i_2 =  @i_2 + 1
@@ -11196,6 +11203,7 @@ select
 Id_Item,ID_Currency,ID_Storage_location,KeySource,Serial_number,ID_Condition_of_the_item,Old_Price_no_NDS,Refund,Date_Refund,Return_Note,Old_Price_NDS                    
 ,JSON_Size_Volume,New_Price_NDS,New_Price_no_NDS,Date_Created,[Description]         
 from  #Exemplar order by ID_Exemplar,Id_Item
+
 
 
 /*Заполнение столбца Quantity в таблице Item из #RandomSelectedRows_2*/
@@ -11280,6 +11288,7 @@ deallocate mycur_2
 drop table if exists #RandomSelectedRows
 drop table if exists #RandomSelectedRows_2
 drop table if exists #Exemplar
+
 
 
 declare @Exemplar_count int;

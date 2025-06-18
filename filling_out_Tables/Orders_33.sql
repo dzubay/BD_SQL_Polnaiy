@@ -74,7 +74,7 @@ id_status_order bigint  not null,
 all_status  nvarchar(300) not null
 );
 
-drop table if exists #Orders_status_2
+drop table if exists #Orders_status_2 
 
 create table #Orders_status_2 
 (
@@ -194,6 +194,9 @@ from
 
 */
 
+--Для проверки
+
+/*
 select 
 a.ID_Currency	
 ,a.[Колличество_по_одной_валюте]		
@@ -232,34 +235,34 @@ group by ID_product_measurement
 
 
 
---select
---ROW_NUMBER() over (order by a.ID_Exemplar asc) as 'Нумерация'
---,rank() over (partition by a.ID_Exemplar order by a_2.id_status_order) as 'Нумерация_по_идентификатору'
---,a.ID_Exemplar
---,a.ID_Condition_of_the_item
---,a.[Наименование_статуса_экземпляра]
---,a_2.all_status
---,a_2.id_status_order
---,a_3.Name
---,a.ID_product_measurement	
---,a.[Тип_измерения_товара]
---,a.Дата_создания_карточки_товара
---,a.Дата_заведения_экземпляра_в_систему
---,a.Дата_возврата
---,a.ID_Currency
---,a.Наименование_валюты_на_русском
-----into #t_2
---from All_Data_Exemplar as a
---left join #Orders_status_2 as a_2 on a_2.all_status = a.ID_Condition_of_the_item
---left join Orders_status as a_3         on a_3.Id_Status  = a_2.id_status_order    --Убираем экземпляры у которых статус не позволяет быть в заказах
---where a_2.all_status  is null
+select
+ROW_NUMBER() over (order by a.ID_Exemplar asc) as 'Нумерация'
+,rank() over (partition by a.ID_Exemplar order by a_2.id_status_order) as 'Нумерация_по_идентификатору'
+,a.ID_Exemplar
+,a.ID_Condition_of_the_item
+,a.[Наименование_статуса_экземпляра]
+,a_2.all_status
+,a_2.id_status_order
+,a_3.Name
+,a.ID_product_measurement	
+,a.[Тип_измерения_товара]
+,a.Дата_создания_карточки_товара
+,a.Дата_заведения_экземпляра_в_систему
+,a.Дата_возврата
+,a.ID_Currency
+,a.Наименование_валюты_на_русском
+--into #t_2
+from All_Data_Exemplar as a
+left join #Orders_status_2 as a_2 on a_2.all_status = a.ID_Condition_of_the_item
+left join Orders_status as a_3         on a_3.Id_Status  = a_2.id_status_order    --Убираем экземпляры у которых статус не позволяет быть в заказах
+where a_2.all_status  is null
+
+
+*/
 
 
 
-
-
-
-drop table if exists #t
+drop table if exists #t 
 
 select
 ROW_NUMBER() over (order by a.ID_Exemplar asc) as 'Нумерация'
@@ -414,6 +417,7 @@ ORDER BY
 
 
 /*Убираем ненужные строки с NULL, ну и за одно  пронумеровываем их, не особо важно, но не стал заморачиваться*/
+
 	drop table if exists #t_5
 	 
     select
@@ -436,6 +440,8 @@ ORDER BY
 
 /*Теперь дополнительно к каждой нумерации сформированных кип, добавляем эти же ID экземпляров и услуг, что бы сформировать по каждой кипе заказ, и по каждому заказу в таблицу Orders_data строки,
 к какому заказу относится, тот или иной экземпляр */
+
+   
    drop table if exists  #Razgrupirovka
 
    create table #Razgrupirovka 
@@ -478,7 +484,11 @@ ORDER BY
 		 set @e = @e + 1
 	  end
 
+
+	  /*Добавляем к дате возврата конечное время, и отбрасываем ненужные строки дубликаты*/
+
 drop table if exists #t_6
+
 
 select 
  t_2.Нумирация 
@@ -487,7 +497,7 @@ select
 ,t_2.ID
 ,t_3.Дата_создания_карточки_товара
 ,t_3.Дата_заведения_экземпляра_в_систему	
-,cast(t.Дата as datetime) as 'Дата_возврата'		
+,CAST(CAST(t.Дата AS date) AS datetime) + CAST('23:59:59.997' AS datetime) AS 'Дата_возврата'		
 ,t.Группа_статусов		
 ,t.Количество_экземпляров	
 ,t.Список_ID	
@@ -504,9 +514,12 @@ order by T_2.Нумирация
 
 
 
-
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -----------------Заполнение временных таблиц, сформированные строки по заказам и экземплярам---------------------------------------------------------------------------------------------
+----------------------УЧИТЫВАЕМ ГЛАВНОЙ МОМЕНТ, ДАТА ВОЗВРАТА СЧИТАЕТСЯ КАК ДАДА, ВРЕМЯ НЕ УЧИТЫВАЕТСЯ, ЛОГИКА ТАКАЯ ПРОСТОЯ!!!!!!!!!----------------------------------------------------
+------------------------------------------ПО ЭТОМУ МЫ ВСЕМ ДАТАМ ВОЗВРАТА ДОБАВЛЯЕМ КОНЕЧНОЕ ВРЕМЯ  '23:59:59.997'-----------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 declare @i_2 int = 0, @s  int = 0 , @n varchar(40), @mess varchar(8000), @err varchar(1000)
 
@@ -603,16 +616,6 @@ while @@FETCH_STATUS = 0
      begin
 	    begin try
 		     
-			 --DECLARE @Payment_Date DATETIME = '2023-01-01'; -- Пример даты
-
-    --        -- Прибавляем 23 часа, 59 минут, 59 секунд и 997 миллисекунд
-    --        SET @Payment_Date = DATEADD(MILLISECOND, -3, DATEADD(DAY, 1, CAST(FLOOR(CAST(@Payment_Date AS FLOAT)) AS DATETIME)));
-
-    --        SELECT @Payment_Date AS MaxTimeBeforeNextDay;
-
-			 --declare @RandomDateTime datetime
-    --        exec RandomDateTimeNew  '20240107','20240109', @RandomDateTime output
-    --         select @RandomDateTime
 
 			 set @ID_OrderAssignment = (select top 1 ID_OrderAssignment from Order_Assignment order by NEWID())
 			 set @ID_OrderCategory  = (select top 1 ID_OrderCategory from Order_category order by NEWID())
@@ -623,58 +626,57 @@ while @@FETCH_STATUS = 0
 			 set @date_raznica = null
 			 set @Payment_Date = null
 			 /*
-			 Проверяем, если дата заведения экземпляра меньше дата возврата, то формируем 
-			 случаную дату с временем в диапозоне этих двух дат
+			 Проверяем, если дата заведения экземпляра меньше даты возврата, то формируем 
+			 случаную дату с временем в диапозоне этих двух одинаковых дат, для формирования даты создания Заявки
 			 */
 			 if  (@Дата_заведения_экземпляра_в_систему < @Дата_возврата)
 			   begin
-			       
+			       /*Формируем дату и время для даты создания заказа  - @date*/
 			       exec GetRandomDateTimeBetween @Дата_заведения_экземпляра_в_систему,@Дата_возврата, @RandomDate output
 
-
-				   --if  (@Дата_возврата < @RandomDate)
-				   --   begin
-					  --     set @RandomDate = dateadd(HOUR, -1,@RandomDate)
-					  --end
 				   set @date = @RandomDate
 
-			   end
-			 else if  (@Дата_заведения_экземпляра_в_систему = @Дата_возврата)
-			    begin  /*Если эти даты равны, значит формируем случайное время и прибовляем к дате заведения экземпляра*/
-				   -- set @Дата_возврата = DATEADD(MILLISECOND, -3, DATEADD(DAY, 1, CAST(FLOOR(CAST(@Дата_возврата AS FLOAT)) AS DATETIME)));
-				    exec GetRandomDateTimeBetween @Дата_заведения_экземпляра_в_систему,@Дата_возврата, @RandomDateTime output
-			        set @date =  @RandomDateTime
+				   /*
+				   Если вновь сформированная дата создания заказа равна Дате возврата то минус 100 секунд
+				   */
+				   if  (@RandomDate = @Дата_возврата)
+				       begin 
+					       set @RandomDate = dateadd (SECOND, -100,@RandomDate)
+						   set @date = @RandomDate 
+					   end 
 
-					exec GetRandomDateTimeBetween @date,@Дата_возврата, @RandomDateTime output
-					set @Payment_Date = @RandomDateTime
+                   
+			    end
+            
+			/*
+			Если дата создания заказа не равняется Null, то начинаем формировать дату оплаты заказа
+			которая должна лежать в диапозоне от даты содания заказа, до даты возврата
+			*/
+			if @date is not null
+			    begin
+				    set @RandomDate = null
+					/*Формируем случайную дату оплаты заказа , в диапозоне от даты содания заказа, до даты возврата*/
+				    exec GetRandomDateTimeBetween @date,@Дата_возврата, @RandomDate output
 
-				end
+				    set @Payment_Date = @RandomDate	
+					/*
+					Если дата и время - Дата оплаты заказа  равна  Дате создания заказа, то прибовляем 100 секунд к Дате оплаты заказа,
+					так как она должна быть больше Даты создания заявки, но меньше Даты возврата
+					*/
+					if  (@Payment_Date = @date )
+					   begin
+					        set @Payment_Date = dateadd (SECOND, 100,@Payment_Date);	
+					   end 
+                    /*
+					Здесь наоборот - Дата оплаты заказа  равна  Дате возврата, то минусуем 100 секунд от Даты оплата заказа,
+					так как она должна быть меньше Даты Возврата, но Даты создания заявки
+					*/
+					else if (@Payment_Date = @Дата_возврата )
+					   begin
+					         set @Payment_Date = dateadd (second, -100,@Payment_Date)
+					   end
+			    end
              
-
-			 --/*Учитывая что дата возврата изначально указана без времени, мы прибовляем время к дате возврата*/
-			 --if  (@date > @Дата_возврата)
-			 --  begin
-			 --      set @Дата_возврата = DATEADD(MILLISECOND, -3, DATEADD(DAY, 1, CAST(FLOOR(CAST(@Дата_возврата AS FLOAT)) AS DATETIME)));
-		  --         /*
-				--   После того как дата возврата стала больше по времени , то формируем дату оплаты товара 
-				--   прибавив к дате создания заказа рандомное время из диапозона из 180 секунд
-				--   */
-				--   if (@date < @Дата_возврата)
-				--      begin
-				--	     set @date_raznica = (DATEDIFF(SECOND,@date,@Дата_возврата)) + cast(round(rand(180),0)as int)
-
-						 
-			 --            --set @Payment_Date =  DATEADD(SECOND, @date_raznica, @Payment_Date)
-				--		 set @Payment_Date =  @date_raznica + @Payment_Date
-				--	  end
-			 --  end
-			 
-			 if  (@date < @Дата_возврата)
-			    begin  
-				    exec RandomDateTimeNew @date,@Дата_возврата, @RandomDate_2 output
-
-			        set @Payment_Date =  @RandomDate_2
-				end
              
 			 set @num = (select cast(round(rand(99999),0)as nvarchar(50)))
 
@@ -698,17 +700,17 @@ while @@FETCH_STATUS = 0
 			  ,@flag
 			 )
 
-			 if exists (select a.flag from #Orders  as a where @Нумирация = a.ID_Orders and a.flag = 0)
+			 if exists (select a.flag from #Orders  as a where @Нумирация = a.ID_Orders and a.flag = @flag)
 			 begin 
 			      set @i_2 =  @i_2 + 1
-			         update a set flag = 1 from #Orders  as a where @Нумирация = a.ID_Orders  and a.flag = 0 
+			         update a set a.flag = 1 from #Orders  as a where @Нумирация = a.ID_Orders  and a.flag = @flag 
 			 end
 
 			 select @s = count(0) from #Orders where flag = 0
 			  set @n = (select  
 			            case  t.flag  when 1 then ' 1  Значения изменены' when 0  then ' 0  Значения не изменялись' end  
 			            from #Orders t  where @Нумирация = t.ID_Orders )
-			  set @mess = @n + ' - > ' + ' ID_Order '  + Cast(@Нумирация as varchar)  + ' --> ' + ' - ' + Cast(@i_2 as varchar) + ' / ' + Cast(@s as varchar)
+			  set @mess = @n + ' - > ' + ' ID_Order '  + Cast(@Нумирация as varchar)  + ' --> ' + Cast(@i_2 as varchar) + ' / ' + Cast(@s as varchar)
 			  RAISERROR(@mess,0,0) WITH NOWAIT
 		end try
 
@@ -762,6 +764,28 @@ outer apply (select top 1 * from #t_6 where Нумирация = t.Нумира�
 as
 o_2 
 on o_2.Нумирация = o.ID_Orders
+
+
+
+
+--drop table if exists #Orders_status_2 
+--drop table if exists #Orders_status
+
+--drop table if exists #t 
+--drop table if exists #t_2
+--drop table if exists #t_3
+--drop table if exists #t_4
+--drop table if exists #t_5
+--drop table if exists  #Razgrupirovka
+--drop table if exists #t_6
+
+--drop table if exists #Data_Orders
+--drop table if exists #Orders
+
+
+
+
+
 
 
 		 --select top 1 ID_status_orders,Name_orders
@@ -966,4 +990,6 @@ go
 
 */
 
-select * from TypeOrders
+commit
+--rollback
+go
