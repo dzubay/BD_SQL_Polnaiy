@@ -11,22 +11,17 @@ if exists
 	  (	  
 	  	SELECT * 
 	  	FROM sys.identity_columns 
-	  	WHERE object_id = OBJECT_ID('dbo.Orders') 
+	  	WHERE object_id = OBJECT_ID('dbo.Data_Orders') 
 	  		AND last_value IS not NULL 	  
 	  )
 	  begin
-	  DBCC CHECKIDENT ('dbo.Orders', RESEED, 0)
+	  DBCC CHECKIDENT ('dbo.Data_Orders', RESEED, 0)
 	  end
 --rollback
 commit
 go
 */
 
---select * from  dbo.Orders
-
---select * from  dbo.Orders_audit
-
---delete from  Orders where ID_Orders is not null
 
 begin tran
 /*
@@ -151,46 +146,6 @@ insert into #Orders_prioritet(Name_orders,Prioritet) values
 ,('На проверке SOX'			  ,2)	
 ,('Отменён'					  ,5)   
 ,('Возврат'					  ,5)   
-
-
-declare @i_1 int = 1
-
-while @i_1 <= 15000
-     begin
-	     insert into #Orders_prioritet_2(ID_status_orders,Name_orders)
-		 select top 1 ID_status_orders,Name_orders
-		 from #Orders_prioritet 
-		 order by -log(rand(CHECKSUM(newid())))/ Prioritet
-
-	     set @i_1 = @i_1 + 1
-
-	 end
-
-
-select
-a_2.ID_status_orders
-,a_2.Name_orders
-,a_2.[Количество]
-,a_2.[Визуалка]
-,sum(a_2.[Количество]) over (order by a_2.ID_status_orders ) as 'Пошаговое_суммирование'
-from 
-     (select 
-     a.Name_orders
-	 ,a.ID_status_orders
-     ,max(a.[rank]) as 'Количество'
-	 ,REPLICATE('|',count(a.[rank])/50)   as 'Визуалка'
-     from
-          (select 
-          Name_orders
-		  ,ID_status_orders
-          ,DENSE_RANK() over (partition by Name_orders order by  ID_orders)  as [rank]
-          from #Orders_prioritet_2 
-		  ) as a 
-     group by  a.Name_orders,a.ID_status_orders) as a_2
-
---select * from #Orders_status_2
-
---select * from #Orders_prioritet_2
 
 */
 
@@ -319,6 +274,7 @@ join Orders_status as a_3         on a_3.Id_Status  = a_2.id_status_order    --�
 where ID_product_measurement  != 5
 
 
+
 /* Для правильной сортировки */
 drop index if exists index_t_cla on #t
 drop index if exists index_t_cla_2 on #t_2
@@ -348,6 +304,8 @@ t.*
 from #t_2 t) as t_1
 where t_1.[Случайная_нумерация] = 1
 ) as a
+
+
 
 /*
 Выборка групировка по дням , учитывая статус заказа 15 и групмровка групп экземпляров по Дате_возврата и по Валюте, со статусами экземпляров 32, 13  
@@ -421,7 +379,7 @@ ORDER BY
 	drop table if exists #t_5
 	 
     select
-	row_number() over (partition by t.Группа_статусов order by t.Дата) as 'Нумирация'
+	row_number() over (partition by t.Группа_статусов order by t.Дата) as 'Нумерация'
 	,t.* 
 	into #t_5
 	from(
@@ -437,7 +395,6 @@ ORDER BY
 
 
 
-
 /*Теперь дополнительно к каждой нумерации сформированных кип, добавляем эти же ID экземпляров и услуг, что бы сформировать по каждой кипе заказ, и по каждому заказу в таблицу Orders_data строки,
 к какому заказу относится, тот или иной экземпляр */
 
@@ -446,11 +403,12 @@ ORDER BY
 
    create table #Razgrupirovka 
    (
-   Нумирация	int              null
+   Нумерация	int              null
    ,ID          bigint           null
+   ,flag        int              null    DEFAULT 0  -- <- Здесь устанавливаем значение по умолчанию
    )
 
-   declare @Summ int = (select count(Нумирация) from #t_5)
+   declare @Summ int = (select count(Нумерация) from #t_5)
 
    declare @e int = 1,   @Id_5 nvarchar(500)
    declare @e_1 int = 1, @Id_6 nvarchar(500),@kolichestvo int = 0
@@ -458,12 +416,12 @@ ORDER BY
 
    while @e <= @Summ
       begin
-	    set @Id_5 = (select Список_ID from #t_5 where Нумирация = @e)
-		set @kolichestvo = (select Количество_экземпляров from #t_5 where Нумирация = @e) 
+	    set @Id_5 = (select Список_ID from #t_5 where Нумерация = @e)
+		set @kolichestvo = (select Количество_экземпляров from #t_5 where Нумерация = @e) 
 
 		if @kolichestvo = 1
 		     begin 
-		       	insert into #Razgrupirovka(Нумирация,ID)
+		       	insert into #Razgrupirovka(Нумерация,ID)
 		        select @e,*  from STRING_SPLIT(@Id_5,',')
 				
 		     end
@@ -472,12 +430,12 @@ ORDER BY
 			     delete from @tab;
 			     
 			     
-			     set @Id_6 = (select Список_ID from #t_5 where Нумирация = @e )
+			     set @Id_6 = (select Список_ID from #t_5 where Нумерация = @e )
 
 				 insert into @tab
 			     select @e,* from STRING_SPLIT(@Id_6,',')
 
-                 insert into #Razgrupirovka(Нумирация,ID) 
+                 insert into #Razgrupirovka(Нумерация,ID) 
 				 select * from @tab    
 				 
 			 end 
@@ -485,13 +443,14 @@ ORDER BY
 	  end
 
 
+	
 	  /*Добавляем к дате возврата конечное время, и отбрасываем ненужные строки дубликаты*/
 
 drop table if exists #t_6
 
 
 select 
- t_2.Нумирация 
+ t_2.Нумерация 
 ,t.Статус_заказа
 ,t.ID_Currency
 ,t_2.ID
@@ -508,12 +467,22 @@ select
 ,0 flag
 into #t_6
 from  #t_5  t 
-left join  #Razgrupirovka t_2 on t.Нумирация = t_2.Нумирация
+left join  #Razgrupirovka t_2 on t.Нумерация = t_2.Нумерация
 left join  All_Data_Exemplar t_3 on t_3.ID_Exemplar = t_2.ID
-order by T_2.Нумирация
+order by T_2.Нумерация
 
 
 
+/*Формируем единственную строку по нумерации из одинвкоывого количества строк нумерации*/
+drop table if exists #t_7
+
+
+select 
+t_2.*
+into #t_7
+from
+(select  distinct Нумерация from #t_6 ) as t
+outer apply (select top 1 * from #t_6 where Нумерация = t.Нумерация )  as t_2
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -----------------Заполнение временных таблиц, сформированные строки по заказам и экземплярам---------------------------------------------------------------------------------------------
 ----------------------УЧИТЫВАЕМ ГЛАВНОЙ МОМЕНТ, ДАТА ВОЗВРАТА СЧИТАЕТСЯ КАК ДАДА, ВРЕМЯ НЕ УЧИТЫВАЕТСЯ, ЛОГИКА ТАКАЯ ПРОСТОЯ!!!!!!!!!----------------------------------------------------
@@ -522,20 +491,6 @@ order by T_2.Нумирация
 
 
 declare @i_2 int = 0, @s  int = 0 , @n varchar(40), @mess varchar(8000), @err varchar(1000)
-
-drop table if exists #Data_Orders
-
-create table  #Data_Orders
-(
-Id_Data_Orders         bigint           not null identity (1,1)
-,ID_Employee            bigint          not null
-,ID_Orders              bigint          not null
-,Id_buyer               bigint          not null
-,ID_Exemplar            bigint          not null
-,ID_Transaction         bigint          null
-,Date_Data_Orders       datetime        not null  default getdate()
-,[Description]          nvarchar(4000)  null
-);
 
 drop table if exists #Orders
 
@@ -559,7 +514,7 @@ flag               int             null
 );
 
 declare
-@Нумирация                                                      int           
+@Нумерация                                                      int           
 ,@ID                                                            bigint		  
 ,@Дата_создания_карточки_товара                                 datetime	  
 ,@Дата_заведения_экземпляра_в_систему                           datetime	  
@@ -584,20 +539,18 @@ declare
 ,@date_raznica      datetime, @Date_Refund  datetime  
 ,@RandomDate_2      datetime
 ,@num               nvarchar(50)
+,@RandomLogin       nvarchar(10)
+
 
 declare Cur cursor  local fast_forward for
 
-/*Формируем единственную строку по нумерации из одинвкоывого количества строк нумерации*/
-select 
-t_2.*
-from
-(select  distinct Нумирация from #t_6 ) as t
-outer apply (select top 1 * from #t_6 where Нумирация = t.Нумирация )  as t_2
+
+select * from #t_7 
 
 open Cur
 
 fetch next from Cur into
- @Нумирация 
+ @Нумерация 
  ,@Статус_заказа
  ,@ID_Currency	
  ,@ID                                                         
@@ -677,13 +630,16 @@ while @@FETCH_STATUS = 0
 					   end
 			    end
              
-             
-			 set @num = (select cast(round(rand(99999),0)as nvarchar(50)))
+             exec RandomLogin_RUS_AlF 2,0,  @RandomLogin output
+ 
+			 set @num = (select  cast(round(rand()* 999999,0)as nvarchar(50)))
+			 
+			 set @num =CONCAT(@RandomLogin,@num)
 
 			 insert into #Orders(ID_Orders,ID_status,ID_TypeOrders,ID_Currency,ID_OrderAssignment,ID_OrderCategory,[Date]
 			 ,Payment_Date,Amount,AmountCurr,AmountNDS,AmountCurrNDS,Num,[Description],flag) values
 			 (
-			  @Нумирация
+			  @Нумерация
 			  ,@Статус_заказа
 			  ,2                   -- Это тип "Возвратный заказ" - 2
 			  ,@ID_Currency
@@ -700,17 +656,22 @@ while @@FETCH_STATUS = 0
 			  ,@flag
 			 )
 
-			 if exists (select a.flag from #Orders  as a where @Нумирация = a.ID_Orders and a.flag = @flag)
+
+			 
+			 
+
+			 if exists (select a.flag from #t_7  as a where @Нумерация = a.Нумерация and a.flag = @flag)
 			 begin 
 			      set @i_2 =  @i_2 + 1
-			         update a set a.flag = 1 from #Orders  as a where @Нумирация = a.ID_Orders  and a.flag = @flag 
+			         update a set a.flag = 1 from #t_7  as a where @Нумерация = a.Нумерация  and a.flag = @flag 
 			 end
-
-			 select @s = count(0) from #Orders where flag = 0
+			 
+			 set @s =  (select  count(*) from #t_7 where flag = 0)
+			 
 			  set @n = (select  
 			            case  t.flag  when 1 then ' 1  Значения изменены' when 0  then ' 0  Значения не изменялись' end  
-			            from #Orders t  where @Нумирация = t.ID_Orders )
-			  set @mess = @n + ' - > ' + ' ID_Order '  + Cast(@Нумирация as varchar)  + ' --> ' + Cast(@i_2 as varchar) + ' / ' + Cast(@s as varchar)
+			            from #t_7 t  where @Нумерация = t.Нумерация )
+			  set @mess = @n + ' - > ' + ' ID_Order '  + Cast(@Нумерация as varchar)  + ' --> ' + Cast(@i_2 as varchar) + ' / ' + Cast(@s as varchar)
 			  RAISERROR(@mess,0,0) WITH NOWAIT
 		end try
 
@@ -729,7 +690,7 @@ while @@FETCH_STATUS = 0
 		end catch
 	  
 	    fetch next from Cur into
-         @Нумирация  
+         @Нумерация  
 		 ,@Статус_заказа
          ,@ID_Currency	
 		 ,@ID                                                         
@@ -748,50 +709,211 @@ while @@FETCH_STATUS = 0
 close Cur
 deallocate Cur
 
-
+/*Проверка Дат в временной таблице */
+/*
 select 
-o_2.Дата_заведения_экземпляра_в_систему	
-,o_2.Дата_возврата
-,o.*
+id_orders
+,t_3.ID
+,o.ID_OrderCategory
 from  
-#Orders o
+#Orders as o
 inner join 
 (select 
 t_2.*
 from
-(select  distinct Нумирация from #t_6 ) as t
-outer apply (select top 1 * from #t_6 where Нумирация = t.Нумирация )  as t_2)
-as
-o_2 
-on o_2.Нумирация = o.ID_Orders
+(select  distinct Нумерация from #t_6 ) as t
+outer apply (select top 1 * from #t_6 where Нумерация = t.Нумерация )  as t_2)as o_2 
+on o_2.Нумерация = o.ID_Orders
+inner join #Razgrupirovka t_3 on t_3.Нумерация = o.ID_Orders
+*/
 
 
 
 
---drop table if exists #Orders_status_2 
---drop table if exists #Orders_status
+------------------------------------------------------------Заполняем таблицу Data_Orders имеющимеся временными данными из временных таблиц-------------------------------------------------
 
---drop table if exists #t 
---drop table if exists #t_2
---drop table if exists #t_3
---drop table if exists #t_4
---drop table if exists #t_5
---drop table if exists  #Razgrupirovka
---drop table if exists #t_6
+declare @i_3 int = 0 ,@s_2 int = 0 , @n_2 varchar(40), @mess_2 varchar(8000), @err_2 varchar(1000)
 
---drop table if exists #Data_Orders
---drop table if exists #Orders
+drop table if exists #Data_Orders
+
+create table  #Data_Orders
+(
+Id_Data_Orders         bigint           not null identity (1,1)
+,ID_Employee            bigint          null
+,ID_Orders              bigint          not null
+,Id_buyer               bigint          not null
+,ID_Exemplar            bigint          not null
+,ID_Transaction         bigint          null
+,Date_Data_Orders       datetime        not null  default getdate()
+,[Description]          nvarchar(4000)  null
+);
+
+declare 
+@Нумерация_2  bigint
+,@id_2        bigint
+,@Flag_2      int
+
+declare
+@ID_Employee_2         bigint    
+,@Id_buyer_2           bigint  
+,@Date_Data_Orders_2   datetime
 
 
 
+declare Cur_2 cursor  local fast_forward for
+
+/*
+Данный запрос выбирает случайного сотрудника из двух отделов и добавляет столбец с его ID
+, если у нескольких строк один заказ, то и сотрудник по ним будет один. Аналогично и по клиентам.
+*/
+select 
+t.Нумерация	
+,t.ID
+,emp_2.ID_Сотрудника
+,emp_2.Id_buyer
+,t.flag
+from #Razgrupirovka t
+left join
+    (
+    SELECT  o.*,
+    CASE 
+        WHEN o.ID_OrderCategory IN (2,3,4) THEN emp.ID_Сотрудника
+        WHEN o.ID_OrderCategory = 1 THEN NULL
+    END AS ID_Сотрудника,
+	emp_3.Id_buyer
+    FROM #Orders o
+    OUTER APPLY (
+                 SELECT TOP 1 ID_Сотрудника 
+                 FROM AllEmployees 
+                 WHERE  Наименование_депортамента = 'Депортамен IT (информационных технологий)' AND 
+				 Наименование_подгруппы in ('Поддержка и консультирование клиентов','Поддержка существующих клиентов и развитие долгосрочных отношений')
+                 AND o.ID_Orders = o.ID_Orders  
+                 ORDER BY NEWID()
+                 ) as emp
+	OUTER APPLY ( select top 1 Id_buyer from Buyer where o.ID_Orders = o.ID_Orders order by NEWID()) as emp_3
+	
+    ) as emp_2 on t.Нумерация = emp_2.ID_Orders
+
+open Cur_2
+
+fetch next from Cur_2 into
+ @Нумерация_2
+ ,@id_2 
+ ,@ID_Employee_2  
+ ,@Id_buyer_2    
+ ,@Flag_2
+ while @@FETCH_STATUS = 0
+     begin
+	    begin try
+ 
+			 
+
+			 /*Берём дату создания заказа, и будем её вставлять в таблицу - Данные по заказу, в столбец дата создания  данной строки*/
+			 set @Date_Data_Orders_2 = (
+			 			                select top 1
+                                        o.[Date]
+                                        from  
+                                        #Orders as o
+                                        inner join 
+                                        (select 
+                                        t_2.*
+                                        from
+                                        (select  distinct Нумерация from #t_6 ) as t
+                                        outer apply (select top 1 * from #t_6 where Нумерация = t.Нумерация )  as t_2)as o_2 
+                                        on o_2.Нумерация = o.ID_Orders
+                                        inner join #Razgrupirovka t_3 on t_3.Нумерация = o.ID_Orders
+										where  id_orders = @Нумерация_2 and  @id_2 = t_3.ID
+										order by t_3.Нумерация
+										)
+
+			 insert into #Data_Orders(ID_Employee,ID_Orders,Id_buyer,ID_Exemplar,ID_Transaction,Date_Data_Orders,[Description]) values 
+			 (
+			  @ID_Employee_2 
+			  ,@Нумерация_2
+			  ,@Id_buyer_2
+			  ,@id_2
+			  ,null
+			  ,@Date_Data_Orders_2
+			  ,null
+			 )
+			 
+
+			 if exists (select a.flag from #Razgrupirovka  as a where @Нумерация_2 = a.Нумерация and a.ID = @id_2 and a.flag = @flag_2)
+			 begin 
+			      set @i_3 =  @i_3 + 1
+			         update a set a.flag = 1 from #Razgrupirovka  as a where @Нумерация_2 = a.Нумерация and a.ID = @id_2 and a.flag = @flag_2 
+			 end
+			 
+			 set @s_2 =  (select  count(0) from #Razgrupirovka where flag = 0)
+			 
+			  set @n_2 = (select  
+			            case  t.flag  when 1 then ' 1  Значения изменены' when 0  then ' 0  Значения не изменялись' end  
+			            from #Razgrupirovka t  where @Нумерация_2 = t.Нумерация  and t.ID = @id_2)
+			  set @mess_2 = @n_2 + ' - > ' + ' ID_Order '  + Cast(@Нумерация_2 as varchar)  +  ' ID_Exemplar  ' + cast(@id_2 as varchar) +' --> ' + Cast(@i_3 as varchar) + ' / ' + Cast(@s_2 as varchar)
+			  RAISERROR(@mess_2,0,0) WITH NOWAIT
+		end try
+
+		begin catch
+			  if xact_state() in (1, -1) 
+		          begin
+			        ROLLBACK TRAN
+			      end
+               SELECT 
+		        	ERROR_NUMBER() AS ErrorNumber,
+		        	ERROR_SEVERITY() AS ErrorSeverity,
+		        	ERROR_STATE() as ErrorState,
+		        	ERROR_PROCEDURE() as ErrorProcedure,
+		        	ERROR_LINE() as ErrorLine,
+		        	ERROR_MESSAGE() as ErrorMessage;
+		end catch
+        fetch next from Cur_2 into
+        @Нумерация_2
+        ,@id_2 
+		,@ID_Employee_2  
+        ,@Id_buyer_2    
+		,@Flag_2      
+     end
+close Cur_2
+deallocate Cur_2
+
+--SET IDENTITY_INSERT Data_Orders ON;  -- Разрешаем вставку ID вручную
+
+insert into Orders(ID_status,ID_TypeOrders,ID_Currency,ID_OrderAssignment,ID_OrderCategory,[Date]
+,Payment_Date,Amount,AmountCurr,AmountNDS,AmountCurrNDS,Num,[Description])
+select ID_status,ID_TypeOrders,ID_Currency,ID_OrderAssignment,ID_OrderCategory,[Date]
+,Payment_Date,Amount,AmountCurr,AmountNDS,AmountCurrNDS,Num,[Description] from  #Orders
 
 
 
+insert into Data_Orders(ID_Employee,ID_Orders,Id_buyer,ID_Exemplar,ID_Transaction,Date_Data_Orders,[Description])
+select ID_Employee,ID_Orders,Id_buyer,ID_Exemplar,ID_Transaction,Date_Data_Orders,[Description] from #Data_Orders
 
-		 --select top 1 ID_status_orders,Name_orders
-		 --from #Orders_prioritet 
-		 --order by -log(rand(CHECKSUM(newid())))/ Prioritet
-         --select * from Condition_of_the_item
+--SET IDENTITY_INSERT Data_Orders OFF;  -- Возвращаем автоинкремент
+
+
+drop table if exists #Orders_status_2 
+drop table if exists #Orders_status
+
+drop table if exists #t 
+drop table if exists #t_2
+drop table if exists #t_3
+drop table if exists #t_4
+drop table if exists #t_5
+drop table if exists  #Razgrupirovka
+drop table if exists #t_6
+drop table if exists #t_7
+
+drop table if exists #Orders
+drop table if exists #Data_Orders
+
+
+--select * from Orders
+--select * from Data_Orders
+
+--select top 1 ID_status_orders,Name_orders
+--from #Orders_prioritet 
+--order by -log(rand(CHECKSUM(newid())))/ Prioritet
+--select * from Condition_of_the_item
 
 
 /*
@@ -911,43 +1033,6 @@ ORDER BY
     Группа_статусов,
     Статус_заказа;
 
-*/
-
-/*
---1	 Продан										 	--1	 Завершена                        1,28
---2	 Просрочен									 	--2	 В ожидании						  27,4,5
---3	 Задублирован								 	--3	 В ожидании оплаты				  34,5
---4	 На отгрузке								    --4	 На уточнении у Контрагента		  2,6,12,14,26,17,5,31,27,23
---5	 На складе									 	--5	 Бухгалтерский контроль			  5,24,27
---6	 Ожидает возврата							 	--6	 Оплачен						  33,15,25 
---7	 Потерян									 	--7	 На исправлении					  14,15,16,34,7,8,12,17,5,9,11,19,20,23,29,2,3,6,31,27
---8	 На проверке								 	--8	 На проверки Аудиторов		      14,15,16,34,7,8,12,17,5,31
---9	 Ожидает отгрузки							 	--9	 В движении						  30,11,25,4,19
---10 Зарезервирован								    --10 На складе						  5,9,7
---11 В пути										    --11 В сборке						  4,10
---12 Бракованный								 	--12 В ожидании отправки			  26,27,20
---13 Возвращён пользователем					 	--13 На проверке SOX				  2,3,6,7,8,12,14,17,31,27,23
---14 Уценён										    --14 Отменён					      9,11,16,19,20,23,29,2,17,3,34,31,27  
---15 Продан в рассрочку                             --15 Возврат					      32,13	 
---16 Не полностью оплачен по рассрочке			 
---17 Испорчен									 
---18 Срок годности просрочен					 
---19 Ожидает на пункте выдачи					 
---20 Ожидает курьера							 
---21 Черновик									 
---22 Редактируется								 
---23 Найдены несоответствия в карточке товара	 
---24 Перерасчёт цен								 
---25 Услуга активна								 
---26 Услуга ожидает активации					 
---27 Услуга приостановлена						 
---28 Услуга завершена                              
---29 Услуга отменена							 
---30 Услуга в процессе выполнения				 
---31 Услуга просрочена							 
---32 Услуга возвращена							 
---33 Услуга оплачена							 
---34 Услуга не оплачена		
 */
 
 
