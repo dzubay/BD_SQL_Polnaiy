@@ -1,5 +1,5 @@
 ﻿
-use Magaz_DB_Poln_test
+use Magaz_DB_Poln
 
 go
 set nocount,xact_abort on;
@@ -110,7 +110,7 @@ while @i <= 15
 	    set @i = @i + 1
 	  end
 
-
+go
 /*
 drop table if exists  #Orders_prioritet;
 
@@ -273,7 +273,7 @@ left join #Orders_status_2 as a_2 on a_2.all_status = a.ID_Condition_of_the_item
 join Orders_status as a_3         on a_3.Id_Status  = a_2.id_status_order    --Убираем экземпляры у которых статус не позволяет быть в заказах
 where ID_product_measurement  != 5
 
-
+go
 
 /* Для правильной сортировки */
 drop index if exists index_t_cla on #t
@@ -306,6 +306,7 @@ where t_1.[Случайная_нумерация] = 1
 ) as a
 
 
+go
 /*Формирование заказов с статусом 15 */
 
 /*
@@ -373,7 +374,7 @@ ORDER BY
     bg.Статус_заказа;
 
 
-
+go
 
 /*Убираем ненужные строки с NULL, ну и за одно  пронумеровываем их, не особо важно, но не стал заморачиваться*/
 
@@ -394,7 +395,7 @@ ORDER BY
 	) as t order by t.Дата,t.Количество_экземпляров
 
 
-
+go
 
 /*Теперь дополнительно к каждой нумерации сформированных кип, добавляем эти же ID экземпляров и услуг, что бы сформировать по каждой кипе заказ, и по каждому заказу в таблицу Orders_data строки,
 к какому заказу относится, тот или иной экземпляр */
@@ -443,7 +444,7 @@ ORDER BY
 		 set @e = @e + 1
 	  end
 
-
+go
 	
 	  /*Добавляем к дате возврата конечное время, и отбрасываем ненужные строки дубликаты*/
 
@@ -472,7 +473,7 @@ left join  #Razgrupirovka t_2 on t.Нумерация = t_2.Нумерация
 left join  All_Data_Exemplar t_3 on t_3.ID_Exemplar = t_2.ID
 order by T_2.Нумерация
 
-
+go
 
 /*Формируем единственную строку по нумерации из одинвкоывого количества строк нумерации*/
 drop table if exists #t_7
@@ -729,7 +730,7 @@ inner join #Razgrupirovka t_3 on t_3.Нумерация = o.ID_Orders
 */
 
 
-
+go
 
 ------------------------------------------------------------Заполняем таблицу Data_Orders имеющимеся временными данными из временных таблиц-------------------------------------------------
 

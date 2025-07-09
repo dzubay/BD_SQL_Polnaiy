@@ -1,6 +1,20 @@
 ﻿use Magaz_DB_Poln
 go
 set nocount,xact_abort on;
+
+
+drop table if exists ##Table
+
+create table ##Table
+(
+id        bigint      not null identity(1,1)
+,[Name]   varchar(100)  not null
+,[Value]  int not null
+)
+insert into  ##Table values
+('Currency_Rate',150000),
+('Exemplar',30000)
+
 go
 
 insert into  Orders_status(Name,SysTypeOrderStatusName,Description)
@@ -2402,6 +2416,8 @@ declare
                close mycur_2
               deallocate mycur_2
             end
+
+
 go
 
 insert into The_Subgroup (ID_Group,Name_The_Subgroup,ID_Branch,ID_Parent_The_Subgroup)
@@ -5082,7 +5098,7 @@ insert into @Currency_Rate_2024 values
 */
 declare @Currency_Rate_2024_1 table (id bigint,Currency_Rate_new decimal(5,2),Valid_from datetime,Valid_to datetime)
 declare @i int = 1
-   while @i <= 150000
+   while @i <= (select [value] from ##Table where id = 1)
        begin 
 	       
 	       WITH RandomValues AS (
@@ -10893,7 +10909,9 @@ DECLARE @i INT = 1;
 DECLARE @MaxSequence float = 0;
 declare @flag_3 int = 0
 
-WHILE @i <=30000 
+
+
+WHILE @i <= (select [value] from ##Table where id =2 )
 BEGIN
     -- Получаем текущее максимальное значение Sequence
     SELECT @MaxSequence = ISNULL(MAX(SelectionSequence), 0) FROM #RandomSelectedRows;
@@ -11298,7 +11316,7 @@ go
 
 
 
-
+------------------------------------------------------------------------------------------------Заказы со статусом 15---------------------------------------------------------------------------------------
 
 drop table if exists #Orders_status
 
@@ -11317,7 +11335,6 @@ all_status  nvarchar(300) not null
 );
 
 
-/*Примерно формируем данные по статусам экземляров, которые могут быть, в той или иной заявке в указанном статусе заказа (первый стобец)*/
 insert into #Orders_status values
 (1,'1,28'),	
 (2,'27,4,5'),	
@@ -11349,11 +11366,9 @@ while @i <= 15
 	    set @i = @i + 1
 	  end
 
-
-
-
-
-drop table if exists #t 
+go
+	  
+drop table if exists #t;
 
 select
 ROW_NUMBER() over (order by a.ID_Exemplar asc) as 'Нумерация'
@@ -11379,9 +11394,9 @@ into #t
 from All_Data_Exemplar as a
 left join #Orders_status_2 as a_2 on a_2.all_status = a.ID_Condition_of_the_item
 join Orders_status as a_3         on a_3.Id_Status  = a_2.id_status_order    --Убираем экземпляры у которых статус не позволяет быть в заказах
-where ID_product_measurement  = 5
+where ID_product_measurement  = 5;
 
-drop table if exists #t_2
+drop table if exists #t_2;
 
 select
 ROW_NUMBER() over (order by a.ID_Exemplar asc) as 'Нумерация'
@@ -11407,49 +11422,45 @@ into #t_2
 from All_Data_Exemplar as a
 left join #Orders_status_2 as a_2 on a_2.all_status = a.ID_Condition_of_the_item
 join Orders_status as a_3         on a_3.Id_Status  = a_2.id_status_order    --Убираем экземпляры у которых статус не позволяет быть в заказах
-where ID_product_measurement  != 5
+where ID_product_measurement  != 5;
 
 
+go
 
 /* Для правильной сортировки */
-drop index if exists index_t_cla on #t
-drop index if exists index_t_cla_2 on #t_2
+drop index if exists index_t_cla on #t;
+drop index if exists index_t_cla_2 on #t_2;
 
-create clustered index index_t_cla on #t([Нумерация])
-create clustered index index_t_cla_2 on #t_2([Нумерация])
+create clustered index index_t_cla on #t([Нумерация]);
+create clustered index index_t_cla_2 on #t_2([Нумерация]);
 
 
-drop table if exists #t_3
+drop table if exists #t_3;
 
-select
-* 
-into #t_3
-from
-(
-select * from
-(select 
-t.*
-, ROW_NUMBER() OVER (PARTITION BY t.ID_Exemplar ORDER BY  NEWID()) as 'Случайная_нумерация'
-from #t t) as t_1
-where t_1.[Случайная_нумерация] = 1
-union all
-select * from
-(select 
-t.*
-, ROW_NUMBER() OVER (PARTITION BY t.ID_Exemplar ORDER BY  NEWID()) as 'Случайная_нумерация'
-from #t_2 t) as t_1
+select *  into #t_3  from
+                         (
+                          select * from
+                                      (
+									  select 
+                                      t.*
+                                      , ROW_NUMBER() OVER (PARTITION BY t.ID_Exemplar ORDER BY  NEWID()) as 'Случайная_нумерация'
+                                      from #t t
+									  ) as t_1
+                          where t_1.[Случайная_нумерация] = 1
+
+                          union all
+
+                          select * from
+                                        (
+									    select 
+                                        t.*
+                                        , ROW_NUMBER() OVER (PARTITION BY t.ID_Exemplar ORDER BY  NEWID()) as 'Случайная_нумерация'
+                                        from #t_2 t
+				                        ) as t_1
 where t_1.[Случайная_нумерация] = 1
 ) as a
 
-
-/*Формирование заказов с статусом 15 */
-
-/*
-Выборка групировка по дням , учитывая статус заказа 15 и групмровка групп экземпляров по Дате_возврата и по Валюте, со статусами экземпляров 32, 13  
-то есть собирвем в одну кипу экземляры которые могут быть в одном заказе по времени возврата , но с одинаковой валютой, если  дата возврата 
-будет одна и таже в разных валютах, то экземпляр с другой валютой переходит в другую кипу 
-*/
-
+go
 
 drop table if exists #t_4;
 
@@ -11507,13 +11518,9 @@ ORDER BY
     bg.Дата,
     bg.Группа_статусов,
     bg.Статус_заказа;
+go
 
-
-
-
-/*Убираем ненужные строки с NULL, ну и за одно  пронумеровываем их, не особо важно, но не стал заморачиваться*/
-
-	drop table if exists #t_5
+	drop table if exists #t_5;
 	 
     select
 	row_number() over (partition by t.Группа_статусов order by t.Дата) as 'Нумерация'
@@ -11527,16 +11534,10 @@ ORDER BY
 	select * 
 	from #t_4  
 	where Статус_заказа = 15 and Количество_экземпляров > 1 and Группа_статусов is not null
-	) as t order by t.Дата,t.Количество_экземпляров
+	) as t order by t.Дата,t.Количество_экземпляров;
 
-
-
-
-/*Теперь дополнительно к каждой нумерации сформированных кип, добавляем эти же ID экземпляров и услуг, что бы сформировать по каждой кипе заказ, и по каждому заказу в таблицу Orders_data строки,
-к какому заказу относится, тот или иной экземпляр */
-
-   
-   drop table if exists  #Razgrupirovka
+go
+   drop table if exists  #Razgrupirovka;
 
    create table #Razgrupirovka 
    (
@@ -11577,13 +11578,13 @@ ORDER BY
 				 
 			 end 
 		 set @e = @e + 1
-	  end
+	  end;
 
 
-	
-	  /*Добавляем к дате возврата конечное время, и отбрасываем ненужные строки дубликаты*/
+go
 
-drop table if exists #t_6
+
+drop table if exists #t_6;
 
 
 select 
@@ -11609,10 +11610,10 @@ left join  All_Data_Exemplar t_3 on t_3.ID_Exemplar = t_2.ID
 order by T_2.Нумерация
 
 
+go
 
-/*Формируем единственную строку по нумерации из одинвкоывого количества строк нумерации*/
+
 drop table if exists #t_7
-
 
 select 
 t_2.*
@@ -11620,11 +11621,6 @@ into #t_7
 from
 (select  distinct Нумерация from #t_6 ) as t
 outer apply (select top 1 * from #t_6 where Нумерация = t.Нумерация )  as t_2
------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
------------------Заполнение временных таблиц, сформированные строки по заказам и экземплярам---------------------------------------------------------------------------------------------
-----------------------УЧИТЫВАЕМ ГЛАВНОЙ МОМЕНТ, ДАТА ВОЗВРАТА СЧИТАЕТСЯ КАК ДАТА, ВРЕМЯ НЕ УЧИТЫВАЕТСЯ, ЛОГИКА ТАКАЯ ПРОСТОЯ!!!!!!!!!----------------------------------------------------
-------------------------------------------ПО ЭТОМУ МЫ ВСЕМ ДАТАМ ВОЗВРАТА ДОБАВЛЯЕМ КОНЕЧНОЕ ВРЕМЯ  '23:59:59.997'-----------------------------------------------------------------------
------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 declare @i_2 int = 0, @s  int = 0 , @n varchar(40), @mess varchar(8000), @err varchar(1000)
@@ -11793,10 +11789,6 @@ while @@FETCH_STATUS = 0
 			  ,@flag
 			 )
 
-
-			 
-			 
-
 			 if exists (select a.flag from #t_7  as a where @Нумерация = a.Нумерация and a.flag = @flag)
 			 begin 
 			      set @i_2 =  @i_2 + 1
@@ -11846,6 +11838,7 @@ while @@FETCH_STATUS = 0
 close Cur
 deallocate Cur
 
+go
 ------------------------------------------------------------Заполняем таблицу Data_Orders имеющимеся временными данными из временных таблиц-------------------------------------------------
 
 declare @i_3 int = 0 ,@s_2 int = 0 , @n_2 varchar(40), @mess_2 varchar(8000), @err_2 varchar(1000)
@@ -11878,10 +11871,6 @@ declare
 
 declare Cur_2 cursor  local fast_forward for
 
-/*
-Данный запрос выбирает случайного сотрудника из двух отделов и добавляет столбец с его ID
-, если у нескольких строк один заказ, то и сотрудник по ним будет один. Аналогично и по клиентам.
-*/
 select 
 t.Нумерация	
 ,t.ID
@@ -11921,10 +11910,7 @@ fetch next from Cur_2 into
  while @@FETCH_STATUS = 0
      begin
 	    begin try
- 
-			 
 
-			 /*Берём дату создания заказа, и будем её вставлять в таблицу - Данные по заказу, в столбец дата создания  данной строки*/
 			 set @Date_Data_Orders_2 = (
 			 			                select top 1
                                         o.[Date]
@@ -11953,7 +11939,6 @@ fetch next from Cur_2 into
 			  ,null
 			 )
 			 
-
 			 if exists (select a.flag from #Razgrupirovka  as a where @Нумерация_2 = a.Нумерация and a.ID = @id_2 and a.flag = @flag_2)
 			 begin 
 			      set @i_3 =  @i_3 + 1
@@ -11992,19 +11977,14 @@ fetch next from Cur_2 into
 close Cur_2
 deallocate Cur_2
 
---SET IDENTITY_INSERT Data_Orders ON;  -- Разрешаем вставку ID вручную
-
 insert into Orders(ID_status,ID_TypeOrders,ID_Currency,ID_OrderAssignment,ID_OrderCategory,[Date]
 ,Payment_Date,Amount,AmountCurr,AmountNDS,AmountCurrNDS,Num,[Description])
 select ID_status,ID_TypeOrders,ID_Currency,ID_OrderAssignment,ID_OrderCategory,[Date]
 ,Payment_Date,Amount,AmountCurr,AmountNDS,AmountCurrNDS,Num,[Description] from  #Orders
 
-
-
 insert into Data_Orders(ID_Employee,ID_Orders,Id_buyer,ID_Exemplar,ID_Transaction,Date_Data_Orders,[Description])
 select ID_Employee,ID_Orders,Id_buyer,ID_Exemplar,ID_Transaction,Date_Data_Orders,[Description] from #Data_Orders
 
---SET IDENTITY_INSERT Data_Orders OFF;  -- Возвращаем автоинкремент
 
 
 
@@ -12030,8 +12010,7 @@ go
 
 
 
-
-/*Формируем и заполняем заказы с статусом 1*/
+---------------------------------------------------------------------------------------------------------заполняем заказы с статусом 1--------------------------------------------------------------------------------
 
 drop table if exists #Orders_status
 
@@ -12049,8 +12028,6 @@ id_status_order bigint  not null,
 all_status  nvarchar(300) not null
 );
 
-
-/*Примерно формируем данные по статусам экземляров, которые могут быть, в той или иной заявке в указанном статусе заказа (первый стобец)*/
 insert into #Orders_status values
 (1,'1,28'),	
 (2,'27,4,5'),	
@@ -12082,6 +12059,7 @@ while @i <= 15
 	    set @i = @i + 1
 	  end
 
+go
 
 drop table if exists #t 
 
@@ -12139,7 +12117,7 @@ left join #Orders_status_2 as a_2 on a_2.all_status = a.ID_Condition_of_the_item
 join Orders_status as a_3         on a_3.Id_Status  = a_2.id_status_order    --Убираем экземпляры у которых статус не позволяет быть в заказах
 where ID_product_measurement  != 5
 
-
+go
 
 /* Для правильной сортировки */
 drop index if exists index_t_cla on #t
@@ -12171,6 +12149,7 @@ from #t_2 t) as t_1
 where t_1.[Случайная_нумерация] = 1
 ) as a
 
+go
 
 drop table if exists #t_3_1
 
@@ -12199,7 +12178,7 @@ into #t_3_1
 from #t_3 where all_status  in(1,28)  --and   Дата_создания_карточки_товара >= Дата_заведения_экземпляра_в_систему
 order by  ID_Exemplar
 
-
+go
 
 drop table if exists #t_4;
 
@@ -12257,9 +12236,7 @@ ORDER BY
     bg.Дата,
     bg.Группа_статусов,
     bg.Статус_заказа;
-
-
-
+go
 	drop table if exists #t_5_1
 	 
     select
@@ -12276,7 +12253,9 @@ ORDER BY
 	where Статус_заказа = 1 and Количество_экземпляров > 1 and Группа_статусов is not null
 	) as t order by t.Дата,t.Количество_экземпляров
 
-   
+
+go
+
    drop table if exists  #Razgrupirovka_1
 
    create table #Razgrupirovka_1 
@@ -12320,6 +12299,7 @@ ORDER BY
 		 set @e_status_1 = @e_status_1 + 1
 	  end
 
+go
 
 declare 
 @count_Orders bigint = (select count(o.ID_Orders) as 'Количество_Заказов'  from orders o)
@@ -12353,6 +12333,7 @@ left join  All_Data_Exemplar t_3 on t_3.ID_Exemplar = t_2.ID
 order by T_2.Нумерация
 
 
+go
 
 drop table if exists #t_7
 
@@ -12535,7 +12516,7 @@ close Cur
 deallocate Cur
 
 
-
+go
 
 
 ------------------------------------------------------------Заполняем таблицу Data_Orders имеющимеся временными данными из временных таблиц-------------------------------------------------
@@ -12580,14 +12561,7 @@ row_number() over(order by t.Нумерация)  + @count_date_Orders as 'Ко�
 into  #Razgrupirovka_2
 from #Razgrupirovka_1 t
 
-
-
 declare Cur_2 cursor  local fast_forward for
-
-/*
-Данный запрос выбирает случайного сотрудника из двух отделов и добавляет столбец с его ID
-, если у нескольких строк один заказ, то и сотрудник по ним будет один. Аналогично и по клиентам.
-*/
 
 select 
 t.Количество_Данных_по_Заказам
@@ -12632,8 +12606,6 @@ fetch next from Cur_2 into
      begin
 	    begin try
  
-			 
-			 /*Берём дату создания заказа, и будем её вставлять в таблицу - Данные по заказу, в столбец дата создания  данной строки*/
 			 set @Date_Data_Orders_2 = (
 			              			    select top 1
                                         o.[Date]
@@ -12705,13 +12677,10 @@ close Cur_2
 deallocate Cur_2
 
 
-
 insert into Orders(ID_status,ID_TypeOrders,ID_Currency,ID_OrderAssignment,ID_OrderCategory,[Date]
 ,Payment_Date,Amount,AmountCurr,AmountNDS,AmountCurrNDS,Num,[Description])
 select ID_status,ID_TypeOrders,ID_Currency,ID_OrderAssignment,ID_OrderCategory,[Date]
 ,Payment_Date,Amount,AmountCurr,AmountNDS,AmountCurrNDS,Num,[Description] from  #Orders
-
-
 
 insert into Data_Orders(ID_Employee,ID_Orders,Id_buyer,ID_Exemplar,ID_Transaction,Date_Data_Orders,[Description])
 select ID_Employee,ID_Orders,Id_buyer,ID_Exemplar,ID_Transaction,Date_Data_Orders,[Description] from #Data_Orders
@@ -12724,6 +12693,7 @@ drop table if exists #Orders_status
 
 drop table if exists #t 
 drop table if exists #t_2
+drop table if exists #t_3
 drop table if exists #t_3_1
 drop table if exists #t_4
 drop table if exists #t_5_1
@@ -12736,5 +12706,5 @@ drop table if exists #t_7
 drop table if exists #Orders
 drop table if exists #Data_Orders
 
-
 go
+
