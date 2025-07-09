@@ -1,5 +1,5 @@
 ﻿
-use Magaz_DB_Poln_test
+use Magaz_DB_Poln
 
 go
 set nocount,xact_abort on;
@@ -109,7 +109,7 @@ while @i <= 15
 
 	    set @i = @i + 1
 	  end
-
+go
 
 /*
 drop table if exists  #Orders_prioritet;
@@ -273,7 +273,7 @@ left join #Orders_status_2 as a_2 on a_2.all_status = a.ID_Condition_of_the_item
 join Orders_status as a_3         on a_3.Id_Status  = a_2.id_status_order    --Убираем экземпляры у которых статус не позволяет быть в заказах
 where ID_product_measurement  != 5
 
-
+go
 
 /* Для правильной сортировки */
 drop index if exists index_t_cla on #t
@@ -305,6 +305,7 @@ from #t_2 t) as t_1
 where t_1.[Случайная_нумерация] = 1
 ) as a
 
+go
 
 drop table if exists #t_3_1
 
@@ -333,7 +334,7 @@ into #t_3_1
 from #t_3 where all_status  in(1,28)  --and   Дата_создания_карточки_товара >= Дата_заведения_экземпляра_в_систему
 order by  ID_Exemplar
 
-
+go
 
 drop table if exists #t_4;
 
@@ -392,7 +393,7 @@ ORDER BY
     bg.Группа_статусов,
     bg.Статус_заказа;
 
-
+go
 
 	drop table if exists #t_5_1
 	 
@@ -410,7 +411,7 @@ ORDER BY
 	where Статус_заказа = 1 and Количество_экземпляров > 1 and Группа_статусов is not null
 	) as t order by t.Дата,t.Количество_экземпляров
 
-   
+go   
    drop table if exists  #Razgrupirovka_1
 
    create table #Razgrupirovka_1 
@@ -454,6 +455,7 @@ ORDER BY
 		 set @e_status_1 = @e_status_1 + 1
 	  end
 
+go
 
 declare 
 @count_Orders bigint = (select count(o.ID_Orders) as 'Количество_Заказов'  from orders o)
@@ -486,7 +488,7 @@ left join  #Razgrupirovka_1 t_2 on t.Нумерация = t_2.Нумерация
 left join  All_Data_Exemplar t_3 on t_3.ID_Exemplar = t_2.ID
 order by T_2.Нумерация
 
-
+go
 
 drop table if exists #t_7
 
@@ -669,7 +671,7 @@ close Cur
 deallocate Cur
 
 
-
+go
 
 
 ------------------------------------------------------------Заполняем таблицу Data_Orders имеющимеся временными данными из временных таблиц-------------------------------------------------
@@ -765,8 +767,6 @@ fetch next from Cur_2 into
  while @@FETCH_STATUS = 0
      begin
 	    begin try
- 
-			 
 			 /*Берём дату создания заказа, и будем её вставлять в таблицу - Данные по заказу, в столбец дата создания  данной строки*/
 			 set @Date_Data_Orders_2 = (
 			              			    select top 1
@@ -838,14 +838,10 @@ fetch next from Cur_2 into
 close Cur_2
 deallocate Cur_2
 
-
-
 insert into Orders(ID_status,ID_TypeOrders,ID_Currency,ID_OrderAssignment,ID_OrderCategory,[Date]
 ,Payment_Date,Amount,AmountCurr,AmountNDS,AmountCurrNDS,Num,[Description])
 select ID_status,ID_TypeOrders,ID_Currency,ID_OrderAssignment,ID_OrderCategory,[Date]
 ,Payment_Date,Amount,AmountCurr,AmountNDS,AmountCurrNDS,Num,[Description] from  #Orders
-
-
 
 insert into Data_Orders(ID_Employee,ID_Orders,Id_buyer,ID_Exemplar,ID_Transaction,Date_Data_Orders,[Description])
 select ID_Employee,ID_Orders,Id_buyer,ID_Exemplar,ID_Transaction,Date_Data_Orders,[Description] from #Data_Orders
@@ -858,6 +854,7 @@ drop table if exists #Orders_status
 
 drop table if exists #t 
 drop table if exists #t_2
+drop table if exists #t_3
 drop table if exists #t_3_1
 drop table if exists #t_4
 drop table if exists #t_5_1
