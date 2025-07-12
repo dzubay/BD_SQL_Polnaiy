@@ -112,44 +112,7 @@ while @i <= 15
 go
 
 
-drop table if exists  #Orders_prioritet;
-
-create table #Orders_prioritet 
-(
-ID_status_orders bigint   not null identity(1,1),
-Name_orders nvarchar(200) not null              ,
-Prioritet  float          null
-);
-
-drop table if exists  #Orders_prioritet_2;
-
-create table #Orders_prioritet_2 
-(
-ID_orders        bigint   not null identity(1,1),
-ID_status_orders bigint   not null,
-Name_orders nvarchar(200) null              
-);
-
-insert into #Orders_prioritet(Name_orders,Prioritet) values 
- ('Завершена'                 ,20)     
-,('В ожидании'				  ,10)		
-,('В ожидании оплаты'		  ,5.5)		
-,('На уточнении у Контрагента',5)		
-,('Бухгалтерский контроль'	  ,0.5)		
-,('Оплачен'					  ,5)	
-,('На исправлении'			  ,2.5)		
-,('На проверки Аудиторов'	  ,5)	    
-,('В движении'				  ,10)		
-,('На складе'				  ,3)		
-,('В сборке'				  ,3)	
-,('В ожидании отправки'		  ,5)	
-,('На проверке SOX'			  ,2)	
-,('Отменён'					  ,5)   
-,('Возврат'					  ,5)   
-
-
-
-drop table if exists #random_value
+drop table if exists #random_value;
 
 with random_value as (
 select 
@@ -175,6 +138,8 @@ into #random_value
 from random_value e
 where e.random_row_num = 1 -- Выбираем только одну случайную строку для каждого экземпляра
 order by  newid() -- Дополнительно перемешиваем итоговый результат (опционально)
+
+go
 
 
 drop table if exists #t_4;
@@ -274,177 +239,24 @@ ORDER BY
     bg.Группа_статусов,
     bg.Статус_заказа;
 
-
-
-
-/*
-
-CASE 
-    WHEN ID_Condition_of_the_item IN ('Услуга приостановлена','На отгрузке','На складе') THEN 'Статус_2'
-	WHEN ID_Condition_of_the_item IN ('Услуга не оплачена','На отгрузке') THEN 'Статус_3'
-	WHEN ID_Condition_of_the_item IN ('Просрочен','Ожидает возврата','Бракованный','Уценён','Услуга ожидает активации',
-	'Испорчен','На складе','Услуга просрочена','Услуга приостановлена','Найдены несоответствия в карточке товара') THEN 'Статус_4'
-	WHEN ID_Condition_of_the_item IN ('На складе','Перерасчёт цен','Услуга приостановлена') THEN 'Статус_5'
-	WHEN ID_Condition_of_the_item IN ('Услуга оплачена','Продан в рассрочку','Услуга активна') THEN 'Статус_6'
-	WHEN ID_Condition_of_the_item IN ('Уценён','Продан в рассрочку','Не полностью оплачен по рассрочке','Услуга не оплачена',
-	'Потерян','На проверке','Бракованный','Испорчен','На складе','Ожидает отгрузки','В пути','Ожидает на пункте выдачи','Ожидает курьера',
-	'Найдены несоответствия в карточке товара','Услуга отменена','Просрочен','Задублирован','Ожидает возврата','Услуга просрочена','Услуга приостановлена') THEN 'Статус_7'
-	WHEN ID_Condition_of_the_item IN ('Уценён','Продан в рассрочку','Не полностью оплачен по рассрочке','Услуга не оплачена',
-	'Потерян','На проверке','Бракованный','Испорчен','На складе','Услуга просрочена') THEN 'Статус_8'
-	WHEN ID_Condition_of_the_item IN ('Услуга в процессе выполнения','В пути','Услуга активна','На отгрузке','Ожидает на пункте выдачи') THEN 'Статус_9'
-	WHEN ID_Condition_of_the_item IN ('На складе','Ожидает отгрузки','Потерян') THEN 'Статус_10'
-	WHEN ID_Condition_of_the_item IN ('На отгрузке','Зарезервирован') THEN 'Статус_11'
-	WHEN ID_Condition_of_the_item IN ('Услуга ожидает активации','Услуга приостановлена','Ожидает курьера') THEN 'Статус_12'
-	WHEN ID_Condition_of_the_item IN ('Просрочен','Задублирован','Ожидает возврата','Потерян','На проверке','Бракованный','Уценён',
-	'Испорчен','Услуга просрочена','Услуга приостановлена','Найдены несоответствия в карточке товара') THEN 'Статус_13'
-	WHEN ID_Condition_of_the_item IN ('Ожидает отгрузки','В пути','Не полностью оплачен по рассрочке','Ожидает на пункте выдачи','Ожидает курьера'
-	,'Найдены несоответствия в карточке товара','Услуга отменена','Просрочен','Испорчен','Задублирован','Услуга не оплачена','Услуга просрочена','Услуга приостановлена') THEN 'Статус_14'
-    ELSE ID_Condition_of_the_item
-
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-select * from Exemplar where  ID_Condition_of_the_item  in (18,21,22)
-
-
-select * from Condition_of_the_item
-
-
-
-
-
-
-
-
-
-
-
---drop table if exists #t_3_1
-
---select 
---Нумерация	
---,Нумерация_по_идентификатору	
---,ID_Exemplar	
---,ID_Condition_of_the_item	
---,Наименование_статуса_экземпляра	
---,all_status	
---,id_status_order	
---,Name	
---,ID_product_measurement	
---,Тип_измерения_товара	
---,Дата_создания_карточки_товара	
---,Дата_заведения_экземпляра_в_систему	Дата_возврата	
---,ID_Currency
---,Наименование_валюты_на_русском	
---,Цена_без_НДС_экземпляра	
---,Цена_экземпляра_с_НДС	
---,Цена_экземпляра_с_НДС_после_начисления_коммисии_за_сервис	
---,Цена_экземпляра_без_НДС_после_начисления_коммисии_за_сервис	
---,Случайная_нумерация
---,dateadd(second,abs(cast(substring(cast(checksum(NEWID()) as varchar(36)),1,7) as int)),Дата_заведения_экземпляра_в_систему) as 'Дата_создания_заказа'
---into #t_3_1
---from #t_3 where all_status  in(1,28)  --and   Дата_создания_карточки_товара >= Дата_заведения_экземпляра_в_систему
---order by  ID_Exemplar
-
---go
-
-drop table if exists #t_4;
-
-WITH BaseGroups AS (
-    SELECT 
-        CONVERT(date, Дата_создания_заказа) AS Дата,
-		ID_Currency,
-        CASE 
-            WHEN Наименование_статуса_экземпляра IN ('Продан','Услуга завершена') THEN 'Продан + Услуга завершена'
-            ELSE Наименование_статуса_экземпляра
-        END AS Группа_статусов,
-        id_status_order AS Статус_заказа,
-        COUNT(ID_Exemplar) AS Количество_экземпляров,
-        SUM(Цена_без_НДС_экземпляра) AS Цена_без_НДС_экземпляра,
-		SUM(Цена_экземпляра_с_НДС) AS Общая_стоимость_с_НДС,
-		SUM(Цена_экземпляра_с_НДС_после_начисления_коммисии_за_сервис) AS Цена_экземпляра_с_НДС_после_начисления_коммисии_за_сервис,
-		SUM(Цена_экземпляра_без_НДС_после_начисления_коммисии_за_сервис) AS Цена_экземпляра_без_НДС_после_начисления_коммисии_за_сервис
-    FROM #t_3_1
-    GROUP BY GROUPING SETS (
-        (CONVERT(date, Дата_создания_заказа), 
-        CASE WHEN Наименование_статуса_экземпляра IN ('Продан','Услуга завершена') THEN 'Продан + Услуга завершена'
-		ELSE Наименование_статуса_экземпляра END,				    
-        id_status_order,ID_Currency
-        ),
-        (CONVERT(date, Дата_создания_заказа), id_status_order,ID_Currency),
-        (CONVERT(date, Дата_создания_заказа),ID_Currency)
-    )
-)
-SELECT  
-	bg.Дата,
-	bg.ID_Currency,
-    bg.Группа_статусов,
-    bg.Статус_заказа,
-    bg.Количество_экземпляров,
-    ids.Список_ID,
-	bg.Цена_без_НДС_экземпляра,
-    bg.Общая_стоимость_с_НДС,
-	bg.Цена_экземпляра_с_НДС_после_начисления_коммисии_за_сервис,
-	bg.Цена_экземпляра_без_НДС_после_начисления_коммисии_за_сервис
-	into #t_4
-FROM BaseGroups bg
-OUTER APPLY (
-    SELECT STRING_AGG(CAST(t.ID_Exemplar AS VARCHAR), ', ') AS Список_ID
-    FROM #t_3_1 t
-    WHERE 
-        (bg.Дата IS NULL OR CONVERT(date, t.Дата_создания_заказа) = bg.Дата)
-        AND (bg.Группа_статусов IS NULL OR 
-             CASE WHEN t.Наименование_статуса_экземпляра IN ('Продан','Услуга завершена') THEN 'Продан + Услуга завершена'
-                  ELSE t.Наименование_статуса_экземпляра END = bg.Группа_статусов)
-        AND (bg.Статус_заказа IS NULL OR t.id_status_order = bg.Статус_заказа)
-		and bg.ID_Currency = ID_Currency
-) ids
-where  Статус_заказа = 1
-ORDER BY 
-    bg.Дата,
-    bg.Группа_статусов,
-    bg.Статус_заказа;
-
-go
-
-	drop table if exists #t_5_1
+drop table if exists #t_5_1
 	 
     select
-	row_number() over (partition by t.Группа_статусов order by t.Дата) as 'Нумерация'
+	row_number() over (order by t.Группа_статусов) as 'Нумерация'
 	,t.* 
 	into #t_5_1
 	from(
 	select *
 	from #t_4  t
-	where Статус_заказа = 1 and Количество_экземпляров = 1 and Группа_статусов is not null
+	where  Количество_экземпляров = 1 and Группа_статусов is not null
 	Union all
 	select * 
 	from #t_4  
-	where Статус_заказа = 1 and Количество_экземпляров > 1 and Группа_статусов is not null
+	where Количество_экземпляров > 1 and Группа_статусов is not null
 	) as t order by t.Дата,t.Количество_экземпляров
 
 go   
+
    drop table if exists  #Razgrupirovka_1
 
    create table #Razgrupirovka_1 
@@ -505,7 +317,6 @@ select
 ,t_2.ID
 ,t_3.Дата_создания_карточки_товара
 ,t_3.Дата_заведения_экземпляра_в_систему	
---,CAST(CAST(t.Дата AS date) AS datetime) + CAST('23:59:59.997' AS datetime) AS 'Дата_возврата'		
 ,t.Дата  as 'Дата_создания_заказа'
 ,t.Группа_статусов		
 ,t.Количество_экземпляров	
@@ -520,6 +331,21 @@ from  #t_5_1  t
 left join  #Razgrupirovka_1 t_2 on t.Нумерация = t_2.Нумерация
 left join  All_Data_Exemplar t_3 on t_3.ID_Exemplar = t_2.ID
 order by T_2.Нумерация
+
+go
+
+	--select * from #t_4 where Список_ID like '%8641%'
+	--select * from #t_4 where Список_ID is not null and Группа_статусов is not  null
+	--SELECT * from #t_5_1 order by Нумерация
+
+	--select *  from #Razgrupirovka_1
+	--select * from  #random_value
+
+	--SELECT * from #t_6
+
+	--select * from orders
+	--select * from #Orders order by Id_Orders
+	-- select * from #t_7
 
 go
 
@@ -879,8 +705,6 @@ select ID_status,ID_TypeOrders,ID_Currency,ID_OrderAssignment,ID_OrderCategory,[
 insert into Data_Orders(ID_Employee,ID_Orders,Id_buyer,ID_Exemplar,ID_Transaction,Date_Data_Orders,[Description])
 select ID_Employee,ID_Orders,Id_buyer,ID_Exemplar,ID_Transaction,Date_Data_Orders,[Description] from #Data_Orders
 
-drop index if exists index_t_cla on #t
-drop index if exists index_t_cla_2 on #t_2
 
 drop table if exists #Orders_status_2 
 drop table if exists #Orders_status
