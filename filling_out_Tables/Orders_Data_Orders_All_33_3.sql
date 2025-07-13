@@ -26,28 +26,28 @@ go
 begin tran
 /*
 --1	 Продан										 	--1	 Завершена                        1,28
---2	 Просрочен									 	--2	 В ожидании						  27,4,5
---3	 Задублирован								 	--3	 В ожидании оплаты				  34,5
+--2	 Просрочен									 	--2	 В ожидании						  27,4
+--3	 Задублирован								 	--3	 В ожидании оплаты				  34,15
 --4	 На отгрузке								    --4	 На уточнении у Контрагента		  2,6,12,14,26,17,5,31,27,23
 --5	 На складе									 	--5	 Бухгалтерский контроль			  5,24,27
---6	 Ожидает возврата							 	--6	 Оплачен						  33,15,25 
---7	 Потерян									 	--7	 На исправлении					  14,15,16,34,7,8,12,17,5,9,11,19,20,23,29,2,3,6,31,27
---8	 На проверке								 	--8	 На проверки Аудиторов		      14,15,16,34,7,8,12,17,5,31
---9	 Ожидает отгрузки							 	--9	 В движении						  30,11,25,4,19
---10 Зарезервирован								    --10 На складе						  5,9,7
+--6	 Ожидает возврата							 	--6	 Оплачен						  33,15 
+--7	 Потерян									 	--7	 На исправлении					  14,15,16,34,7,8,12,17,5,9,11,19,20,23,29,2,3,6,31,27,4,10
+--8	 На проверке								 	--8	 На проверки Аудиторов		      9,11,16,19,23,29,2,17,3,31,27,4,5,10,9,7,34 
+--9	 Ожидает отгрузки							 	--9	 В движении						  30,11,25,4,19,26
+--10 Зарезервирован								    --10 На складе						  5,9
 --11 В пути										    --11 В сборке						  4,10
---12 Бракованный								 	--12 В ожидании отправки			  26,27,20
---13 Возвращён пользователем					 	--13 На проверке SOX				  2,3,6,7,8,12,14,17,31,27,23
---14 Уценён										    --14 Отменён					      9,11,16,19,20,23,29,2,17,3,34,31,27  
+--12 Бракованный								 	--12 В ожидании отправки			  20,19,9,4
+--13 Возвращён пользователем					 	--13 На проверке SOX				  14,15,16,34,7,8,12,17,5,9,11,19,20,23,29,2,3,6,31,27,4,10
+--14 Уценён										    --14 Отменён					      9,11,16,19,23,29,2,17,3,31,27,4,5,10,9,7,34  
 --15 Продан в рассрочку                             --15 Возврат					      32,13	 
 --16 Не полностью оплачен по рассрочке			 
 --17 Испорчен									 
 --18 Срок годности просрочен					 
 --19 Ожидает на пункте выдачи					 
---20 Ожидает курьера							 
---21 Черновик									 
+--20 Ожидает курьера							    --По товарам 2,11,10,3,14,8  --Заводится время оплаты 6,12,9,1,5,7,13,15  --7 
+--21 Черновик									    --По услугам 2,4,3,14,8,     --Заводится время оплаты 6,9,1,5,7,13,15     --7
 --22 Редактируется								 
---23 Найдены несоответствия в карточке товара	 
+--23 Найдены несоответствия в карточке товара	    --Экземпляры без мтатуса заявки 18,21,22,24
 --24 Перерасчёт цен								 
 --25 Услуга активна								 
 --26 Услуга ожидает активации					 
@@ -81,19 +81,19 @@ all_status  nvarchar(300) not null
 /*Примерно формируем данные по статусам экземляров, которые могут быть, в той или иной заявке в указанном статусе заказа (первый стобец)*/
 insert into #Orders_status values
 (1,'1,28'),	
-(2,'27,4,5'),	
-(3,'34,5'),	
+(2,'27,4'),	
+(3,'34,15'),	
 (4,'2,6,12,14,26,17,5,31,27,23'),	
 (5,'5,24,27'),	
-(6,'33,15,25'),	
-(7,'14,15,16,34,7,8,12,17,5,9,11,19,20,23,29,2,3,6,31,27'),	
-(8,'14,15,16,34,7,8,12,17,5,31'),	
-(9,'30,11,25,4,19'),	
-(10,'5,9,7'),
+(6,'33,15'),	
+(7,'14,15,16,34,7,8,12,17,5,9,11,19,20,23,29,2,3,6,31,27,4,10'),	
+(8,'9,11,16,19,23,29,2,17,3,31,27,4,5,10,9,7,34'),	
+(9,'30,11,25,4,19,26'),	
+(10,'5,9'),
 (11,'4,10'),
-(12,'26,27,20'),
-(13,'2,3,6,7,8,12,14,17,31,27,23'),
-(14,'9,11,16,19,20,23,29,2,17,3,34,31,27'),
+(12,'20,19,9,4'),
+(13,'14,15,16,34,7,8,12,17,5,9,11,19,20,23,29,2,3,6,31,27,4,10'),
+(14,'9,11,16,19,23,29,2,17,3,31,27,4,5,10,9,7,34'),
 (15,'32,13');
 
 
@@ -117,10 +117,11 @@ drop table if exists #random_value;
 with random_value as (
 select 
 o.*
-,rank() over (partition by ID_Exemplar order by id_status_order) as 'подсчёт_вариантов'
+,rank() over (partition by e.ID_Exemplar order by o.id_status_order) as 'подсчёт_вариантов'
 ,e.ID_Exemplar
 ,e.ID_Currency
 ,e.ID_Condition_of_the_item
+,a.ID_product_measurement
 ,e.Date_Created
 ,e.Old_Price_no_NDS
 ,e.Old_Price_NDS
@@ -129,6 +130,7 @@ o.*
 ,ROW_NUMBER() OVER (PARTITION BY e.ID_Exemplar ORDER BY NEWID()) AS random_row_num  -- Добавляем случайную нумерацию строк внутри каждого ID_Exemplar
 from Exemplar e 
 right join #Orders_status_2 as o on o.all_status = e.ID_Condition_of_the_item and  o.id_status_order not in (1,15)
+left join  All_Data_Exemplar a on a.ID_Exemplar = e.ID_Exemplar
 where  e.ID_Condition_of_the_item not in (1,28,32,13)  
 )
 select
@@ -137,9 +139,43 @@ e.*
 into #random_value
 from random_value e
 where e.random_row_num = 1 -- Выбираем только одну случайную строку для каждого экземпляра
+and   e.ID_product_measurement  = 5
 order by  newid() -- Дополнительно перемешиваем итоговый результат (опционально)
 
 go
+
+drop table if exists #random_value_2;
+
+with random_value as (
+select 
+o.*
+,rank() over (partition by e.ID_Exemplar order by o.id_status_order) as 'подсчёт_вариантов'
+,e.ID_Exemplar
+,e.ID_Currency
+,e.ID_Condition_of_the_item
+,a.ID_product_measurement
+,e.Date_Created
+,e.Old_Price_no_NDS
+,e.Old_Price_NDS
+,e.New_Price_NDS
+,e.New_Price_no_NDS
+,ROW_NUMBER() OVER (PARTITION BY e.ID_Exemplar ORDER BY NEWID()) AS random_row_num  -- Добавляем случайную нумерацию строк внутри каждого ID_Exemplar
+from Exemplar e 
+right join #Orders_status_2 as o on o.all_status = e.ID_Condition_of_the_item and  o.id_status_order not in (1,15)
+left join  All_Data_Exemplar a on a.ID_Exemplar = e.ID_Exemplar
+where  e.ID_Condition_of_the_item not in (1,28,32,13)  
+)
+select
+e.*
+,dateadd(second,abs(cast(substring(cast(checksum(NEWID()) as varchar(36)),1,7) as int)),e.Date_Created) as 'Дата_создания_заказа'
+into #random_value_2
+from random_value e
+where e.random_row_num = 1 -- Выбираем только одну случайную строку для каждого экземпляра
+and   e.ID_product_measurement  != 5
+order by  newid() -- Дополнительно перемешиваем итоговый результат (опционально)
+
+go
+
 
 
 drop table if exists #t_4;
@@ -149,19 +185,19 @@ SELECT
 CONVERT(date, Дата_создания_заказа) AS Дата,
 ID_Currency,
 CASE 
-    WHEN ID_Condition_of_the_item IN (27,4,5) THEN 2
+    WHEN ID_Condition_of_the_item IN (27,4) THEN 2
 	WHEN ID_Condition_of_the_item IN (34,5) THEN 3
 	WHEN ID_Condition_of_the_item IN (2,6,12,14,26,17,5,31,27,23) THEN 4
 	WHEN ID_Condition_of_the_item IN (5,24,27) THEN 5
-	WHEN ID_Condition_of_the_item IN (33,15,25) THEN 6
-	WHEN ID_Condition_of_the_item IN (14,15,16,34,7,8,12,17,5,9,11,19,20,23,29,2,3,6,31,27) THEN 7
-	WHEN ID_Condition_of_the_item IN (14,15,16,34,7,8,12,17,5,31) THEN 8
+	WHEN ID_Condition_of_the_item IN (33,15) THEN 6
+	WHEN ID_Condition_of_the_item IN (14,15,16,34,7,8,12,17,5,9,11,19,20,23,29,2,3,6,31,27,4,10) THEN 7
+	WHEN ID_Condition_of_the_item IN (9,11,16,19,23,29,2,17,3,31,27,4,5,10,9,7,34) THEN 8
 	WHEN ID_Condition_of_the_item IN (30,11,25,4,19) THEN 9
-	WHEN ID_Condition_of_the_item IN (5,9,7) THEN 10
+	WHEN ID_Condition_of_the_item IN (5,9) THEN 10
 	WHEN ID_Condition_of_the_item IN (4,10) THEN 11
-	WHEN ID_Condition_of_the_item IN (26,27,20) THEN 12
-	WHEN ID_Condition_of_the_item IN (2,3,6,7,8,12,14,17,31,27,23) THEN 13
-	WHEN ID_Condition_of_the_item IN (9,11,16,19,20,23,29,2,17,3,34,31,27) THEN 14
+	WHEN ID_Condition_of_the_item IN (20,19,9,4) THEN 12
+	WHEN ID_Condition_of_the_item IN (14,15,16,34,7,8,12,17,5,9,11,19,20,23,29,2,3,6,31,27,4,10) THEN 13
+	WHEN ID_Condition_of_the_item IN (9,11,16,19,23,29,2,17,3,31,27,4,5,10,9,7,34) THEN 14
     ELSE ID_Condition_of_the_item
 END AS Группа_статусов,
 id_status_order AS Статус_заказа,
@@ -175,19 +211,19 @@ group by grouping sets
              (
 			  (CONVERT(date, Дата_создания_заказа),
 			  CASE 
-                  WHEN ID_Condition_of_the_item IN (27,4,5) THEN 2
+                  WHEN ID_Condition_of_the_item IN (27,4) THEN 2
 	              WHEN ID_Condition_of_the_item IN (34,5) THEN 3
 	              WHEN ID_Condition_of_the_item IN (2,6,12,14,26,17,5,31,27,23) THEN 4
 	              WHEN ID_Condition_of_the_item IN (5,24,27) THEN 5
-	              WHEN ID_Condition_of_the_item IN (33,15,25) THEN 6
-	              WHEN ID_Condition_of_the_item IN (14,15,16,34,7,8,12,17,5,9,11,19,20,23,29,2,3,6,31,27) THEN 7
-	              WHEN ID_Condition_of_the_item IN (14,15,16,34,7,8,12,17,5,31) THEN 8
+	              WHEN ID_Condition_of_the_item IN (33,15) THEN 6
+	              WHEN ID_Condition_of_the_item IN (14,15,16,34,7,8,12,17,5,9,11,19,20,23,29,2,3,6,31,27,4,10) THEN 7
+	              WHEN ID_Condition_of_the_item IN (9,11,16,19,23,29,2,17,3,31,27,4,5,10,9,7,34) THEN 8
 	              WHEN ID_Condition_of_the_item IN (30,11,25,4,19) THEN 9
-	              WHEN ID_Condition_of_the_item IN (5,9,7) THEN 10
+	              WHEN ID_Condition_of_the_item IN (5,9) THEN 10
 	              WHEN ID_Condition_of_the_item IN (4,10) THEN 11
-	              WHEN ID_Condition_of_the_item IN (26,27,20) THEN 12
-	              WHEN ID_Condition_of_the_item IN (2,3,6,7,8,12,14,17,31,27,23) THEN 13
-	              WHEN ID_Condition_of_the_item IN (9,11,16,19,20,23,29,2,17,3,34,31,27) THEN 14
+	              WHEN ID_Condition_of_the_item IN (20,19,9,4) THEN 12
+	              WHEN ID_Condition_of_the_item IN (14,15,16,34,7,8,12,17,5,9,11,19,20,23,29,2,3,6,31,27,4,10) THEN 13
+	              WHEN ID_Condition_of_the_item IN (9,11,16,19,23,29,2,17,3,31,27,4,5,10,9,7,34) THEN 14
                   ELSE ID_Condition_of_the_item END,
 				  id_status_order,ID_Currency
               ),
@@ -215,19 +251,19 @@ OUTER APPLY (
         (bg.Дата IS NULL OR CONVERT(date, t.Дата_создания_заказа) = bg.Дата)
         AND (bg.Группа_статусов IS NULL OR 
              CASE 
-                  WHEN t.ID_Condition_of_the_item IN (27,4,5) THEN 2
-	              WHEN t.ID_Condition_of_the_item IN (34,5) THEN 3
-	              WHEN t.ID_Condition_of_the_item IN (2,6,12,14,26,17,5,31,27,23) THEN 4
-	              WHEN t.ID_Condition_of_the_item IN (5,24,27) THEN 5
-	              WHEN t.ID_Condition_of_the_item IN (33,15,25) THEN 6
-	              WHEN t.ID_Condition_of_the_item IN (14,15,16,34,7,8,12,17,5,9,11,19,20,23,29,2,3,6,31,27) THEN 7
-	              WHEN t.ID_Condition_of_the_item IN (14,15,16,34,7,8,12,17,5,31) THEN 8
-	              WHEN t.ID_Condition_of_the_item IN (30,11,25,4,19) THEN 9
-	              WHEN t.ID_Condition_of_the_item IN (5,9,7) THEN 10
-	              WHEN t.ID_Condition_of_the_item IN (4,10) THEN 11
-	              WHEN t.ID_Condition_of_the_item IN (26,27,20) THEN 12
-	              WHEN t.ID_Condition_of_the_item IN (2,3,6,7,8,12,14,17,31,27,23) THEN 13
-	              WHEN t.ID_Condition_of_the_item IN (9,11,16,19,20,23,29,2,17,3,34,31,27) THEN 14
+                  WHEN ID_Condition_of_the_item IN (27,4) THEN 2
+	              WHEN ID_Condition_of_the_item IN (34,5) THEN 3
+	              WHEN ID_Condition_of_the_item IN (2,6,12,14,26,17,5,31,27,23) THEN 4
+	              WHEN ID_Condition_of_the_item IN (5,24,27) THEN 5
+	              WHEN ID_Condition_of_the_item IN (33,15) THEN 6
+	              WHEN ID_Condition_of_the_item IN (14,15,16,34,7,8,12,17,5,9,11,19,20,23,29,2,3,6,31,27,4,10) THEN 7
+	              WHEN ID_Condition_of_the_item IN (9,11,16,19,23,29,2,17,3,31,27,4,5,10,9,7,34) THEN 8
+	              WHEN ID_Condition_of_the_item IN (30,11,25,4,19) THEN 9
+	              WHEN ID_Condition_of_the_item IN (5,9) THEN 10
+	              WHEN ID_Condition_of_the_item IN (4,10) THEN 11
+	              WHEN ID_Condition_of_the_item IN (20,19,9,4) THEN 12
+	              WHEN ID_Condition_of_the_item IN (14,15,16,34,7,8,12,17,5,9,11,19,20,23,29,2,3,6,31,27,4,10) THEN 13
+	              WHEN ID_Condition_of_the_item IN (9,11,16,19,23,29,2,17,3,31,27,4,5,10,9,7,34) THEN 14
                   ELSE t.ID_Condition_of_the_item END = bg.Группа_статусов				  
 				  )
         AND (bg.Статус_заказа IS NULL OR t.id_status_order = bg.Статус_заказа)
@@ -238,6 +274,111 @@ ORDER BY
     bg.Дата,
     bg.Группа_статусов,
     bg.Статус_заказа;
+
+
+go
+
+
+drop table if exists #t_4_1;
+
+WITH BaseGroups AS (
+SELECT 
+CONVERT(date, Дата_создания_заказа) AS Дата,
+ID_Currency,
+CASE 
+    WHEN ID_Condition_of_the_item IN (27,4) THEN 2
+	WHEN ID_Condition_of_the_item IN (34,5) THEN 3
+	WHEN ID_Condition_of_the_item IN (2,6,12,14,26,17,5,31,27,23) THEN 4
+	WHEN ID_Condition_of_the_item IN (5,24,27) THEN 5
+	WHEN ID_Condition_of_the_item IN (33,15) THEN 6
+	WHEN ID_Condition_of_the_item IN (14,15,16,34,7,8,12,17,5,9,11,19,20,23,29,2,3,6,31,27,4,10) THEN 7
+	WHEN ID_Condition_of_the_item IN (9,11,16,19,23,29,2,17,3,31,27,4,5,10,9,7,34) THEN 8
+	WHEN ID_Condition_of_the_item IN (30,11,25,4,19) THEN 9
+	WHEN ID_Condition_of_the_item IN (5,9) THEN 10
+	WHEN ID_Condition_of_the_item IN (4,10) THEN 11
+	WHEN ID_Condition_of_the_item IN (20,19,9,4) THEN 12
+	WHEN ID_Condition_of_the_item IN (14,15,16,34,7,8,12,17,5,9,11,19,20,23,29,2,3,6,31,27,4,10) THEN 13
+	WHEN ID_Condition_of_the_item IN (9,11,16,19,23,29,2,17,3,31,27,4,5,10,9,7,34) THEN 14
+    ELSE ID_Condition_of_the_item
+END AS Группа_статусов,
+id_status_order AS Статус_заказа,
+COUNT(ID_Exemplar) AS Количество_экземпляров,
+SUM(Old_Price_no_NDS) AS Цена_без_НДС_экземпляра,
+SUM(Old_Price_NDS) AS Общая_стоимость_с_НДС,
+SUM(New_Price_NDS) AS Цена_экземпляра_с_НДС_после_начисления_коммисии_за_сервис,
+SUM(New_Price_no_NDS) AS Цена_экземпляра_без_НДС_после_начисления_коммисии_за_сервис
+from #random_value_2 
+group by grouping sets 
+             (
+			  (CONVERT(date, Дата_создания_заказа),
+			  CASE 
+                  WHEN ID_Condition_of_the_item IN (27,4) THEN 2
+	              WHEN ID_Condition_of_the_item IN (34,5) THEN 3
+	              WHEN ID_Condition_of_the_item IN (2,6,12,14,26,17,5,31,27,23) THEN 4
+	              WHEN ID_Condition_of_the_item IN (5,24,27) THEN 5
+	              WHEN ID_Condition_of_the_item IN (33,15) THEN 6
+	              WHEN ID_Condition_of_the_item IN (14,15,16,34,7,8,12,17,5,9,11,19,20,23,29,2,3,6,31,27,4,10) THEN 7
+	              WHEN ID_Condition_of_the_item IN (9,11,16,19,23,29,2,17,3,31,27,4,5,10,9,7,34) THEN 8
+	              WHEN ID_Condition_of_the_item IN (30,11,25,4,19) THEN 9
+	              WHEN ID_Condition_of_the_item IN (5,9) THEN 10
+	              WHEN ID_Condition_of_the_item IN (4,10) THEN 11
+	              WHEN ID_Condition_of_the_item IN (20,19,9,4) THEN 12
+	              WHEN ID_Condition_of_the_item IN (14,15,16,34,7,8,12,17,5,9,11,19,20,23,29,2,3,6,31,27,4,10) THEN 13
+	              WHEN ID_Condition_of_the_item IN (9,11,16,19,23,29,2,17,3,31,27,4,5,10,9,7,34) THEN 14
+                  ELSE ID_Condition_of_the_item END,
+				  id_status_order,ID_Currency
+              ),
+			  (CONVERT(date, Дата_создания_заказа), id_status_order,ID_Currency),
+              (CONVERT(date, Дата_создания_заказа),ID_Currency)
+        ) 
+)
+SELECT  
+	bg.Дата,
+	bg.ID_Currency,
+    bg.Группа_статусов,
+    bg.Статус_заказа,
+    bg.Количество_экземпляров,
+    ids.Список_ID,
+	bg.Цена_без_НДС_экземпляра,
+    bg.Общая_стоимость_с_НДС,
+	bg.Цена_экземпляра_с_НДС_после_начисления_коммисии_за_сервис,
+	bg.Цена_экземпляра_без_НДС_после_начисления_коммисии_за_сервис
+	into #t_4_1
+FROM BaseGroups bg
+OUTER APPLY (
+    SELECT STRING_AGG(CAST(t.ID_Exemplar AS VARCHAR), ', ') AS Список_ID
+    FROM #random_value_2 t
+    WHERE 
+        (bg.Дата IS NULL OR CONVERT(date, t.Дата_создания_заказа) = bg.Дата)
+        AND (bg.Группа_статусов IS NULL OR 
+             CASE 
+                  WHEN ID_Condition_of_the_item IN (27,4) THEN 2
+	              WHEN ID_Condition_of_the_item IN (34,5) THEN 3
+	              WHEN ID_Condition_of_the_item IN (2,6,12,14,26,17,5,31,27,23) THEN 4
+	              WHEN ID_Condition_of_the_item IN (5,24,27) THEN 5
+	              WHEN ID_Condition_of_the_item IN (33,15) THEN 6
+	              WHEN ID_Condition_of_the_item IN (14,15,16,34,7,8,12,17,5,9,11,19,20,23,29,2,3,6,31,27,4,10) THEN 7
+	              WHEN ID_Condition_of_the_item IN (9,11,16,19,23,29,2,17,3,31,27,4,5,10,9,7,34) THEN 8
+	              WHEN ID_Condition_of_the_item IN (30,11,25,4,19) THEN 9
+	              WHEN ID_Condition_of_the_item IN (5,9) THEN 10
+	              WHEN ID_Condition_of_the_item IN (4,10) THEN 11
+	              WHEN ID_Condition_of_the_item IN (20,19,9,4) THEN 12
+	              WHEN ID_Condition_of_the_item IN (14,15,16,34,7,8,12,17,5,9,11,19,20,23,29,2,3,6,31,27,4,10) THEN 13
+	              WHEN ID_Condition_of_the_item IN (9,11,16,19,23,29,2,17,3,31,27,4,5,10,9,7,34) THEN 14
+                  ELSE t.ID_Condition_of_the_item END = bg.Группа_статусов				  
+				  )
+        AND (bg.Статус_заказа IS NULL OR t.id_status_order = bg.Статус_заказа)
+		and bg.ID_Currency = ID_Currency
+) ids
+--where  Статус_заказа = 1
+ORDER BY 
+    bg.Дата,
+    bg.Группа_статусов,
+    bg.Статус_заказа;
+
+go
+
+
 
 drop table if exists #t_5_1
 	 
@@ -253,9 +394,19 @@ drop table if exists #t_5_1
 	select * 
 	from #t_4  
 	where Количество_экземпляров > 1 and Группа_статусов is not null
+	Union all
+	select *
+	from #t_4_1  t
+	where  Количество_экземпляров = 1 and Группа_статусов is not null
+	Union all
+	select * 
+	from #t_4_1  
+	where Количество_экземпляров > 1 and Группа_статусов is not null
 	) as t order by t.Дата,t.Количество_экземпляров
 
 go   
+
+
 
    drop table if exists  #Razgrupirovka_1
 
@@ -302,6 +453,8 @@ go
 
 go
 
+
+
 declare 
 @count_Orders bigint = (select count(o.ID_Orders) as 'Количество_Заказов'  from orders o)
 
@@ -332,20 +485,6 @@ left join  #Razgrupirovka_1 t_2 on t.Нумерация = t_2.Нумерация
 left join  All_Data_Exemplar t_3 on t_3.ID_Exemplar = t_2.ID
 order by T_2.Нумерация
 
-go
-
-	--select * from #t_4 where Список_ID like '%8641%'
-	--select * from #t_4 where Список_ID is not null and Группа_статусов is not  null
-	--SELECT * from #t_5_1 order by Нумерация
-
-	--select *  from #Razgrupirovka_1
-	--select * from  #random_value
-
-	--SELECT * from #t_6
-
-	--select * from orders
-	--select * from #Orders order by Id_Orders
-	-- select * from #t_7
 
 go
 
@@ -456,7 +595,14 @@ while @@FETCH_STATUS = 0
 
 			 set @RandomDateTime_2 = dateadd(second,abs(cast(substring(cast(checksum(NEWID()) as varchar(36)),1,7) as int)),@RandomDateTime) 
 
-			 exec RandomDateTimeNew @RandomDateTime,@RandomDateTime_2, @RandomDate output
+			 if  @Статус_заказа in (2,11,10,3,14,8,4)  --Если заказа имеет данные статусы, значит даты оплыты ещё быть не должно, и по этому будет Null
+			      begin
+			          set @RandomDate = null
+                  end
+				else
+				  begin
+				      exec RandomDateTimeNew @RandomDateTime,@RandomDateTime_2, @RandomDate output
+				  end;
 
 			 insert into #Orders(ID_Orders,ID_status,ID_TypeOrders,ID_Currency,ID_OrderAssignment,ID_OrderCategory,[Date]
 			 ,Payment_Date,Amount,AmountCurr,AmountNDS,AmountCurrNDS,Num,[Description],flag) values
@@ -628,21 +774,12 @@ fetch next from Cur_2 into
 	    begin try
 			 /*Берём дату создания заказа, и будем её вставлять в таблицу - Данные по заказу, в столбец дата создания  данной строки*/
 			 set @Date_Data_Orders_2 = (
-			              			    select top 1
-                                        o.[Date]
-                                        from  
-                                        #Orders as o
-                                        inner join 
-                                                 (
-												 select 
-                                                 t_2.*
-                                                 from  (select  distinct Нумерация  as 'Нумерация' from #t_6 ) as t
-                                                 outer apply (select top 1 * from #t_6 where Нумерация = t.Нумерация )  as t_2
-												 )as o_2 
-                                        on o_2.Нумерация = o.ID_Orders
-                                        inner join #Razgrupirovka_2 t_3 on t_3.Нумерация = o.ID_Orders
-										where  id_orders = @Нумерация_3 and  @id_2 = t_3.ID
-										order by t_3.Нумерация
+                                         select 
+                                         t_2.[Date]
+                                         from
+                                         (select id,Нумерация from #t_6 ) as t
+                                         outer apply (select top 1 * from #orders where Id_Orders = t.Нумерация )  as t_2
+										 where t.ID = @id_2                                        
 										 )
 
 			 insert into #Data_Orders(Id_Data_Orders,ID_Employee,ID_Orders,Id_buyer,ID_Exemplar,ID_Transaction,Date_Data_Orders,[Description]) values 
@@ -709,11 +846,15 @@ select ID_Employee,ID_Orders,Id_buyer,ID_Exemplar,ID_Transaction,Date_Data_Order
 drop table if exists #Orders_status_2 
 drop table if exists #Orders_status
 
+drop table if exists #random_value_2
+drop table if exists #random_value
+
 drop table if exists #t 
 drop table if exists #t_2
 drop table if exists #t_3
 drop table if exists #t_3_1
 drop table if exists #t_4
+drop table if exists #t_4_1
 drop table if exists #t_5_1
 drop table if exists  #Razgrupirovka
 drop table if exists  #Razgrupirovka_1
